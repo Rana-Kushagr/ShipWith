@@ -6,18 +6,18 @@
    ============================================================ */
 
 :root {
-  /* LIGHT THEME (Simplify + Substack: Clean off-white canvas, slate text, high contrast) */
-  --color-canvas: #F8F9FA;
+  /* LIGHT THEME (Simplify: Pure crisp white canvas, deep charcoal text, electric accents) */
+  --color-canvas: #FFFFFF;
   --color-surface: #FFFFFF;
-  --color-surface-subtle: #F1F3F5;
-  --color-surface-strong: #E9ECEF;
+  --color-surface-subtle: #F8FAFC;
+  --color-surface-strong: #F1F5F9;
   --color-surface-hover: #F8FAFC;
   
   --color-border: #E2E8F0;
   --color-border-strong: #CBD5E1;
   --color-border-subtle: #F1F5F9;
 
-  --color-text-primary: #0F172A;     /* 14.2:1 contrast ratio against #F8F9FA */
+  --color-text-primary: #0F172A;     /* 14.2:1 contrast ratio against #FFFFFF */
   --color-text-secondary: #475569;   /* 7.3:1 contrast ratio */
   --color-text-muted: #64748B;       /* 4.8:1 contrast ratio - WCAG AA compliant */
 
@@ -30,11 +30,11 @@
   --color-brand-accent-hover: #1D4ED8;
   --color-brand-accent-subtle: #EFF6FF;
 
-  --color-success: #15803D;
+  --color-success: #16A34A;
   --color-success-subtle: #DCFCE7;
-  --color-warning: #B45309;
+  --color-warning: #D97706;
   --color-warning-subtle: #FEF3C7;
-  --color-danger: #B91C1C;
+  --color-danger: #DC2626;
   --color-danger-subtle: #FEE2E2;
 
   /* Typography */
@@ -43,15 +43,16 @@
   --font-code: 'IBM Plex Mono', Menlo, Monaco, Consolas, monospace;
 
   /* Restrained Radii (Constitution §9.1) */
-  --radius-sm: 4px;      /* Small tags & compact nested controls */
-  --radius-md: 8px;      /* Buttons, inputs, interactive controls */
-  --radius-lg: 12px;     /* Cards and grouped surfaces */
-  --radius-xl: 16px;     /* Modals, dialogs, drawers */
-  --radius-pill: 999px;  /* Avatars and pills only */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-pill: 999px;
 
-  /* Subtle elevations (No heavy stacked shadows) */
-  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-overlay: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  /* Refined Simplify-style elevation shadows */
+  --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-overlay: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="dark"] {
@@ -150,3 +151,88 @@ code, kbd, samp, pre {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================
+   SIMPLIFY-STYLE ANIMATIONS & PATTERNS
+   ============================================================ */
+
+.bg-dot-grid {
+  background-image: radial-gradient(var(--color-border-strong) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+[data-theme="dark"] .bg-dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+@keyframes beam-flow {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes scan-horizontal {
+  0% {
+    left: 0%;
+  }
+  50% {
+    left: 90%;
+  }
+  100% {
+    left: 0%;
+  }
+}
+
+.animate-float {
+  animation: float-gentle 5s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-reverse 6s ease-in-out infinite;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-beam {
+  stroke-dasharray: 6 6;
+  animation: beam-flow 2s linear infinite;
+}
+

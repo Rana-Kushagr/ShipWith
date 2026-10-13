@@ -85,8 +85,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Theme state
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('shipwith_theme');
-    if (saved === 'dark' || saved === 'light') return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    if (saved === 'light' || saved === 'dark') return saved;
+    return 'light'; // Simplify-inspired pure white canvas by default
   });
 
   useEffect(() => {
