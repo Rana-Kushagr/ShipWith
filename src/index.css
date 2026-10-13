@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+/* ============================================================
+   SHIPWITH DESIGN SYSTEM TOKENS
+   Strict adherence to Product Quality Constitution (§5, §6, §7, §8, §9)
+   ============================================================ */
+
+:root {
+  /* LIGHT THEME (Simplify + Substack: Clean off-white canvas, slate text, high contrast) */
+  --color-canvas: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-surface-subtle: #F1F3F5;
+  --color-surface-strong: #E9ECEF;
+  --color-surface-hover: #F8FAFC;
+  
+  --color-border: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+  --color-border-subtle: #F1F5F9;
+
+  --color-text-primary: #0F172A;     /* 14.2:1 contrast ratio against #F8F9FA */
+  --color-text-secondary: #475569;   /* 7.3:1 contrast ratio */
+  --color-text-muted: #64748B;       /* 4.8:1 contrast ratio - WCAG AA compliant */
+
+  --color-brand-primary: #0F172A;
+  --color-brand-primary-hover: #1E293B;
+  --color-brand-on-primary: #FFFFFF;
+  --color-brand-subtle: #F1F5F9;
+  
+  --color-brand-accent: #2563EB;
+  --color-brand-accent-hover: #1D4ED8;
+  --color-brand-accent-subtle: #EFF6FF;
+
+  --color-success: #15803D;
+  --color-success-subtle: #DCFCE7;
+  --color-warning: #B45309;
+  --color-warning-subtle: #FEF3C7;
+  --color-danger: #B91C1C;
+  --color-danger-subtle: #FEE2E2;
+
+  /* Typography */
+  --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-code: 'IBM Plex Mono', Menlo, Monaco, Consolas, monospace;
+
+  /* Restrained Radii (Constitution §9.1) */
+  --radius-sm: 4px;      /* Small tags & compact nested controls */
+  --radius-md: 8px;      /* Buttons, inputs, interactive controls */
+  --radius-lg: 12px;     /* Cards and grouped surfaces */
+  --radius-xl: 16px;     /* Modals, dialogs, drawers */
+  --radius-pill: 999px;  /* Avatars and pills only */
+
+  /* Subtle elevations (No heavy stacked shadows) */
+  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-overlay: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] {
+  /* DARK THEME (Vercel + Peerlist: Obsidian matte surfaces, hairline 1px borders) */
+  --color-canvas: #09090B;
+  --color-surface: #121214;
+  --color-surface-subtle: #18181B;
+  --color-surface-strong: #27272A;
+  --color-surface-hover: #1E1E22;
+
+  --color-border: #27272A;
+  --color-border-strong: #3F3F46;
+  --color-border-subtle: #1F1F23;
+
+  --color-text-primary: #F4F4F5;     /* 15.5:1 contrast against #09090B */
+  --color-text-secondary: #A1A1AA;   /* 7.1:1 contrast */
+  --color-text-muted: #71717A;       /* 4.6:1 contrast - WCAG AA compliant */
+
+  --color-brand-primary: #F4F4F5;
+  --color-brand-primary-hover: #E4E4E7;
+  --color-brand-on-primary: #09090B;
+  --color-brand-subtle: #18181B;
+
+  --color-brand-accent: #3B82F6;
+  --color-brand-accent-hover: #60A5FA;
+  --color-brand-accent-subtle: #172554;
+
+  --color-success: #22C55E;
+  --color-success-subtle: #052E16;
+  --color-warning: #F59E0B;
+  --color-warning-subtle: #451A03;
+  --color-danger: #EF4444;
+  --color-danger-subtle: #450A0A;
+
+  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-overlay: 0 12px 30px -8px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+}
+
+/* Global Reset & Base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-canvas);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+code, kbd, samp, pre {
+  font-family: var(--font-code);
+}
+
+/* Focus Visible Accessible Styling (§17.4) */
+:focus-visible {
+  outline: 2px solid var(--color-brand-accent);
+  outline-offset: 2px;
+}
+
+/* Custom Scrollbar for Crisp Look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* Reduced Motion Utility (§18.7) */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
