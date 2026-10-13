@@ -53,12 +53,18 @@ export const OnboardingWizard: React.FC = () => {
     }, 220);
   };
 
+  // Guaranteed safe multi-select array accessors
+  const currentStrengths = Array.isArray(onboardingState.strengths) ? onboardingState.strengths : [];
+  const currentTechStacks = Array.isArray(onboardingState.techStacks) ? onboardingState.techStacks : [];
+  const currentIndustries = Array.isArray(onboardingState.industries) ? onboardingState.industries : [];
+  const currentCollaborators = Array.isArray(onboardingState.desiredCollaborators) ? onboardingState.desiredCollaborators : [];
+
   // Multi-select toggle helper
   const handleToggleMulti = (
     field: 'strengths' | 'techStacks' | 'industries' | 'desiredCollaborators',
     item: string
   ) => {
-    const list = onboardingState[field] || [];
+    const list = Array.isArray(onboardingState[field]) ? onboardingState[field] : [];
     if (list.includes(item)) {
       updateOnboarding({ [field]: list.filter((x: string) => x !== item) });
     } else {
@@ -351,7 +357,7 @@ export const OnboardingWizard: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {crafts.map((item) => {
                 const Icon = item.icon;
-                const isSelected = onboardingState.strengths.includes(item.id);
+                const isSelected = currentStrengths.includes(item.id);
                 return (
                   <button
                     key={item.id}
@@ -389,15 +395,15 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="pt-2 flex items-center justify-between">
               <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {onboardingState.strengths.length} craft(s) selected
+                {currentStrengths.length} craft(s) selected
               </span>
               <Button
                 variant="primary"
                 onClick={handleNext}
-                disabled={onboardingState.strengths.length === 0}
+                disabled={currentStrengths.length === 0}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Continue ({onboardingState.strengths.length})
+                Continue ({currentStrengths.length})
               </Button>
             </div>
           </div>
@@ -425,7 +431,7 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="flex flex-wrap gap-2 pt-1">
               {techToolkits.map((tool) => {
-                const isSelected = onboardingState.techStacks.includes(tool);
+                const isSelected = currentTechStacks.includes(tool);
                 return (
                   <button
                     key={tool}
@@ -445,15 +451,15 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="pt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)]">
               <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {onboardingState.techStacks.length} tool(s) selected
+                {currentTechStacks.length} tool(s) selected
               </span>
               <Button
                 variant="primary"
                 onClick={handleNext}
-                disabled={onboardingState.techStacks.length === 0}
+                disabled={currentTechStacks.length === 0}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Continue ({onboardingState.techStacks.length})
+                Continue ({currentTechStacks.length})
               </Button>
             </div>
           </div>
@@ -527,7 +533,7 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
               {industryList.map((ind) => {
-                const isSelected = onboardingState.industries.includes(ind);
+                const isSelected = currentIndustries.includes(ind);
                 return (
                   <button
                     key={ind}
@@ -551,15 +557,15 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="pt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)]">
               <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {onboardingState.industries.length} domain(s) selected
+                {currentIndustries.length} domain(s) selected
               </span>
               <Button
                 variant="primary"
                 onClick={handleNext}
-                disabled={onboardingState.industries.length === 0}
+                disabled={currentIndustries.length === 0}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Continue ({onboardingState.industries.length})
+                Continue ({currentIndustries.length})
               </Button>
             </div>
           </div>
@@ -733,7 +739,7 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="space-y-2.5 pt-1">
               {collaboratorRoles.map((item) => {
-                const isSelected = onboardingState.desiredCollaborators.includes(item.id);
+                const isSelected = currentCollaborators.includes(item.id);
                 return (
                   <button
                     key={item.id}
@@ -760,15 +766,15 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="pt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)]">
               <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {onboardingState.desiredCollaborators.length} role(s) selected
+                {currentCollaborators.length} role(s) selected
               </span>
               <Button
                 variant="primary"
                 onClick={handleNext}
-                disabled={onboardingState.desiredCollaborators.length === 0}
+                disabled={currentCollaborators.length === 0}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Continue ({onboardingState.desiredCollaborators.length})
+                Continue ({currentCollaborators.length})
               </Button>
             </div>
           </div>
@@ -955,7 +961,7 @@ export const OnboardingWizard: React.FC = () => {
                   </div>
                   <div>
                     <div className="text-sm font-bold text-[var(--color-text-primary)]">
-                      {onboardingState.strengths.slice(0, 2).join(' & ') || 'Full-Stack Maker'}
+                      {currentStrengths.slice(0, 2).join(' & ') || 'Full-Stack Maker'}
                     </div>
                     <div className="text-xs text-[var(--color-text-muted)]">
                       {onboardingState.weeklyHours} • {onboardingState.experienceYears}
@@ -972,13 +978,13 @@ export const OnboardingWizard: React.FC = () => {
                 <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
                   <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Crafts</div>
                   <div className="font-semibold text-[var(--color-text-primary)] mt-0.5 truncate">
-                    {onboardingState.strengths.join(', ') || 'Engineering'}
+                    {currentStrengths.join(', ') || 'Engineering'}
                   </div>
                 </div>
                 <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
                   <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Stacks</div>
                   <div className="font-semibold text-[var(--color-text-primary)] mt-0.5 truncate">
-                    {onboardingState.techStacks.slice(0, 3).join(', ') || 'Next.js, TypeScript'}
+                    {currentTechStacks.slice(0, 3).join(', ') || 'Next.js, TypeScript'}
                   </div>
                 </div>
                 <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">

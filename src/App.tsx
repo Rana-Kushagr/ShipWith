@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { LandingNavbar } from './components/landing/LandingNavbar';
 import { LandingHero } from './components/landing/LandingHero';
 import { ProductWalkthroughPlayer } from './components/landing/ProductWalkthroughPlayer';
@@ -21,6 +22,37 @@ import { ToastContainer } from './components/common/ToastContainer';
 const MainRouter: React.FC = () => {
   const { currentView } = useApp();
 
+  // Scroll reveal observer that activates on scroll down and resets when scrolling back to the top
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+          } else {
+            // When element is below viewport after scrolling up, remove class so it can animate again!
+            if (entry.boundingClientRect.top > 0) {
+              entry.target.classList.remove('is-revealed');
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px',
+      }
+    );
+
+    const elements = document.querySelectorAll('.reveal-on-scroll');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [currentView]);
+
   return (
     <>
       {/* 1. Public Landing Page */}
@@ -35,9 +67,11 @@ const MainRouter: React.FC = () => {
         </div>
       )}
 
-      {/* 2. Onboarding Flow (Simplify Style) */}
+      {/* 2. Onboarding Flow with Built-in Safeguards */}
       {currentView === 'onboarding' && (
-        <OnboardingWizard />
+        <ErrorBoundary fallbackMessage="Onboarding Step Recovery Active">
+          <OnboardingWizard />
+        </ErrorBoundary>
       )}
 
       {/* 3. Core Authenticated App Views */}
@@ -64,8 +98,10 @@ const MainRouter: React.FC = () => {
 
 export default function App() {
   return (
-    <AppProvider>
-      <MainRouter />
-    </AppProvider>
+    <ErrorBoundary fallbackMessage="Application State Boundary">
+      <AppProvider>
+        <MainRouter />
+      </AppProvider>
+    </ErrorBoundary>
   );
 }

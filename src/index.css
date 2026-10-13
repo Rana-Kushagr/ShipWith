@@ -38,9 +38,10 @@
   --color-danger-subtle: #FEE2E2;
 
   /* Typography */
-  --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-code: 'IBM Plex Mono', Menlo, Monaco, Consolas, monospace;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-code: 'JetBrains Mono', 'IBM Plex Mono', Menlo, Monaco, Consolas, monospace;
 
   /* Restrained Radii (Constitution §9.1) */
   --radius-sm: 6px;
@@ -243,32 +244,53 @@ code, kbd, samp, pre {
   animation: beam-flow 2s linear infinite;
 }
 
-/* Scroll reveal animations */
-@keyframes scrollFadeUp {
-  0% {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Typography utility classes */
+.font-serif-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
 }
 
-.animate-scroll-reveal {
-  animation: scrollFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+.font-display {
+  font-family: var(--font-display);
 }
 
-.delay-100 {
-  animation-delay: 100ms;
+/* 3D Perspective Hero Stage */
+.hero-3d-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 20%;
+  transform-style: preserve-3d;
 }
 
-.delay-200 {
-  animation-delay: 200ms;
+.hero-preview-canvas {
+  will-change: transform, box-shadow;
+  transform-style: preserve-3d;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease-out;
 }
 
-.delay-300 {
-  animation-delay: 300ms;
+/* Dynamic Scroll Reveal (Triggered via IntersectionObserver) */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(32px) scale(0.97);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.delay-75 {
+  transition-delay: 75ms;
+}
+
+.delay-150 {
+  transition-delay: 150ms;
+}
+
+.delay-225 {
+  transition-delay: 225ms;
 }
 
 

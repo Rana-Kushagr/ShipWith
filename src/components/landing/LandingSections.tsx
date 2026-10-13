@@ -10,21 +10,25 @@ export const LandingSections: React.FC = () => {
     <div className="space-y-24 py-12">
       {/* 1. Why ShipWith Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3 reveal-on-scroll">
           <div className="text-xs uppercase font-mono tracking-wider text-[var(--color-brand-accent)] font-semibold">
             WHY SHIPWITH
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--color-text-primary)]">
-            Networking is only the beginning.
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] font-display tracking-tight">
+            Networking is{' '}
+            <span className="font-serif-italic font-normal text-[var(--color-brand-accent)] text-[1.12em] tracking-normal inline-block pr-1">
+              only
+            </span>{' '}
+            the beginning.
           </h2>
           <p className="text-sm sm:text-base text-[var(--color-text-secondary)]">
-            Meet the right people, prove you can build together in a 5-day trial, and turn what you ship into verifiable reputation.
+            Meet the right people, prove you can build together in a 4-day trial, and turn what you ship into verifiable reputation.
           </p>
         </div>
 
-        {/* 3 Pillars Grid */}
+        {/* 3 Pillars Grid with Scroll Reveal */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 animate-scroll-reveal delay-100 hover:border-[var(--color-border-strong)] transition-all">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 reveal-on-scroll delay-75 hover:border-[var(--color-border-strong)] transition-all">
             <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-brand-accent)]">
               <Users className="w-5 h-5" />
             </div>
@@ -34,17 +38,17 @@ export const LandingSections: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 animate-scroll-reveal delay-200 hover:border-[var(--color-border-strong)] transition-all">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 reveal-on-scroll delay-150 hover:border-[var(--color-border-strong)] transition-all">
             <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-success)]">
               <GitCommit className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-bold text-[var(--color-text-primary)]">The 5-Day Trial Build</h3>
+            <h3 className="text-lg font-bold text-[var(--color-text-primary)]">The 4-Day Trial Build</h3>
             <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
               Test working compatibility before committing to equity or months of work. Complete a scoped micro-objective and mutually decide if you want to continue.
             </p>
           </div>
 
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 animate-scroll-reveal delay-300 hover:border-[var(--color-border-strong)] transition-all">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 reveal-on-scroll delay-225 hover:border-[var(--color-border-strong)] transition-all">
             <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-warning)]">
               <Trophy className="w-5 h-5" />
             </div>
@@ -58,12 +62,16 @@ export const LandingSections: React.FC = () => {
 
       {/* 2. Transparent Plans Section (PRD §14: Reputation cannot be bought) */}
       <section id="plans-section" className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center max-w-xl mx-auto mb-14 space-y-3">
+        <div className="text-center max-w-xl mx-auto mb-14 space-y-3 reveal-on-scroll">
           <div className="text-xs uppercase font-mono tracking-wider text-[var(--color-text-muted)] font-semibold">
             MEMBERSHIP
           </div>
-          <h2 className="text-3xl font-extrabold text-[var(--color-text-primary)]">
-            Simple, honest plans for builders.
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--color-text-primary)] font-display tracking-tight">
+            Simple, honest plans for{' '}
+            <span className="font-serif-italic font-normal text-[var(--color-brand-accent)] text-[1.12em] tracking-normal inline-block pr-1">
+              ambitious
+            </span>{' '}
+            builders.
           </h2>
           <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
             ShipWith is free for everyone to discover, collaborate, and ship. Paid tiers unlock advanced recruiting capacity—never unearned reputation.
@@ -72,7 +80,7 @@ export const LandingSections: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {/* Free Tier */}
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col justify-between space-y-6">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col justify-between space-y-6 reveal-on-scroll delay-75">
             <div className="space-y-4">
               <div>
                 <div className="text-sm font-bold text-[var(--color-text-primary)]">Builder Free</div>
@@ -94,7 +102,7 @@ export const LandingSections: React.FC = () => {
           </div>
 
           {/* Builder Pro */}
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border-2 border-[var(--color-brand-primary)] shadow-md flex flex-col justify-between space-y-6 relative">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border-2 border-[var(--color-brand-primary)] shadow-md flex flex-col justify-between space-y-6 relative reveal-on-scroll delay-150">
             <div className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-[var(--radius-pill)] bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] text-[10px] font-mono font-semibold uppercase">
               Popular
             </div>
@@ -119,7 +127,7 @@ export const LandingSections: React.FC = () => {
           </div>
 
           {/* Startup Pro */}
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col justify-between space-y-6">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col justify-between space-y-6 reveal-on-scroll delay-225">
             <div className="space-y-4">
               <div>
                 <div className="text-sm font-bold text-[var(--color-text-primary)]">Startup Pro</div>

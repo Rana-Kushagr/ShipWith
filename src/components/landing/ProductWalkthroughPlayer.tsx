@@ -173,7 +173,7 @@ export const ProductWalkthroughPlayer: React.FC = () => {
   };
 
   return (
-    <div id="walkthrough-section" className="w-full max-w-4xl mx-auto my-12 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-overlay)] overflow-hidden">
+    <div id="walkthrough-section" className="w-full max-w-4xl mx-auto my-12 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-overlay)] overflow-hidden reveal-on-scroll">
       {/* Player Header bar */}
       <div className="px-5 py-3.5 bg-[var(--color-surface-subtle)] border-b border-[var(--color-border)] flex items-center justify-between">
         <div className="flex items-center gap-3">

@@ -155,7 +155,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const saved = localStorage.getItem('shipwith_onboarding');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return {
+          ...DEFAULT_ONBOARDING,
+          ...parsed,
+          strengths: Array.isArray(parsed?.strengths) && parsed.strengths.length > 0 ? parsed.strengths : DEFAULT_ONBOARDING.strengths,
+          techStacks: Array.isArray(parsed?.techStacks) && parsed.techStacks.length > 0 ? parsed.techStacks : DEFAULT_ONBOARDING.techStacks,
+          industries: Array.isArray(parsed?.industries) && parsed.industries.length > 0 ? parsed.industries : DEFAULT_ONBOARDING.industries,
+          desiredCollaborators: Array.isArray(parsed?.desiredCollaborators) && parsed.desiredCollaborators.length > 0 ? parsed.desiredCollaborators : DEFAULT_ONBOARDING.desiredCollaborators,
+        };
       } catch (e) {
         // ignore
       }
