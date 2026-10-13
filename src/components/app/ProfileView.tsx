@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 export const ProfileView: React.FC = () => {
-  const { currentUser, addToast } = useApp();
+  const { currentUser, builds, addToast } = useApp();
   const [activeTab, setActiveTab] = useState<'overview' | 'ships' | 'activity' | 'passport' | 'links'>('overview');
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editName, setEditName] = useState(currentUser.name);
@@ -189,45 +189,54 @@ export const ProfileView: React.FC = () => {
       {/* Tab 2: Shipped Products with Explicit Contributor Role Attribution (PRD PROOF-01) */}
       {activeTab === 'ships' && (
         <div className="space-y-4">
-          <div className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-base text-[var(--color-text-primary)]">
-                    Campus AI Tutor
-                  </h3>
-                  <Badge variant="success" size="sm">Shipped & Live</Badge>
+          {builds.filter(b => b.creatorId === currentUser.id && b.stage === 'Shipped').length > 0 ? (
+            builds.filter(b => b.creatorId === currentUser.id && b.stage === 'Shipped').map(ship => (
+              <div key={ship.id} className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-base text-[var(--color-text-primary)]">
+                        {ship.title}
+                      </h3>
+                      <Badge variant="success" size="sm">Shipped & Live</Badge>
+                    </div>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">
+                      {ship.description}
+                    </p>
+                  </div>
+                  {ship.demoUrl && (
+                    <a
+                      href={ship.demoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs text-[var(--color-brand-accent)] hover:underline font-mono"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>{ship.demoUrl.replace(/^https?:\/\//, '')}</span>
+                    </a>
+                  )}
                 </div>
-                <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-                  AI-native study companion for college students with interactive doubt solving.
-                </p>
-              </div>
-              <a
-                href="https://campus-ai.live"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-[var(--color-brand-accent)] hover:underline font-mono"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>campus-ai.live</span>
-              </a>
-            </div>
 
-            {/* Contributor Role Attribution */}
-            <div className="p-3 bg-[var(--color-surface-subtle)] rounded-[var(--radius-md)] border border-[var(--color-border)] flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[var(--color-success)]" />
-                <span>Contributor Role: <strong className="text-[var(--color-text-primary)]">Frontend Lead & UI/UX Designer</strong></span>
+                <div className="p-3 bg-[var(--color-surface-subtle)] rounded-[var(--radius-md)] border border-[var(--color-border)] flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-[var(--color-success)]" />
+                    <span>Contributor Role: <strong className="text-[var(--color-text-primary)]">Product Lead & Creator</strong></span>
+                  </div>
+                  <span className="font-mono text-[11px] text-[var(--color-success)]">● Verified Creator</span>
+                </div>
               </div>
-              <span className="font-mono text-[11px] text-[var(--color-success)]">● Verified by Arjun Verma</span>
+            ))
+          ) : (
+            <div className="p-8 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-[var(--color-surface-subtle)] border border-[var(--color-border)] mx-auto flex items-center justify-center text-[var(--color-text-muted)]">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <h3 className="text-sm font-bold text-[var(--color-text-primary)]">No Shipped Products Yet</h3>
+              <p className="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto">
+                Products you create, validate, and ship with real collaborators will be verified and permanently showcased here.
+              </p>
             </div>
-
-            <div className="flex items-center gap-4 text-xs font-mono text-[var(--color-text-muted)]">
-              <span>1,200 active users</span>
-              <span>•</span>
-              <span>85 community reviews</span>
-            </div>
-          </div>
+          )}
         </div>
       )}
 
@@ -243,36 +252,52 @@ export const ProfileView: React.FC = () => {
                 </h2>
               </div>
               <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                Auditable proof of execution earned from shipped products and team feedback.
+                Auditable proof of execution earned from shipped products and genuine team feedback.
               </p>
             </div>
-            <Badge variant="success" size="md">Verified Builder</Badge>
+            <Badge variant="accent" size="md">
+              {currentUser.stats.shipsCount > 0 ? 'Verified Builder' : 'New Maker Passport'}
+            </Badge>
           </div>
 
           {/* Structured Evidence Checklist */}
           <div className="space-y-3 text-xs">
             <div className="p-3.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-4 h-4 text-[var(--color-success)]" />
-                <span className="font-medium text-[var(--color-text-primary)]">3 Verified Product Ships</span>
+                <CheckCircle2 className={`w-4 h-4 ${currentUser.stats.shipsCount > 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`} />
+                <span className="font-medium text-[var(--color-text-primary)]">
+                  {currentUser.stats.shipsCount} Verified Product Ships
+                </span>
               </div>
-              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">Campus AI Tutor, VectorUI, FormKit</span>
+              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">
+                {currentUser.stats.shipsCount > 0 ? 'Verified through public release' : 'Earned upon shipping first product'}
+              </span>
             </div>
 
             <div className="p-3.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-4 h-4 text-[var(--color-success)]" />
-                <span className="font-medium text-[var(--color-text-primary)]">2 Completed 5-Day Trial Builds</span>
+                <CheckCircle2 className={`w-4 h-4 ${currentUser.stats.trialBuildsCount > 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`} />
+                <span className="font-medium text-[var(--color-text-primary)]">
+                  {currentUser.stats.trialBuildsCount} Completed Trial Builds
+                </span>
               </div>
-              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">Both trials ended with "Continue Together"</span>
+              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">
+                {currentUser.stats.trialBuildsCount > 0 ? 'Recorded from completed 4-day trial sprints' : 'Earned by finishing collaborative trial builds'}
+              </span>
             </div>
 
             <div className="p-3.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Users className="w-4 h-4 text-[var(--color-success)]" />
-                <span className="font-medium text-[var(--color-text-primary)]">Teammate Satisfaction & Repeat Collaborators</span>
+                <Users className={`w-4 h-4 ${currentUser.stats.repeatTeammatesCount > 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`} />
+                <span className="font-medium text-[var(--color-text-primary)]">
+                  Teammate Feedback & Repeat Collaborations
+                </span>
               </div>
-              <span className="font-mono text-[11px] text-[var(--color-success)] font-semibold">4 / 4 would build together again</span>
+              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">
+                {currentUser.stats.collaborationsCount > 0 
+                  ? `${currentUser.stats.positiveFeedbackPercent}% positive (${currentUser.stats.repeatTeammatesCount} repeat partners)`
+                  : 'Requires at least 1 completed collaboration'}
+              </span>
             </div>
           </div>
         </div>
@@ -280,42 +305,52 @@ export const ProfileView: React.FC = () => {
 
       {/* Tab 4: Activity Log */}
       {activeTab === 'activity' && (
-        <div className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
-          <div className="space-y-3 text-xs">
-            <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]">
-              <span>Shipped <strong className="text-[var(--color-text-primary)]">Campus AI Tutor</strong> live to community</span>
-              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">Yesterday</span>
-            </div>
-            <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]">
-              <span>Completed 5-day Trial milestone with <strong className="text-[var(--color-text-primary)]">Arjun Verma</strong></span>
-              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">3 days ago</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Joined workspace for <strong className="text-[var(--color-text-primary)]">Campus AI Tutor</strong></span>
-              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">5 days ago</span>
-            </div>
+        <div className="p-8 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-3">
+          <div className="w-10 h-10 rounded-full bg-[var(--color-surface-subtle)] border border-[var(--color-border)] mx-auto flex items-center justify-center text-[var(--color-text-muted)]">
+            <Code2 className="w-5 h-5" />
           </div>
+          <h3 className="text-sm font-bold text-[var(--color-text-primary)]">No Public Activity Yet</h3>
+          <p className="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto">
+            Your contributions, trial sprint milestones, and shipped product releases will appear here in chronological order.
+          </p>
         </div>
       )}
 
       {/* Tab 5: Verified Links */}
       {activeTab === 'links' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between text-xs font-mono">
-            <div className="flex items-center gap-2.5">
-              <Code2 className="w-4 h-4 text-[var(--color-text-primary)]" />
-              <span>github.com/lakshit</span>
+        <div className="space-y-4">
+          {currentUser.proofLinks && (currentUser.proofLinks.github || currentUser.proofLinks.website) ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {currentUser.proofLinks.github && (
+                <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between text-xs font-mono">
+                  <div className="flex items-center gap-2.5">
+                    <Code2 className="w-4 h-4 text-[var(--color-text-primary)]" />
+                    <span>github.com/{currentUser.proofLinks.github}</span>
+                  </div>
+                  <span className="text-[11px] text-[var(--color-success)]">Verified ✓</span>
+                </div>
+              )}
+              {currentUser.proofLinks.website && (
+                <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between text-xs font-mono">
+                  <div className="flex items-center gap-2.5">
+                    <Globe className="w-4 h-4 text-[var(--color-brand-accent)]" />
+                    <span>{currentUser.proofLinks.website}</span>
+                  </div>
+                  <span className="text-[11px] text-[var(--color-success)]">Verified ✓</span>
+                </div>
+              )}
             </div>
-            <span className="text-[11px] text-[var(--color-success)]">Verified ✓</span>
-          </div>
-
-          <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between text-xs font-mono">
-            <div className="flex items-center gap-2.5">
-              <Globe className="w-4 h-4 text-[var(--color-brand-accent)]" />
-              <span>lakshit.design</span>
+          ) : (
+            <div className="p-8 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-3">
+              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-subtle)] border border-[var(--color-border)] mx-auto flex items-center justify-center text-[var(--color-text-muted)]">
+                <Globe className="w-5 h-5" />
+              </div>
+              <h3 className="text-sm font-bold text-[var(--color-text-primary)]">No Verified Links Added</h3>
+              <p className="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto">
+                Connect your GitHub, portfolio, or live product domains to build verifiable credibility on your passport.
+              </p>
             </div>
-            <span className="text-[11px] text-[var(--color-success)]">Verified ✓</span>
-          </div>
+          )}
         </div>
       )}
 

@@ -39,7 +39,7 @@ interface AppContextType {
   builds: BuildRecord[];
   feedPosts: FeedPost[];
   workspaceTasks: WorkspaceTask[];
-  trialBuild: TrialBuild;
+  trialBuild: TrialBuild | null;
   
   onboardingState: OnboardingState;
   updateOnboarding: (data: Partial<OnboardingState>) => void;
@@ -114,7 +114,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [builds, setBuilds] = useState<BuildRecord[]>(MOCK_BUILDS);
   const [feedPosts, setFeedPosts] = useState<FeedPost[]>(MOCK_FEED_POSTS);
   const [workspaceTasks] = useState<WorkspaceTask[]>(MOCK_WORKSPACE_TASKS);
-  const [trialBuild] = useState<TrialBuild>(MOCK_TRIAL_BUILD);
+  const [trialBuild] = useState<TrialBuild | null>(MOCK_TRIAL_BUILD);
 
   // Modals state
   const [isPostBuildOpen, setIsPostBuildOpen] = useState(false);
@@ -122,7 +122,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   // Bookmarks
-  const [bookmarks, setBookmarks] = useState<string[]>(['bld_1', 'usr_1']);
+  const [bookmarks, setBookmarks] = useState<string[]>([]);
   const toggleBookmark = (id: string) => {
     setBookmarks(prev => 
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
@@ -130,25 +130,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addToast(bookmarks.includes(id) ? 'Removed from bookmarks' : 'Saved to bookmarks', 'info');
   };
 
-  // Notifications
-  const [notifications, setNotifications] = useState<NotificationItem[]>([
-    {
-      id: 'notif_1',
-      title: 'New application',
-      message: 'Arjun Verma applied for Frontend Engineer on your build.',
-      type: 'application',
-      timestamp: '10m ago',
-      read: false
-    },
-    {
-      id: 'notif_2',
-      title: 'Trial Build updated',
-      message: 'Campus AI Tutor milestone check-in is scheduled for tomorrow.',
-      type: 'trial',
-      timestamp: '2h ago',
-      read: false
-    }
-  ]);
+  // Notifications (Real user notifications start empty)
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
   const markNotificationRead = (id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));

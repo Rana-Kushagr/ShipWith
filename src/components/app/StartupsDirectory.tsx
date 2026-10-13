@@ -3,11 +3,11 @@ import { useApp } from '../../context/AppContext';
 import { Badge } from '../common/Badge';
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
-import { ExternalLink, Search, Code2 } from 'lucide-react';
+import { ExternalLink, Search, Code2, Rocket, Plus } from 'lucide-react';
 import type { BuildRecord } from '../../types';
 
 export const StartupsDirectory: React.FC = () => {
-  const { builds, addToast } = useApp();
+  const { builds, addToast, setIsPostBuildOpen } = useApp();
   const [selectedStage, setSelectedStage] = useState<string>('all');
   const [searchFilter, setSearchFilter] = useState('');
   const [selectedBuildForDetails, setSelectedBuildForDetails] = useState<BuildRecord | null>(null);
@@ -147,11 +147,37 @@ export const StartupsDirectory: React.FC = () => {
       </div>
 
       {filteredBuilds.length === 0 && (
-        <div className="p-12 text-center rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-xs text-[var(--color-text-muted)] space-y-2">
-          <p>No startups matching "{searchFilter}".</p>
-          <Button variant="outline" size="sm" onClick={() => { setSearchFilter(''); setSelectedStage('all'); }}>
-            Clear Filters
-          </Button>
+        <div className="p-12 text-center rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] mx-auto flex items-center justify-center">
+            <Rocket className="w-6 h-6" />
+          </div>
+          {builds.length === 0 ? (
+            <div className="space-y-2 max-w-md mx-auto">
+              <h3 className="text-base font-bold text-[var(--color-text-primary)]">
+                No Startups or Builds Listed Yet
+              </h3>
+              <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                ShipWith contains only 100% genuine creator builds. Be the first founder to post your project, request collaborators, and initiate 4-day trial sprints.
+              </p>
+              <div className="pt-2">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setIsPostBuildOpen(true)}
+                  leftIcon={<Plus className="w-4 h-4" />}
+                >
+                  Post a Build
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-xs text-[var(--color-text-muted)]">No startups matching "{searchFilter}".</p>
+              <Button variant="outline" size="sm" onClick={() => { setSearchFilter(''); setSelectedStage('all'); }}>
+                Clear Filters
+              </Button>
+            </div>
+          )}
         </div>
       )}
 

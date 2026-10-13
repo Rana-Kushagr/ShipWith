@@ -205,7 +205,13 @@ export const ActionFeed: React.FC = () => {
                       <Button
                         variant="primary"
                         size="sm"
-                        onClick={() => window.open(post.metadata?.demoUrl || 'https://campus-ai.live', '_blank')}
+                        onClick={() => {
+                          if (post.metadata?.demoUrl) {
+                            window.open(post.metadata.demoUrl, '_blank');
+                          } else {
+                            addToast('No demo link attached to this update.', 'info');
+                          }
+                        }}
                         rightIcon={<ExternalLink className="w-3.5 h-3.5" />}
                       >
                         Try Product
@@ -234,6 +240,18 @@ export const ActionFeed: React.FC = () => {
             </article>
           );
         })}
+
+        {filteredPosts.length === 0 && (
+          <div className="p-12 text-center rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-[var(--color-surface-subtle)] border border-[var(--color-border)] mx-auto flex items-center justify-center text-[var(--color-brand-accent)]">
+              <MessageCircle className="w-5 h-5" />
+            </div>
+            <h3 className="text-sm font-bold text-[var(--color-text-primary)]">No updates posted yet</h3>
+            <p className="text-xs text-[var(--color-text-secondary)] max-w-sm mx-auto">
+              Use the composer above to share what you are building, request feedback, or announce looking for teammates.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

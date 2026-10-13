@@ -83,7 +83,7 @@ export const PostBuildModal: React.FC = () => {
               required
               value={title}
               onChange={e => setTitle(e.target.value)}
-              placeholder="e.g. Campus AI Tutor"
+              placeholder="e.g. Developer Workflow Automation"
               className="w-full text-xs p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
             />
           </div>

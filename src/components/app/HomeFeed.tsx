@@ -10,7 +10,9 @@ import {
   CheckSquare,
   Sparkles,
   ChevronRight,
-  Filter
+  Filter,
+  Rocket,
+  Plus
 } from 'lucide-react';
 import { Drawer } from '../common/Drawer';
 import type { BuildRecord } from '../../types';
@@ -21,9 +23,11 @@ export const HomeFeed: React.FC = () => {
     builders, 
     setCurrentView, 
     workspaceTasks, 
+    trialBuild,
     addToast,
     toggleBookmark,
-    bookmarks 
+    bookmarks,
+    setIsPostBuildOpen
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'fresh' | 'looking' | 'shipped'>('fresh');
@@ -100,130 +104,168 @@ export const HomeFeed: React.FC = () => {
 
           {/* Builds Cards Stream */}
           <div className="space-y-4">
-            {displayedBuilds.map(build => {
-              const isShipped = build.stage === 'Shipped';
-              const isSaved = bookmarks.includes(build.id);
+            {displayedBuilds.length === 0 ? (
+              <div className="p-10 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] mx-auto flex items-center justify-center">
+                  <Rocket className="w-6 h-6" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-base font-bold text-[var(--color-text-primary)]">
+                    No builds posted in this category yet
+                  </h3>
+                  <p className="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto leading-relaxed">
+                    ShipWith is a 100% genuine maker platform with zero synthetic profiles or bots. Be the first real builder to post an MVP or recruit co-founders!
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => setIsPostBuildOpen(true)}
+                    leftIcon={<Plus className="w-4 h-4" />}
+                  >
+                    Post a Build
+                  </Button>
+                  {activeTab !== 'fresh' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setActiveTab('fresh')}
+                    >
+                      View All Categories
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              displayedBuilds.map(build => {
+                const isShipped = build.stage === 'Shipped';
+                const isSaved = bookmarks.includes(build.id);
 
-              return (
-                <article
-                  key={build.id}
-                  className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm hover:border-[var(--color-border-strong)] transition-all space-y-4 text-left"
-                >
-                  {/* Top Status & Timestamp */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge 
-                        variant={isShipped ? 'success' : 'info'}
-                        size="sm"
-                      >
-                        {isShipped ? 'Shipped Product' : 'Looking for teammates'}
-                      </Badge>
-                      <span className="text-[11px] font-mono text-[var(--color-text-muted)]">
-                        {build.createdAt}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => toggleBookmark(build.id)}
-                        className={`text-xs px-2 py-1 rounded transition-colors cursor-pointer ${
-                          isSaved 
-                            ? 'text-[var(--color-brand-accent)] font-semibold' 
-                            : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
-                        }`}
-                      >
-                        {isSaved ? '★ Saved' : '☆ Save'}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Build Title & Pitch */}
-                  <div className="space-y-1.5">
-                    <h2 className="text-lg font-bold text-[var(--color-text-primary)] hover:underline cursor-pointer" onClick={() => setCurrentView('startups')}>
-                      {build.title}
-                    </h2>
-                    <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] leading-relaxed">
-                      {build.description}
-                    </p>
-                  </div>
-
-                  {/* Tech Stack Chips */}
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {build.techStack.map(tech => (
-                      <span 
-                        key={tech} 
-                        className="px-2 py-0.5 text-[11px] font-mono rounded-[var(--radius-sm)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-[var(--color-text-secondary)]"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Metadata Row */}
-                  <div className="pt-2 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)]">
-                    <div className="flex items-center gap-4">
-                      {isShipped ? (
-                        <>
-                          <span className="font-semibold text-[var(--color-text-primary)]">1.2k Active Users</span>
-                          <span>•</span>
-                          <span>85 Community Feedbacks</span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="flex items-center gap-1.5">
-                            <Users className="w-3.5 h-3.5 text-[var(--color-brand-accent)]" />
-                            <span>{build.neededRoles.length} open roles</span>
-                          </div>
-                          <span>•</span>
-                          <div className="flex items-center gap-1.5">
-                            <Clock className="w-3.5 h-3.5" />
-                            <span>{build.hoursPerWeek}</span>
-                          </div>
-                          <span>•</span>
-                          <div className="flex items-center gap-1.5">
-                            <Globe className="w-3.5 h-3.5" />
-                            <span>Remote</span>
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setCurrentView('startups')}
-                      >
-                        {isShipped ? 'View Details' : 'View Startup'}
-                      </Button>
-                      
-                      {isShipped ? (
-                        <Button
-                          variant="primary"
+                return (
+                  <article
+                    key={build.id}
+                    className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm hover:border-[var(--color-border-strong)] transition-all space-y-4 text-left"
+                  >
+                    {/* Top Status & Timestamp */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Badge 
+                          variant={isShipped ? 'success' : 'info'}
                           size="sm"
-                          onClick={() => {
-                            addToast('Opening live demo...', 'info');
-                            window.open(build.demoUrl || 'https://campus-ai.live', '_blank');
-                          }}
-                          rightIcon={<ExternalLink className="w-3.5 h-3.5" />}
                         >
-                          Try Demo
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="primary"
-                          size="sm"
-                          onClick={() => setSelectedBuildForApply(build)}
+                          {isShipped ? 'Shipped Product' : 'Looking for teammates'}
+                        </Badge>
+                        <span className="text-[11px] font-mono text-[var(--color-text-muted)]">
+                          {build.createdAt}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => toggleBookmark(build.id)}
+                          className={`text-xs px-2 py-1 rounded transition-colors cursor-pointer ${
+                            isSaved 
+                              ? 'text-[var(--color-brand-accent)] font-semibold' 
+                              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
+                          }`}
                         >
-                          Apply to Team
-                        </Button>
-                      )}
+                          {isSaved ? '★ Saved' : '☆ Save'}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              );
-            })}
+
+                    {/* Build Title & Pitch */}
+                    <div className="space-y-1.5">
+                      <h2 className="text-lg font-bold text-[var(--color-text-primary)] hover:underline cursor-pointer" onClick={() => setCurrentView('startups')}>
+                        {build.title}
+                      </h2>
+                      <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] leading-relaxed">
+                        {build.description}
+                      </p>
+                    </div>
+
+                    {/* Tech Stack Chips */}
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {build.techStack.map(tech => (
+                        <span 
+                          key={tech} 
+                          className="px-2 py-0.5 text-[11px] font-mono rounded-[var(--radius-sm)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-[var(--color-text-secondary)]"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Metadata Row */}
+                    <div className="pt-2 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)]">
+                      <div className="flex items-center gap-4">
+                        {isShipped ? (
+                          <>
+                            <span className="font-semibold text-[var(--color-text-primary)]">Verified Shipped</span>
+                            <span>•</span>
+                            <span>Live Product</span>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-1.5">
+                              <Users className="w-3.5 h-3.5 text-[var(--color-brand-accent)]" />
+                              <span>{build.neededRoles.length} open roles</span>
+                            </div>
+                            <span>•</span>
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="w-3.5 h-3.5" />
+                              <span>{build.hoursPerWeek}</span>
+                            </div>
+                            <span>•</span>
+                            <div className="flex items-center gap-1.5">
+                              <Globe className="w-3.5 h-3.5" />
+                              <span>Remote</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => setCurrentView('startups')}
+                        >
+                          {isShipped ? 'View Details' : 'View Startup'}
+                        </Button>
+                        
+                        {isShipped ? (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => {
+                              if (build.demoUrl) {
+                                window.open(build.demoUrl, '_blank');
+                              } else {
+                                addToast('No demo URL provided yet by creator.', 'info');
+                              }
+                            }}
+                            rightIcon={<ExternalLink className="w-3.5 h-3.5" />}
+                          >
+                            Try Demo
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => setSelectedBuildForApply(build)}
+                          >
+                            Apply to Team
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </article>
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -244,39 +286,51 @@ export const HomeFeed: React.FC = () => {
               </button>
             </div>
 
-            <div className="space-y-3">
-              {builders.slice(0, 3).map(builder => (
-                <div key={builder.id} className="flex items-start justify-between gap-3 pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
-                  <div className="flex items-start gap-2.5">
-                    <img 
-                      src={builder.avatar} 
-                      alt={builder.name} 
-                      className="w-8 h-8 rounded-full object-cover shrink-0 border border-[var(--color-border)]"
-                    />
-                    <div>
-                      <div className="text-xs font-semibold text-[var(--color-text-primary)] leading-tight">
-                        {builder.name}
-                      </div>
-                      <div className="text-[11px] text-[var(--color-text-muted)] mt-0.5">
-                        {builder.headline}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-[var(--color-text-muted)]">
-                        <span className="text-[var(--color-success)]">● Available</span>
-                        <span>{builder.weeklyHours}</span>
+            {builders.length === 0 ? (
+              <div className="py-4 text-center space-y-2">
+                <p className="text-xs text-[var(--color-text-secondary)]">No other builders joined yet.</p>
+                <button
+                  onClick={() => setCurrentView('onboarding')}
+                  className="text-[11px] font-mono text-[var(--color-brand-accent)] hover:underline block mx-auto cursor-pointer"
+                >
+                  Mint your Builder Passport →
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {builders.slice(0, 3).map(builder => (
+                  <div key={builder.id} className="flex items-start justify-between gap-3 pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
+                    <div className="flex items-start gap-2.5">
+                      <img 
+                        src={builder.avatar} 
+                        alt={builder.name} 
+                        className="w-8 h-8 rounded-full object-cover shrink-0 border border-[var(--color-border)]"
+                      />
+                      <div>
+                        <div className="text-xs font-semibold text-[var(--color-text-primary)] leading-tight">
+                          {builder.name}
+                        </div>
+                        <div className="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+                          {builder.headline}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-[var(--color-text-muted)]">
+                          <span className="text-[var(--color-success)]">● Available</span>
+                          <span>{builder.weeklyHours}</span>
+                        </div>
                       </div>
                     </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs py-1 px-2.5 shrink-0"
+                      onClick={() => addToast(`Invite sent to ${builder.name}!`, 'success')}
+                    >
+                      Invite
+                    </Button>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-xs py-1 px-2.5 shrink-0"
-                    onClick={() => addToast(`Invite sent to ${builder.name}!`, 'success')}
-                  >
-                    Invite
-                  </Button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Widget 2: Build together task checklist (Matching Image 3) */}
@@ -288,14 +342,21 @@ export const HomeFeed: React.FC = () => {
               <span className="text-[10px] font-mono text-[var(--color-text-muted)]">Active Sprint</span>
             </div>
 
-            <div className="space-y-2">
-              {workspaceTasks.slice(0, 4).map(task => (
-                <div key={task.id} className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
-                  <CheckSquare className={`w-3.5 h-3.5 shrink-0 ${task.status === 'done' ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`} />
-                  <span className={task.status === 'done' ? 'line-through opacity-70' : ''}>{task.title}</span>
-                </div>
-              ))}
-            </div>
+            {workspaceTasks.length === 0 ? (
+              <div className="py-3 text-center space-y-1">
+                <p className="text-xs text-[var(--color-text-secondary)]">No active trial sprint tasks.</p>
+                <p className="text-[10px] text-[var(--color-text-muted)]">Team up with a co-founder to launch 4-day sprint goals.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {workspaceTasks.slice(0, 4).map(task => (
+                  <div key={task.id} className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+                    <CheckSquare className={`w-3.5 h-3.5 shrink-0 ${task.status === 'done' ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`} />
+                    <span className={task.status === 'done' ? 'line-through opacity-70' : ''}>{task.title}</span>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <button
               onClick={() => setCurrentView('workspace')}
@@ -319,20 +380,31 @@ export const HomeFeed: React.FC = () => {
               </button>
             </div>
 
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
-                <span>Active tasks:</span>
-                <span className="font-mono font-semibold text-[var(--color-text-primary)]">{workspaceTasks.length} tasks</span>
+            {trialBuild ? (
+              <div className="space-y-2 text-xs">
+                <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
+                  <span>Active tasks:</span>
+                  <span className="font-mono font-semibold text-[var(--color-text-primary)]">{workspaceTasks.length} tasks</span>
+                </div>
+                {trialBuild.repoUrl && (
+                  <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
+                    <span>Code repo:</span>
+                    <span className="font-mono text-[11px] text-[var(--color-brand-accent)]">{trialBuild.repoUrl.replace(/^https?:\/\//, '')}</span>
+                  </div>
+                )}
+                {trialBuild.demoUrl && (
+                  <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
+                    <span>Preview:</span>
+                    <span className="font-mono text-[11px] text-[var(--color-success)]">{trialBuild.demoUrl.replace(/^https?:\/\//, '')}</span>
+                  </div>
+                )}
               </div>
-              <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
-                <span>Code repo:</span>
-                <span className="font-mono text-[11px] text-[var(--color-brand-accent)]">github.com/campus-ai</span>
+            ) : (
+              <div className="py-2 text-center text-xs text-[var(--color-text-muted)] space-y-1">
+                <p>No active trial sprint running.</p>
+                <p className="text-[11px]">Join or post a build to launch a 4-day trial.</p>
               </div>
-              <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
-                <span>Preview deployment:</span>
-                <span className="font-mono text-[11px] text-[var(--color-success)]">campus-ai.vercel.app</span>
-              </div>
-            </div>
+            )}
 
             {/* Daily shipping prompt (PRD WORK-03) */}
             <div 
@@ -411,8 +483,7 @@ export const HomeFeed: React.FC = () => {
             </label>
             <input
               type="url"
-              defaultValue="https://github.com/lakshit"
-              placeholder="https://..."
+              placeholder="https://github.com/your-username or portfolio link"
               className="w-full text-xs p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
             />
           </div>

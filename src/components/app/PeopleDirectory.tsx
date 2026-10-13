@@ -3,7 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { Badge } from '../common/Badge';
 import { Button } from '../common/Button';
 import { Drawer } from '../common/Drawer';
-import { Search, Trophy } from 'lucide-react';
+import { Search, Trophy, Users, Sparkles } from 'lucide-react';
 import type { UserProfile } from '../../types';
 
 export const PeopleDirectory: React.FC = () => {
@@ -182,11 +182,37 @@ export const PeopleDirectory: React.FC = () => {
       </div>
 
       {filteredBuilders.length === 0 && (
-        <div className="p-12 text-center rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-xs text-[var(--color-text-muted)] space-y-2">
-          <p>No builders matching "{searchFilter}".</p>
-          <Button variant="outline" size="sm" onClick={() => { setSearchFilter(''); setSelectedRole('all'); }}>
-            Reset Filters
-          </Button>
+        <div className="p-12 text-center rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] mx-auto flex items-center justify-center">
+            <Users className="w-6 h-6" />
+          </div>
+          {builders.length === 0 ? (
+            <div className="space-y-2 max-w-md mx-auto">
+              <h3 className="text-base font-bold text-[var(--color-text-primary)]">
+                Talent Radar Ready for Real Builders
+              </h3>
+              <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                ShipWith is 100% genuine — no AI-generated fake personas or inflated follower counts. Complete the questionnaire to mint your Builder Passport and appear on the discovery radar!
+              </p>
+              <div className="pt-2">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setCurrentView('onboarding')}
+                  rightIcon={<Sparkles className="w-4 h-4" />}
+                >
+                  Mint Your Builder Passport
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-xs text-[var(--color-text-muted)]">No builders matching "{searchFilter}".</p>
+              <Button variant="outline" size="sm" onClick={() => { setSearchFilter(''); setSelectedRole('all'); }}>
+                Reset Filters
+              </Button>
+            </div>
+          )}
         </div>
       )}
 

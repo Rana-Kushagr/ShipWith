@@ -73,6 +73,7 @@ export interface UserProfile {
     github?: string;
     figma?: string;
     liveDemo?: string;
+    website?: string;
     x?: string;
     portfolio?: string;
   };
@@ -162,6 +163,9 @@ export interface TrialBuild {
   startDate: string;
   endDate: string;
   status: 'active' | 'decision_pending' | 'continued' | 'ended';
+  repoUrl?: string;
+  demoUrl?: string;
+  figmaUrl?: string;
   participants: {
     userId: string;
     name: string;

@@ -999,7 +999,7 @@ export const OnboardingWizard: React.FC = () => {
               <div className="p-3 rounded-[var(--radius-md)] bg-[var(--color-brand-accent-subtle)] border border-[var(--color-brand-accent)]/20 flex items-center gap-2.5 text-xs text-[var(--color-text-primary)]">
                 <Sparkles className="w-4 h-4 text-[var(--color-brand-accent)] shrink-0" />
                 <span>
-                  <strong>24 Startups</strong> and <strong>52 Builders</strong> currently match your exact multi-stack abilities & availability.
+                  Your Builder Passport and execution parameters are calibrated and ready for co-founder matchmaking.
                 </span>
               </div>
             </div>

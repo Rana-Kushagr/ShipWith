@@ -10,21 +10,19 @@ import {
   Layers, 
   Send, 
   Plus, 
-  Sparkles
+  Sparkles,
+  Rocket
 } from 'lucide-react';
 
 export const WorkspaceView: React.FC = () => {
-  const { workspaceTasks, trialBuild, addToast, currentUser } = useApp();
+  const { workspaceTasks, trialBuild, addToast, currentUser, setCurrentView } = useApp();
   const [tasks, setTasks] = useState(workspaceTasks);
   const [activeTab, setActiveTab] = useState<'tasks' | 'team' | 'links' | 'chat'>('tasks');
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [newTaskOwner, setNewTaskOwner] = useState('Lakshit Rana');
+  const [newTaskOwner, setNewTaskOwner] = useState(currentUser.name);
   const [dailyStandupText, setDailyStandupText] = useState('');
-  const [messages, setMessages] = useState([
-    { id: '1', sender: 'Arjun Verma', text: 'Hey Lakshit! Streaming OpenAI route is now tested on local branch.', time: '10:30 AM' },
-    { id: '2', sender: 'Lakshit Rana', text: 'Awesome, working on the responsive card flip micro-interactions in Tailwind.', time: '10:45 AM' }
-  ]);
+  const [messages, setMessages] = useState<{ id: string; sender: string; text: string; time: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
 
   const toggleTaskStatus = (id: string) => {
@@ -71,6 +69,43 @@ export const WorkspaceView: React.FC = () => {
     addToast('Daily standup recorded! Team progress updated.', 'success');
     setDailyStandupText('');
   };
+
+  if (!trialBuild) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-left space-y-6">
+        <div className="p-10 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-4 shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] mx-auto flex items-center justify-center">
+            <Layers className="w-7 h-7" />
+          </div>
+          <div className="space-y-1.5 max-w-md mx-auto">
+            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
+              No Active Trial Sprint
+            </h2>
+            <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+              A 4-Day Trial Sprint is ShipWith's core mechanism for founders and builders to test real working compatibility before making long-term equity or co-founder commitments.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => setCurrentView('startups')}
+              leftIcon={<Rocket className="w-4 h-4" />}
+            >
+              Explore Startups & Apply
+            </Button>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => setCurrentView('people')}
+            >
+              Find Potential Teammates
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 text-left space-y-6">
@@ -246,15 +281,22 @@ export const WorkspaceView: React.FC = () => {
       {activeTab === 'chat' && (
         <div className="max-w-2xl mx-auto p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-4">
           <div className="h-64 overflow-y-auto space-y-3 p-2">
-            {messages.map(m => (
-              <div key={m.id} className="p-3 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-xs space-y-1">
-                <div className="flex items-center justify-between text-[11px] font-mono text-[var(--color-text-muted)]">
-                  <span className="font-bold text-[var(--color-text-primary)]">{m.sender}</span>
-                  <span>{m.time}</span>
-                </div>
-                <div className="text-[var(--color-text-secondary)]">{m.text}</div>
+            {messages.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center text-center text-xs text-[var(--color-text-muted)] space-y-1">
+                <p className="font-semibold text-[var(--color-text-primary)]">Sprint Channel</p>
+                <p>No messages yet. Send an update to coordinate with your sprint teammate.</p>
               </div>
-            ))}
+            ) : (
+              messages.map(m => (
+                <div key={m.id} className="p-3 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-xs space-y-1">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-[var(--color-text-muted)]">
+                    <span className="font-bold text-[var(--color-text-primary)]">{m.sender}</span>
+                    <span>{m.time}</span>
+                  </div>
+                  <div className="text-[var(--color-text-secondary)]">{m.text}</div>
+                </div>
+              ))
+            )}
           </div>
 
           <form onSubmit={handleSendChat} className="flex gap-2 pt-2 border-t border-[var(--color-border)]">
@@ -291,7 +333,7 @@ export const WorkspaceView: React.FC = () => {
       {activeTab === 'links' && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <a
-            href="https://github.com/campus-ai"
+            href={trialBuild.repoUrl || 'https://github.com'}
             target="_blank"
             rel="noreferrer"
             className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-strong)] transition-all flex items-center gap-3 text-xs"
@@ -299,12 +341,12 @@ export const WorkspaceView: React.FC = () => {
             <Code2 className="w-5 h-5 text-[var(--color-text-primary)]" />
             <div>
               <div className="font-bold text-[var(--color-text-primary)]">GitHub Repository</div>
-              <div className="text-[11px] text-[var(--color-text-muted)] font-mono">github.com/campus-ai</div>
+              <div className="text-[11px] text-[var(--color-text-muted)] font-mono">{trialBuild.repoUrl || 'Connected via sprint'}</div>
             </div>
           </a>
 
           <a
-            href="https://figma.com/@campus-ai"
+            href={trialBuild.figmaUrl || '#'}
             target="_blank"
             rel="noreferrer"
             className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-strong)] transition-all flex items-center gap-3 text-xs"
@@ -312,20 +354,20 @@ export const WorkspaceView: React.FC = () => {
             <Layers className="w-5 h-5 text-[var(--color-text-primary)]" />
             <div>
               <div className="font-bold text-[var(--color-text-primary)]">Figma Design Specs</div>
-              <div className="text-[11px] text-[var(--color-text-muted)] font-mono">figma.com/@campus-ai</div>
+              <div className="text-[11px] text-[var(--color-text-muted)] font-mono">{trialBuild.figmaUrl || 'Design deliverables'}</div>
             </div>
           </a>
 
           <a
-            href="https://campus-ai.vercel.app"
+            href={trialBuild.demoUrl || '#'}
             target="_blank"
             rel="noreferrer"
             className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-strong)] transition-all flex items-center gap-3 text-xs"
           >
             <ExternalLink className="w-5 h-5 text-[var(--color-brand-accent)]" />
             <div>
-              <div className="font-bold text-[var(--color-text-primary)]">Vercel Live Preview</div>
-              <div className="text-[11px] text-[var(--color-text-muted)] font-mono">campus-ai.vercel.app</div>
+              <div className="font-bold text-[var(--color-text-primary)]">Live Demo Preview</div>
+              <div className="text-[11px] text-[var(--color-text-muted)] font-mono">{trialBuild.demoUrl || 'Staging URL'}</div>
             </div>
           </a>
         </div>
@@ -362,8 +404,10 @@ export const WorkspaceView: React.FC = () => {
               onChange={e => setNewTaskOwner(e.target.value)}
               className="w-full text-xs p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
             >
-              <option value="Lakshit Rana">Lakshit Rana (You)</option>
-              <option value="Arjun Verma">Arjun Verma</option>
+              <option value={currentUser.name}>{currentUser.name} (You)</option>
+              {trialBuild.participants.filter(p => p.name !== currentUser.name).map(p => (
+                <option key={p.userId} value={p.name}>{p.name}</option>
+              ))}
             </select>
           </div>
 

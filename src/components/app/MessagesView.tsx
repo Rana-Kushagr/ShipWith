@@ -1,29 +1,51 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../common/Button';
-import { Send, Rocket } from 'lucide-react';
+import { Send, Rocket, MessageSquare } from 'lucide-react';
+import type { UserProfile } from '../../types';
 
 export const MessagesView: React.FC = () => {
-  const { builders, currentUser } = useApp();
-  const [selectedUser, setSelectedUser] = useState(builders[0]);
-  const [threads, setThreads] = useState([
-    {
-      userId: builders[0].id,
-      messages: [
-        { id: '1', sender: builders[0].name, text: 'Hey Lakshit, saw your product design profile! Are you available to team up on Campus AI Tutor?', time: '11:00 AM' },
-        { id: '2', sender: currentUser.name, text: 'Hi Arjun! Yes, I love the STEM doubt solver concept. How are you approaching latency for the local flashcards?', time: '11:05 AM' },
-        { id: '3', sender: builders[0].name, text: 'We are caching vector embeddings in Supabase so response times stay under 200ms.', time: '11:12 AM' }
-      ]
-    },
-    {
-      userId: builders[1].id,
-      messages: [
-        { id: '1', sender: builders[1].name, text: 'Hi Lakshit! Loved your micro-interactions demo.', time: 'Yesterday' }
-      ]
-    }
-  ]);
-
+  const { builders, currentUser, setCurrentView } = useApp();
+  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(builders[0] || null);
+  const [threads, setThreads] = useState<{ userId: string; messages: { id: string; sender: string; text: string; time: string }[] }[]>([]);
   const [inputMessage, setInputMessage] = useState('');
+
+  if (builders.length === 0 || !selectedUser) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-left space-y-6">
+        <div className="p-10 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-4 shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] mx-auto flex items-center justify-center">
+            <MessageSquare className="w-7 h-7" />
+          </div>
+          <div className="space-y-1.5 max-w-md mx-auto">
+            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
+              No Direct Messages Yet
+            </h2>
+            <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+              When genuine founders or builders connect with you from the talent radar, apply to your builds, or initiate trial sprints, direct conversations will appear here.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => setCurrentView('startups')}
+              leftIcon={<Rocket className="w-4 h-4" />}
+            >
+              Explore Startups & Apply
+            </Button>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => setCurrentView('people')}
+            >
+              Discover Builders
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const currentThread = threads.find(t => t.userId === selectedUser.id) || { userId: selectedUser.id, messages: [] };
 
@@ -115,7 +137,7 @@ export const MessagesView: React.FC = () => {
             {/* Context Badge */}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-[11px] text-[var(--color-text-muted)] font-mono">
               <Rocket className="w-3.5 h-3.5 text-[var(--color-brand-accent)]" />
-              <span>Context: Campus AI Tutor Trial</span>
+              <span>Context: Direct Collaboration</span>
             </div>
           </div>
 

@@ -39,7 +39,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
     { id: 'people', label: 'People', icon: Users },
     { id: 'feed', label: 'Feed', icon: Rss },
     { id: 'workspace', label: 'Workspace', icon: FolderKanban },
-    { id: 'messages', label: 'Messages', icon: MessageSquare, badge: 3 },
+    { id: 'messages', label: 'Messages', icon: MessageSquare },
     { id: 'profile', label: 'Profile', icon: User }
   ];
 

@@ -21,19 +21,19 @@ export const ProductWalkthroughPlayer: React.FC = () => {
           <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
             <div className="flex items-start justify-between">
               <div>
-                <div className="text-sm font-bold text-[var(--color-text-primary)]">Campus AI Tutor</div>
-                <div className="text-xs text-[var(--color-text-secondary)]">AI-native flashcards and STEM problem solver for students.</div>
+                <div className="text-sm font-bold text-[var(--color-text-primary)]">Developer Automation Platform</div>
+                <div className="text-xs text-[var(--color-text-secondary)]">Open-source developer workflow tools and CLI utilities.</div>
               </div>
               <Badge variant="success" size="sm">Building MVP</Badge>
             </div>
             <div className="flex flex-wrap gap-1.5">
               <span className="text-[11px] font-mono px-2 py-0.5 bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)] rounded">React</span>
               <span className="text-[11px] font-mono px-2 py-0.5 bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)] rounded">Next.js</span>
-              <span className="text-[11px] font-mono px-2 py-0.5 bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)] rounded">FastAPI</span>
+              <span className="text-[11px] font-mono px-2 py-0.5 bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)] rounded">TypeScript</span>
             </div>
             <div className="pt-2 border-t border-[var(--color-border)] flex items-center justify-between text-xs">
-              <span className="text-[var(--color-text-muted)]">Seeking: <strong className="text-[var(--color-text-primary)]">Frontend Lead</strong> (6h/wk)</span>
-              <span className="text-[var(--color-brand-accent)] font-mono font-semibold">94% Compatibility</span>
+              <span className="text-[var(--color-text-muted)]">Seeking: <strong className="text-[var(--color-text-primary)]">Frontend Lead</strong> (10h/wk)</span>
+              <span className="text-[var(--color-brand-accent)] font-mono font-semibold">Match Alignment</span>
             </div>
           </div>
         </div>
@@ -52,14 +52,14 @@ export const ProductWalkthroughPlayer: React.FC = () => {
           <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-2.5">
             <div className="text-xs text-[var(--color-text-muted)]">Applying for: <strong className="text-[var(--color-text-primary)]">Frontend Engineer</strong></div>
             <div className="p-3 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-xs text-[var(--color-text-primary)]">
-              "Hey Arjun, loved your demo. I've built 2 Next.js apps with Supabase. Here is my recent vector search tool repo."
+              Application note: "Reviewing your sprint roadmap. Linking repository demonstrating Next.js architecture and API pipeline implementation."
             </div>
             <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-strong)] flex items-center justify-between text-xs font-mono">
               <div className="flex items-center gap-2">
                 <GitFork className="w-3.5 h-3.5 text-[var(--color-brand-accent)]" />
-                <span>github.com/lakshit/vector-ui</span>
+                <span>github.com/developer/workflow-tools</span>
               </div>
-              <span className="text-[var(--color-success)] text-[11px]">840 ★ Verified</span>
+              <span className="text-[var(--color-success)] text-[11px]">Verified Proof ✓</span>
             </div>
             <button className="w-full py-2 bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] rounded-[var(--radius-md)] text-xs font-semibold cursor-pointer">
               Send Pitch with Proof →
@@ -80,21 +80,21 @@ export const ProductWalkthroughPlayer: React.FC = () => {
           </div>
           <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[var(--color-text-primary)]">Trial Objective: Flashcard MVP</span>
-              <span className="text-[11px] font-mono text-[var(--color-text-muted)]">Oct 14 – Oct 19</span>
+              <span className="text-xs font-bold text-[var(--color-text-primary)]">Trial Objective: Scoped Micro-MVP</span>
+              <span className="text-[11px] font-mono text-[var(--color-text-muted)]">Active Sprint</span>
             </div>
             <div className="space-y-1.5 text-xs">
               <div className="flex items-center gap-2 text-[var(--color-text-secondary)]">
                 <CheckCircle2 className="w-3.5 h-3.5 text-[var(--color-success)]" />
-                <span className="line-through">Setup repository & Tailwind tokens</span>
+                <span className="line-through">Setup repository & design tokens</span>
               </div>
               <div className="flex items-center gap-2 text-[var(--color-text-secondary)]">
                 <CheckCircle2 className="w-3.5 h-3.5 text-[var(--color-success)]" />
-                <span className="line-through">Integrate streaming doubt solver</span>
+                <span className="line-through">Integrate core API endpoint</span>
               </div>
               <div className="flex items-center gap-2 font-medium text-[var(--color-text-primary)]">
                 <div className="w-3.5 h-3.5 rounded-full border-2 border-[var(--color-brand-accent)]" />
-                <span>Verify student latency on Vercel preview</span>
+                <span>Verify production latency on preview deployment</span>
               </div>
             </div>
             <div className="pt-2 border-t border-[var(--color-border)] flex gap-2">
@@ -142,7 +142,7 @@ export const ProductWalkthroughPlayer: React.FC = () => {
               </div>
             </div>
             <div className="text-[11px] text-[var(--color-text-secondary)] bg-[var(--color-surface-subtle)] p-2 rounded">
-              Verified Contributor: <strong className="text-[var(--color-text-primary)]">Frontend Lead</strong> on <em>Campus AI Tutor</em> (1.2k users).
+              Verified Contributor: <strong className="text-[var(--color-text-primary)]">Frontend Lead</strong> on <em>Open-Source Collaboration Sprint</em>.
             </div>
           </div>
         </div>

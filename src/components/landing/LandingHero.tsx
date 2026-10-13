@@ -119,19 +119,19 @@ export const LandingHero: React.FC = () => {
               </Button>
             </div>
 
-            {/* Trust Micro-Metrics (Social Proof Bar) */}
+            {/* Protocol Architecture Highlights */}
             <div className="pt-4 border-t border-[var(--color-border-subtle)] grid grid-cols-3 gap-4">
               <div>
-                <div className="text-lg font-bold font-mono text-[var(--color-text-primary)]">1,400+</div>
-                <div className="text-[11px] text-[var(--color-text-muted)]">Verified Builds</div>
+                <div className="text-lg font-bold font-mono text-[var(--color-text-primary)]">4 Days</div>
+                <div className="text-[11px] text-[var(--color-text-muted)]">Trial Sprint Scope</div>
               </div>
               <div>
-                <div className="text-lg font-bold font-mono text-[var(--color-success)]">94.2%</div>
-                <div className="text-[11px] text-[var(--color-text-muted)]">Trial Completion</div>
+                <div className="text-lg font-bold font-mono text-[var(--color-success)]">100%</div>
+                <div className="text-[11px] text-[var(--color-text-muted)]">Verified Code Output</div>
               </div>
               <div>
                 <div className="text-lg font-bold font-mono text-[var(--color-brand-accent)]">0%</div>
-                <div className="text-[11px] text-[var(--color-text-muted)]">Resume Fluff</div>
+                <div className="text-[11px] text-[var(--color-text-muted)]">Resume / CV Fluff</div>
               </div>
             </div>
           </div>
@@ -166,7 +166,7 @@ export const LandingHero: React.FC = () => {
                   <CheckCircle2 className="w-3.5 h-3.5 text-[var(--color-success)]" />
                 </div>
                 <div className="text-[11px] text-[var(--color-text-muted)]">
-                  Campus AI MVP • Shipped to Prod
+                  Trial Sprint • Verified Deliverable
                 </div>
               </div>
             </div>
@@ -246,7 +246,7 @@ export const LandingHero: React.FC = () => {
                         </div>
                       </div>
                       <span className="px-2 py-0.5 bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)]/20 rounded-full text-[10px] font-mono font-medium">
-                        Live: 420 Online
+                        Real-Time Radar
                       </span>
                     </div>
 
@@ -263,19 +263,17 @@ export const LandingHero: React.FC = () => {
                     <div className="p-3.5 bg-[var(--color-surface-subtle)] border border-[var(--color-border)] rounded-xl space-y-3 hover:border-[var(--color-border-strong)] transition-all">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                          <img 
-                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" 
-                            alt="Arjun"
-                            className="w-10 h-10 rounded-full object-cover border border-[var(--color-border)]"
-                          />
+                          <div className="w-10 h-10 rounded-full bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] flex items-center justify-center font-mono font-bold text-xs border border-[var(--color-brand-accent)]/30">
+                            ENG
+                          </div>
                           <div>
                             <div className="text-xs font-bold text-[var(--color-text-primary)] flex items-center gap-1.5">
-                              Arjun Verma
+                              Engineering Lead Candidate
                               <span className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] border border-[var(--color-brand-accent)]/20 font-medium">
-                                98% Match
+                                Passport Active
                               </span>
                             </div>
-                            <div className="text-[11px] text-[var(--color-text-muted)]">Full-Stack Maker • Available 15h/wk</div>
+                            <div className="text-[11px] text-[var(--color-text-muted)]">Full-Stack Builder • Available 15h/wk • Async Aligned</div>
                           </div>
                         </div>
                         <span className="text-xs font-mono font-semibold text-[var(--color-success)] bg-[var(--color-success-subtle)] px-2 py-1 rounded-md border border-[var(--color-success)]/20">
@@ -287,7 +285,7 @@ export const LandingHero: React.FC = () => {
                         <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] font-mono">React 19</span>
                         <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] font-mono">TypeScript</span>
                         <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] font-mono">FastAPI</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] font-mono">GMT+5:30</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] font-mono">Verified GitHub</span>
                       </div>
                     </div>
                   </div>
@@ -315,13 +313,11 @@ export const LandingHero: React.FC = () => {
                     <div className="p-4 bg-[var(--color-surface-subtle)] border border-[var(--color-border)] rounded-xl grid grid-cols-7 gap-2 items-center text-center">
                       {/* Builder 1 */}
                       <div className="col-span-3 space-y-1">
-                        <img 
-                          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" 
-                          alt="Arjun"
-                          className="w-11 h-11 rounded-full mx-auto object-cover border-2 border-[var(--color-brand-accent)]"
-                        />
-                        <div className="text-xs font-bold text-[var(--color-text-primary)]">Arjun (Engineering)</div>
-                        <div className="text-[10px] text-[var(--color-text-muted)]">Full-Stack / Vite / AI</div>
+                        <div className="w-11 h-11 rounded-full mx-auto bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] flex items-center justify-center font-mono font-bold text-xs border-2 border-[var(--color-brand-accent)]">
+                          ENG
+                        </div>
+                        <div className="text-xs font-bold text-[var(--color-text-primary)]">Engineering Partner</div>
+                        <div className="text-[10px] text-[var(--color-text-muted)]">Full-Stack / Vite / APIs</div>
                       </div>
 
                       {/* Connection Pulse */}
@@ -334,12 +330,10 @@ export const LandingHero: React.FC = () => {
 
                       {/* Builder 2 */}
                       <div className="col-span-3 space-y-1">
-                        <img 
-                          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" 
-                          alt="Priya"
-                          className="w-11 h-11 rounded-full mx-auto object-cover border-2 border-[var(--color-success)]"
-                        />
-                        <div className="text-xs font-bold text-[var(--color-text-primary)]">Priya (Product & Design)</div>
+                        <div className="w-11 h-11 rounded-full mx-auto bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] flex items-center justify-center font-mono font-bold text-xs border-2 border-[var(--color-success)]">
+                          DES
+                        </div>
+                        <div className="text-xs font-bold text-[var(--color-text-primary)]">Design & Product Lead</div>
                         <div className="text-[10px] text-[var(--color-text-muted)]">UI/UX / Growth / MVP</div>
                       </div>
                     </div>
@@ -392,7 +386,7 @@ export const LandingHero: React.FC = () => {
                         </div>
                         <div className="p-2 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] shadow-2xs space-y-1">
                           <div className="text-xs font-semibold text-[var(--color-text-primary)]">Connect Stripe Checkout</div>
-                          <div className="text-[10px] text-[var(--color-text-muted)]">Assigned: Arjun</div>
+                          <div className="text-[10px] text-[var(--color-text-muted)]">Assigned: Engineering Partner</div>
                         </div>
                       </div>
 
@@ -434,7 +428,7 @@ export const LandingHero: React.FC = () => {
                         </div>
                       </div>
                       <span className="text-xs font-bold text-[var(--color-success)] bg-[var(--color-success-subtle)] px-2 py-0.5 rounded border border-[var(--color-success)]/20">
-                        ⭐ 5.0 Mutual Rating
+                        Verified Mutual Review
                       </span>
                     </div>
 
@@ -442,7 +436,7 @@ export const LandingHero: React.FC = () => {
                     <div className="p-4 bg-gradient-to-br from-[var(--color-surface-subtle)] to-[var(--color-brand-accent-subtle)]/30 border border-[var(--color-border)] rounded-xl space-y-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-xs font-extrabold text-[var(--color-text-primary)]">Campus AI Tutor MVP</div>
+                          <div className="text-xs font-extrabold text-[var(--color-text-primary)]">Trial Sprint Deliverable</div>
                           <div className="text-[11px] text-[var(--color-text-secondary)]">4-Day Trial Sprint Successfully Completed</div>
                         </div>
                         <span className="px-2 py-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-md text-xs font-mono font-bold text-[var(--color-text-primary)] flex items-center gap-1 shadow-2xs">
@@ -451,13 +445,14 @@ export const LandingHero: React.FC = () => {
                         </span>
                       </div>
 
-                      <div className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-surface)] p-2.5 rounded-lg border border-[var(--color-border)] italic">
-                        "Arjun delivered clean React components ahead of schedule. Great communicator and sharp thinker. Continuing as co-founders!"
+                      <div className="text-xs text-[var(--color-text-secondary)] bg-[var(--color-surface)] p-2.5 rounded-lg border border-[var(--color-border)] flex items-center justify-between font-mono">
+                        <span>Sprint Outcome: Scoped milestone shipped</span>
+                        <span className="text-[var(--color-success)] font-semibold">Mutual Agreement ✓</span>
                       </div>
 
                       <div className="flex items-center justify-between pt-1 text-[11px] text-[var(--color-text-muted)]">
                         <span className="flex items-center gap-1 font-mono text-[var(--color-brand-accent)]">
-                          <ExternalLink className="w-3 h-3 text-[var(--color-brand-accent)]" /> campusai.dev
+                          <ExternalLink className="w-3 h-3 text-[var(--color-brand-accent)]" /> live-preview.shipwith.dev
                         </span>
                         <span className="text-[var(--color-success)] font-semibold">Decision: Co-Founder Partnership Confirmed ✅</span>
                       </div>
