@@ -1,535 +1,668 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../common/Button';
-import { ArrowLeft, ArrowRight, MessageSquare, Check, Rocket, Users, Compass, Globe } from 'lucide-react';
-import type { CommitmentOption } from '../../types';
+import { 
+  ArrowLeft, 
+  Check, 
+  Rocket, 
+  Users, 
+  Lightbulb, 
+  Terminal, 
+  Cpu, 
+  Palette, 
+  TrendingUp, 
+  Briefcase, 
+  Zap, 
+  Clock, 
+  ShieldCheck, 
+  CheckCircle2,
+  Sparkles,
+  ArrowRight
+} from 'lucide-react';
 
 export const OnboardingWizard: React.FC = () => {
   const { 
     onboardingState, 
     updateOnboarding, 
     completeOnboarding, 
-    setCurrentView,
-    setIsFeedbackOpen
+    setCurrentView 
   } = useApp();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [selectedInStep, setSelectedInStep] = useState<string | null>(null);
   const totalSteps = 7;
 
-  // Question 1: How do you want to start?
-  const objectives = [
-    { id: 'Join a startup', label: 'Join a startup', desc: 'Find active teams and contribute your skills.' },
-    { id: 'Find people for mine', label: 'Find people for mine', desc: 'Recruit co-founders and builders for your project.' },
-    { id: 'Start together', label: 'Start together', desc: 'Brainstorm ideas and team up from day zero.' }
-  ];
+  // Auto-advance helper with visual feedback delay
+  const handleAutoSelect = (updater: () => void, valueKey: string) => {
+    setSelectedInStep(valueKey);
+    updater();
 
-  // Question 2: What are you most into?
-  const interests = [
-    'Entrepreneurship', 'Tech', 'AI', 'Marketing', 
-    'E-commerce', 'Trading & Investing', 'Content', 'Still exploring'
-  ];
-
-  // Question 3: What can you help with? (Up to 3)
-  const strengthsList = [
-    'Tech', 'Design', 'Marketing & Growth', 'Sales', 
-    'Content', 'E-commerce', 'Strategy', 'Operations'
-  ];
-
-  // Question 4: Where are you right now?
-  const stages = [
-    { id: 'Just starting', label: 'Just starting', desc: 'Looking for direction and first teammates.' },
-    { id: 'Learning', label: 'Learning', desc: 'Building skills and eager for real experience.' },
-    { id: 'Building something', label: 'Building something', desc: 'Have an MVP or active prototype in progress.' },
-    { id: 'Already running something', label: 'Already running something', desc: 'Live project with users or revenue.' },
-    { id: 'Experienced', label: 'Experienced', desc: 'Seasoned founder or senior specialist.' }
-  ];
-
-  // Question 6: Who do you want to meet? (Up to 3)
-  const collaboratorsList = [
-    'Co-founder', 'Teammates', 'Startup founders', 'Developer', 
-    'Designer', 'Marketer', 'Business partner', 'Just exploring'
-  ];
-
-  // Question 7: How much time can you give?
-  const timeCommitments: CommitmentOption[] = [
-    '< 5 hrs/week', '5–10 hrs/week', '10–20 hrs/week', '20+ hrs/week', 'Full-time'
-  ];
-
-  const handleNext = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(curr => curr + 1);
-    } else {
-      setCurrentStep(8); // Completion screen
-    }
+    // 220ms smooth micro-delay for user feedback before sliding to next question
+    setTimeout(() => {
+      setSelectedInStep(null);
+      if (currentStep < totalSteps) {
+        setCurrentStep(prev => prev + 1);
+      } else {
+        setCurrentStep(8); // Passport Review Screen
+      }
+    }, 220);
   };
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep(curr => curr - 1);
+      setCurrentStep(prev => prev - 1);
+      setSelectedInStep(null);
+    } else {
+      setCurrentView('landing');
     }
   };
 
-  // Toggle helpers for multi-select (max 3)
-  const toggleStrength = (item: string) => {
-    const current = onboardingState.strengths;
-    if (current.includes(item)) {
-      updateOnboarding({ strengths: current.filter(x => x !== item) });
-    } else if (current.length < 3) {
-      updateOnboarding({ strengths: [...current, item] });
-    }
-  };
+  // 1. Objectives
+  const objectives = [
+    {
+      id: 'Recruit for startup',
+      title: 'Recruit builders & co-founders for my startup',
+      desc: 'I have an active idea or prototype and need dedicated creators.',
+      icon: Rocket,
+    },
+    {
+      id: 'Join active team',
+      title: 'Join an active team or startup as a builder',
+      desc: 'I want to contribute my craft to high-potential products.',
+      icon: Users,
+    },
+    {
+      id: 'Find co-founder',
+      title: 'Find a co-founder to brainstorm & build from day zero',
+      desc: 'Let’s explore ideas, validate problems, and build an MVP together.',
+      icon: Lightbulb,
+    },
+  ];
 
-  const toggleCollaborator = (item: string) => {
-    const current = onboardingState.desiredCollaborators;
-    if (current.includes(item)) {
-      updateOnboarding({ desiredCollaborators: current.filter(x => x !== item) });
-    } else if (current.length < 3) {
-      updateOnboarding({ desiredCollaborators: [...current, item] });
-    }
-  };
+  // 2. Primary Superpower & Role
+  const roles = [
+    {
+      id: 'Full-Stack Engineer',
+      title: 'Full-Stack / Frontend / Backend Engineer',
+      desc: 'Architecting scalable web applications, APIs, and modern frontends.',
+      icon: Terminal,
+    },
+    {
+      id: 'AI & LLM Engineer',
+      title: 'AI / ML & LLM Application Engineer',
+      desc: 'Prompt engineering, agent workflows, RAG pipelines, and model fine-tuning.',
+      icon: Cpu,
+    },
+    {
+      id: 'UI/UX Product Designer',
+      title: 'UI/UX & Product Designer',
+      desc: 'Design systems, high-fidelity prototypes, user flows, and aesthetic polish.',
+      icon: Palette,
+    },
+    {
+      id: 'Growth & Distribution Lead',
+      title: 'Growth, Marketing & Distribution Lead',
+      desc: 'GTM execution, cold outreach, community building, and viral acquisition.',
+      icon: TrendingUp,
+    },
+    {
+      id: 'Technical Product Co-Founder',
+      title: 'Product Manager & Technical Co-Founder',
+      desc: 'Roadmaps, customer discovery, scoping MVPs, and business operations.',
+      icon: Briefcase,
+    },
+  ];
+
+  // 3. Primary Tech Stack / Toolkit
+  const stacks = [
+    { id: 'Next.js / React / TypeScript', title: 'React 19 / Next.js / TypeScript', desc: 'Modern reactive web apps and server components.' },
+    { id: 'Python / FastAPI / AI', title: 'Python / FastAPI / PyTorch / LLMs', desc: 'AI backends, vector embeddings, and data pipelines.' },
+    { id: 'Mobile / Flutter / React Native', title: 'Mobile (Flutter / React Native / Swift)', desc: 'Cross-platform or native iOS/Android applications.' },
+    { id: 'Node.js / Go / PostgreSQL', title: 'Node.js / Go / Rust / PostgreSQL', desc: 'High-performance microservices and database backends.' },
+    { id: 'Figma / Tailwind CSS', title: 'Figma / Tailwind CSS / Design Systems', desc: 'World-class visual craft and component libraries.' },
+    { id: 'Full-Stack Generalist', title: 'Full-Stack Generalist (Fast Adaptability)', desc: 'Picks up whatever tool is best for shipping the product.' },
+  ];
+
+  // 4. Project Stage
+  const stages = [
+    { id: 'Idea Stage', title: 'Idea Stage', desc: 'Validating concepts and looking for a day-zero partner.' },
+    { id: 'Building MVP', title: 'Building Prototype / MVP', desc: 'Active coding sprint to reach our first public release.' },
+    { id: 'Live in Production', title: 'Live in Production', desc: 'Have active users or revenue and scaling team capacity.' },
+    { id: 'Open-Ended Explorer', title: 'Open to any exciting high-potential build', desc: 'Ready to jump into the most promising problem space.' },
+  ];
+
+  // 5. Weekly Time Commitment
+  const commitments = [
+    { id: '5–10 hrs/week', title: '5–10 hours / week', desc: 'Evenings & weekends side sprint.' },
+    { id: '10–20 hrs/week', title: '10–20 hours / week', desc: 'Serious dedication with consistent daily progress.' },
+    { id: '20+ hrs/week', title: '20–35 hours / week', desc: 'Heavy technical commitment and fast iterations.' },
+    { id: 'Full-time', title: '40+ hours / week (Full-time)', desc: 'All-in co-founder mode seeking venture scale.' },
+  ];
+
+  // 6. 4-Day Trial Sprint Protocol
+  const sprintProtocols = [
+    { 
+      id: 'Agreed 4-Day Trial', 
+      title: 'Yes, 100%! Ready to build a 4-day scoped test MVP', 
+      desc: 'Verify real work habits, code quality, and mutual communication before equity discussions.' 
+    },
+    { 
+      id: 'Flexible Async Trial', 
+      title: 'Yes, but with flexible asynchronous milestones', 
+      desc: 'Collaborate asynchronously with scoped PR deliverables and milestone check-ins.' 
+    },
+  ];
+
+  // 7. Ideal Teammate
+  const teammates = [
+    { id: 'Technical Engineer', title: 'A sharp technical engineer who writes clean code', desc: 'Builds reliable systems and moves fast.' },
+    { id: 'Product Designer', title: 'A product designer who creates world-class UI/UX', desc: 'Transforms rough ideas into intuitive user delight.' },
+    { id: 'Growth Lead', title: 'A growth & distribution leader who gets users', desc: 'Knows how to acquire initial customers and validate demand.' },
+    { id: 'Domain Visionary', title: 'A visionary co-founder with deep domain expertise', desc: 'Understands the problem space and customer pain intimately.' },
+  ];
+
+  const progressPercentage = Math.round((currentStep / totalSteps) * 100);
 
   return (
-    <div className="min-h-screen bg-[var(--color-canvas)] flex flex-col justify-between p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-[var(--color-canvas)] text-[var(--color-text-primary)] flex flex-col justify-between p-4 sm:p-6 md:p-8 transition-colors duration-200">
+      
       {/* Top Header */}
-      <header className="max-w-2xl w-full mx-auto flex items-center justify-between pb-6 border-b border-[var(--color-border)]">
+      <header className="max-w-2xl w-full mx-auto flex items-center justify-between pb-4 border-b border-[var(--color-border)]">
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer px-2 py-1 rounded-[var(--radius-sm)] hover:bg-[var(--color-surface-subtle)]"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>{currentStep === 1 ? 'Exit to Home' : 'Back'}</span>
+        </button>
+
         {/* Brand */}
         <div 
           onClick={() => setCurrentView('landing')}
           className="flex items-center gap-2 cursor-pointer select-none"
         >
-          <div className="w-7 h-7 rounded-[var(--radius-md)] bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] flex items-center justify-center font-display font-extrabold text-xs">
+          <div className="w-6 h-6 rounded-[var(--radius-sm)] bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] flex items-center justify-center font-display font-bold text-xs">
             SW
           </div>
-          <span className="font-display font-bold text-base text-[var(--color-text-primary)]">
+          <span className="font-display font-bold text-sm tracking-tight text-[var(--color-text-primary)]">
             ShipWith
           </span>
         </div>
 
-        {/* Step indicator */}
-        {currentStep <= totalSteps && (
-          <div className="text-xs font-mono text-[var(--color-text-muted)]">
-            {currentStep} of {totalSteps}
-          </div>
-        )}
-
-        {/* Save & Exit */}
-        <button
-          onClick={() => setCurrentView('landing')}
-          className="text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] cursor-pointer"
-        >
-          Save & exit
-        </button>
+        {/* Step Counter Indicator */}
+        <div className="text-xs font-mono text-[var(--color-text-muted)]">
+          {currentStep <= totalSteps ? (
+            <span>Question {currentStep} of {totalSteps}</span>
+          ) : (
+            <span className="text-[var(--color-success)] font-semibold">Ready</span>
+          )}
+        </div>
       </header>
 
-      {/* Progress Bar */}
+      {/* Progress Line */}
       {currentStep <= totalSteps && (
-        <div className="max-w-2xl w-full mx-auto my-3 h-1 bg-[var(--color-border)] rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-[var(--color-brand-primary)] transition-all duration-300"
-            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-          />
+        <div className="max-w-2xl w-full mx-auto mt-2">
+          <div className="w-full h-1 bg-[var(--color-surface-strong)] rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-[var(--color-brand-accent)] transition-all duration-300 ease-out rounded-full"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
         </div>
       )}
 
-      {/* Main Question Container */}
-      <main className="max-w-xl w-full mx-auto my-auto py-8">
+      {/* Main Content Area */}
+      <main className="max-w-2xl w-full mx-auto my-auto py-8">
         
-        {/* Step 1: How do you want to start? */}
+        {/* STEP 1: Objective */}
         {currentStep === 1 && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="text-center space-y-1">
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                How do you want to start?
-              </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
-                Choose what fits you best right now.
-              </p>
-            </div>
-
-            <div className="space-y-2.5">
-              {objectives.map(obj => {
-                const isSelected = onboardingState.objective === obj.id;
-                return (
-                  <button
-                    key={obj.id}
-                    onClick={() => updateOnboarding({ objective: obj.id })}
-                    className={`w-full p-4 rounded-[var(--radius-lg)] border text-left transition-all cursor-pointer flex items-center justify-between ${
-                      isSelected
-                        ? 'border-[var(--color-brand-primary)] bg-[var(--color-surface)] shadow-sm ring-1 ring-[var(--color-brand-primary)]'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)]'
-                    }`}
-                  >
-                    <div>
-                      <div className="text-sm font-semibold text-[var(--color-text-primary)]">{obj.label}</div>
-                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">{obj.desc}</div>
-                    </div>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]' : 'border-[var(--color-border-strong)]'
-                    }`}>
-                      {isSelected && <div className="w-1.5 h-1.5 bg-[var(--color-brand-on-primary)] rounded-full" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Step 2: What are you most into? */}
-        {currentStep === 2 && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="text-center space-y-1">
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                What are you most into?
-              </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
-                Pick the spaces that interest you most.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              {interests.map(item => {
-                const isSelected = onboardingState.interests.includes(item);
-                return (
-                  <button
-                    key={item}
-                    onClick={() => {
-                      const current = onboardingState.interests;
-                      updateOnboarding({
-                        interests: isSelected ? current.filter(x => x !== item) : [...current, item]
-                      });
-                    }}
-                    className={`p-3.5 rounded-[var(--radius-md)] border text-left transition-all cursor-pointer flex items-center justify-between ${
-                      isSelected
-                        ? 'border-[var(--color-brand-primary)] bg-[var(--color-surface)] ring-1 ring-[var(--color-brand-primary)]'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)]'
-                    }`}
-                  >
-                    <span className="text-xs font-semibold text-[var(--color-text-primary)]">{item}</span>
-                    <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]' : 'border-[var(--color-border-strong)]'
-                    }`}>
-                      {isSelected && <Check className="w-2.5 h-2.5 text-[var(--color-brand-on-primary)]" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: What can you help with? (Up to 3) */}
-        {currentStep === 3 && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="text-center space-y-1">
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                What can you help with?
-              </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
-                Choose up to 3 strengths. <span className="font-mono font-medium">({onboardingState.strengths.length} of 3 selected)</span>
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              {strengthsList.map(item => {
-                const isSelected = onboardingState.strengths.includes(item);
-                return (
-                  <button
-                    key={item}
-                    onClick={() => toggleStrength(item)}
-                    className={`p-3.5 rounded-[var(--radius-md)] border text-left transition-all cursor-pointer flex items-center justify-between ${
-                      isSelected
-                        ? 'border-[var(--color-brand-primary)] bg-[var(--color-surface)] ring-1 ring-[var(--color-brand-primary)]'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)]'
-                    }`}
-                  >
-                    <span className="text-xs font-semibold text-[var(--color-text-primary)]">{item}</span>
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]' : 'border-[var(--color-border-strong)]'
-                    }`}>
-                      {isSelected && <Check className="w-3 h-3 text-[var(--color-brand-on-primary)]" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Step 4: Where are you right now? */}
-        {currentStep === 4 && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="text-center space-y-1">
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                Where are you right now?
-              </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
-                This helps us show the right people and startups.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              {stages.map(stg => {
-                const isSelected = onboardingState.stage === stg.id;
-                return (
-                  <button
-                    key={stg.id}
-                    onClick={() => updateOnboarding({ stage: stg.id })}
-                    className={`w-full p-3.5 rounded-[var(--radius-lg)] border text-left transition-all cursor-pointer flex items-center justify-between ${
-                      isSelected
-                        ? 'border-[var(--color-brand-primary)] bg-[var(--color-surface)] ring-1 ring-[var(--color-brand-primary)]'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)]'
-                    }`}
-                  >
-                    <div>
-                      <div className="text-xs font-semibold text-[var(--color-text-primary)]">{stg.label}</div>
-                      <div className="text-[11px] text-[var(--color-text-secondary)] mt-0.5">{stg.desc}</div>
-                    </div>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]' : 'border-[var(--color-border-strong)]'
-                    }`}>
-                      {isSelected && <div className="w-1.5 h-1.5 bg-[var(--color-brand-on-primary)] rounded-full" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Step 5: Where are you based? */}
-        {currentStep === 5 && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="text-center space-y-1">
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                Where are you based?
-              </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
-                This helps us match people across regions and working hours.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1">
-                  Country / Region
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={onboardingState.country}
-                    onChange={e => updateOnboarding({ country: e.target.value })}
-                    placeholder="Enter country (e.g. India, United States)"
-                    className="w-full text-xs p-3 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
-                  />
-                  <Globe className="w-4 h-4 text-[var(--color-text-muted)] absolute right-3 top-3.5" />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1">
-                  Timezone (Auto-detected)
-                </label>
-                <div className="flex items-center justify-between p-3 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-xs font-mono text-[var(--color-text-primary)]">
-                  <span>{onboardingState.timezone}</span>
-                  <span className="text-[11px] text-[var(--color-brand-accent)]">Editable in profile</span>
-                </div>
-              </div>
-
-              <p className="text-[11px] text-[var(--color-text-muted)] pt-1">
-                You can optionally add your city later in your profile. We never require precise physical location.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Step 6: Who do you want to meet? (Up to 3) */}
-        {currentStep === 6 && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="text-center space-y-1">
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                Who do you want to meet?
-              </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
-                Choose up to 3 roles. <span className="font-mono font-medium">({onboardingState.desiredCollaborators.length} of 3 selected)</span>
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2.5">
-              {collaboratorsList.map(item => {
-                const isSelected = onboardingState.desiredCollaborators.includes(item);
-                return (
-                  <button
-                    key={item}
-                    onClick={() => toggleCollaborator(item)}
-                    className={`p-3.5 rounded-[var(--radius-md)] border text-left transition-all cursor-pointer flex items-center justify-between ${
-                      isSelected
-                        ? 'border-[var(--color-brand-primary)] bg-[var(--color-surface)] ring-1 ring-[var(--color-brand-primary)]'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)]'
-                    }`}
-                  >
-                    <span className="text-xs font-semibold text-[var(--color-text-primary)]">{item}</span>
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]' : 'border-[var(--color-border-strong)]'
-                    }`}>
-                      {isSelected && <Check className="w-3 h-3 text-[var(--color-brand-on-primary)]" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Step 7: How much time can you give? */}
-        {currentStep === 7 && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <div className="text-center space-y-1">
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                How much time can you give?
-              </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
-                Choose what feels realistic to avoid burning out.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              {timeCommitments.map(opt => {
-                const isSelected = onboardingState.weeklyHours === opt;
-                return (
-                  <button
-                    key={opt}
-                    onClick={() => updateOnboarding({ weeklyHours: opt })}
-                    className={`w-full p-4 rounded-[var(--radius-lg)] border text-left transition-all cursor-pointer flex items-center justify-between ${
-                      isSelected
-                        ? 'border-[var(--color-brand-primary)] bg-[var(--color-surface)] ring-1 ring-[var(--color-brand-primary)]'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)]'
-                    }`}
-                  >
-                    <span className="text-xs font-semibold text-[var(--color-text-primary)]">{opt}</span>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]' : 'border-[var(--color-border-strong)]'
-                    }`}>
-                      {isSelected && <div className="w-1.5 h-1.5 bg-[var(--color-brand-on-primary)] rounded-full" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Step 8: Completion Screen (PRD ONB-04) */}
-        {currentStep === 8 && (
-          <div className="space-y-6 text-center animate-in zoom-in-95 duration-200">
-            <div className="w-12 h-12 mx-auto rounded-full bg-[var(--color-success-subtle)] border border-[var(--color-success)]/20 text-[var(--color-success)] flex items-center justify-center">
-              <Check className="w-6 h-6" />
-            </div>
-
-            <div className="space-y-1">
-              <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                You’re in.
-              </h2>
-              <p className="text-xs text-[var(--color-text-secondary)] max-w-sm mx-auto">
-                We'll personalize ShipWith based on your answers:
-              </p>
-            </div>
-
-            {/* 3 Personalized Preview Buckets */}
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
             <div className="space-y-2 text-left">
-              <div className="p-3.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-md)] flex items-center justify-between">
+              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
+                Step 1 of 7 • Getting Started
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+                What is your primary goal on ShipWith?
+              </h2>
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                Select your focus. We'll tune your radar to match suitable creators immediately.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {objectives.map((item) => {
+                const Icon = item.icon;
+                const isSelected = selectedInStep === item.id || onboardingState.objective === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleAutoSelect(() => updateOnboarding({ objective: item.id }), item.id)}
+                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-start gap-3.5 transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
+                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                    }`}
+                  >
+                    <div className={`p-2.5 rounded-[var(--radius-md)] border shrink-0 ${
+                      isSelected 
+                        ? 'bg-[var(--color-brand-accent)] text-white border-transparent' 
+                        : 'bg-[var(--color-surface-subtle)] border-[var(--color-border)] text-[var(--color-brand-accent)]'
+                    }`}>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
+                        {item.title}
+                      </div>
+                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+                        {item.desc}
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0 mt-0.5" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2: Superpower & Craft */}
+        {currentStep === 2 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+            <div className="space-y-2 text-left">
+              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
+                Step 2 of 7 • Your Core Craft
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+                What is your primary superpower?
+              </h2>
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                What do teammates count on you to deliver?
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {roles.map((item) => {
+                const Icon = item.icon;
+                const isSelected = selectedInStep === item.id || onboardingState.strengths.includes(item.id);
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleAutoSelect(() => updateOnboarding({ strengths: [item.id] }), item.id)}
+                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-start gap-3.5 transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
+                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                    }`}
+                  >
+                    <div className={`p-2.5 rounded-[var(--radius-md)] border shrink-0 ${
+                      isSelected 
+                        ? 'bg-[var(--color-brand-accent)] text-white border-transparent' 
+                        : 'bg-[var(--color-surface-subtle)] border-[var(--color-border)] text-[var(--color-text-primary)]'
+                    }`}>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
+                        {item.title}
+                      </div>
+                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+                        {item.desc}
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0 mt-0.5" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3: Tech Stack / Toolkit */}
+        {currentStep === 3 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+            <div className="space-y-2 text-left">
+              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
+                Step 3 of 7 • Tools & Technology
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+                What is your primary tech stack or toolkit?
+              </h2>
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                Helps startups find you when filtering by technology match.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {stacks.map((item) => {
+                const isSelected = selectedInStep === item.id || onboardingState.primaryStack === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleAutoSelect(() => updateOnboarding({ primaryStack: item.id }), item.id)}
+                    className={`p-4 rounded-[var(--radius-xl)] border text-left flex flex-col justify-between gap-2 transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
+                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
+                        {item.title}
+                      </div>
+                      {isSelected && (
+                        <Check className="w-4 h-4 text-[var(--color-brand-accent)] shrink-0" />
+                      )}
+                    </div>
+                    <div className="text-xs text-[var(--color-text-secondary)]">
+                      {item.desc}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* STEP 4: Project Stage */}
+        {currentStep === 4 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+            <div className="space-y-2 text-left">
+              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
+                Step 4 of 7 • Product Maturity
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+                What stage of project do you prefer?
+              </h2>
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                Match with teams that are at the exact phase where you thrive.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {stages.map((item) => {
+                const isSelected = selectedInStep === item.id || onboardingState.stage === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleAutoSelect(() => updateOnboarding({ stage: item.id }), item.id)}
+                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-center justify-between gap-3 transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
+                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                    }`}
+                  >
+                    <div>
+                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
+                        {item.title}
+                      </div>
+                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+                        {item.desc}
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* STEP 5: Weekly Commitment */}
+        {currentStep === 5 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+            <div className="space-y-2 text-left">
+              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
+                Step 5 of 7 • Availability
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+                How much weekly time can you commit?
+              </h2>
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                Unrealistic expectations ruin teams. Honesty ensures sustainable shipping.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {commitments.map((item) => {
+                const isSelected = selectedInStep === item.id || onboardingState.weeklyHours === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleAutoSelect(() => updateOnboarding({ weeklyHours: item.id as any }), item.id)}
+                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-center justify-between gap-3 transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
+                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] border border-[var(--color-border)]">
+                        <Clock className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-[var(--color-text-primary)]">
+                          {item.title}
+                        </div>
+                        <div className="text-xs text-[var(--color-text-secondary)]">
+                          {item.desc}
+                        </div>
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* STEP 6: 4-Day Trial Sprint Protocol */}
+        {currentStep === 6 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+            <div className="space-y-2 text-left">
+              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-warning)]">
+                Step 6 of 7 • The ShipWith Protocol
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+                Are you ready for the 4-Day Trial Sprint?
+              </h2>
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                Before discussing equity or long-term partnerships, builders complete a 4-day scoped test sprint to prove mutual work synergy.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {sprintProtocols.map((item) => {
+                const isSelected = selectedInStep === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleAutoSelect(() => updateOnboarding({ trialAgreement: true }), item.id)}
+                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-start gap-3.5 transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-[var(--color-success)] bg-[var(--color-success-subtle)] ring-2 ring-[var(--color-success)]/20 shadow-sm'
+                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                    }`}
+                  >
+                    <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)]/20 shrink-0">
+                      <Zap className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
+                        {item.title}
+                      </div>
+                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+                        {item.desc}
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <Check className="w-5 h-5 text-[var(--color-success)] shrink-0 mt-0.5" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* STEP 7: Ideal Teammate */}
+        {currentStep === 7 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+            <div className="space-y-2 text-left">
+              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
+                Step 7 of 7 • Match Preferences
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+                Who are you looking to meet?
+              </h2>
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                We'll prioritize recommendations matching your ideal collaborator archetype.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {teammates.map((item) => {
+                const isSelected = selectedInStep === item.id || onboardingState.desiredCollaborators.includes(item.id);
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleAutoSelect(() => updateOnboarding({ desiredCollaborators: [item.id] }), item.id)}
+                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-start gap-3.5 transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
+                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                    }`}
+                  >
+                    <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-[var(--color-brand-accent)] shrink-0">
+                      <Users className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
+                        {item.title}
+                      </div>
+                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+                        {item.desc}
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0 mt-0.5" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* STEP 8: Profile Passport Ready (Synthesis) */}
+        {currentStep === 8 && (
+          <div className="space-y-6 text-center animate-in fade-in zoom-in-95 duration-300">
+            <div className="w-14 h-14 rounded-full bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)]/30 flex items-center justify-center mx-auto shadow-sm">
+              <ShieldCheck className="w-8 h-8" />
+            </div>
+
+            <div className="space-y-1.5">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
+                Your Builder Passport is Ready
+              </h2>
+              <p className="text-sm text-[var(--color-text-secondary)] max-w-md mx-auto">
+                We’ve configured your profile radar. You are ready to explore live startups, trial sprints, and potential co-founders.
+              </p>
+            </div>
+
+            {/* Live Profile Passport Card */}
+            <div className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-md text-left space-y-4 max-w-lg mx-auto">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-subtle)]">
                 <div className="flex items-center gap-3">
-                  <Rocket className="w-4 h-4 text-[var(--color-brand-accent)]" />
+                  <div className="w-11 h-11 rounded-full bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] flex items-center justify-center font-bold font-mono border border-[var(--color-brand-accent)]/30">
+                    YOU
+                  </div>
                   <div>
-                    <div className="text-xs font-semibold text-[var(--color-text-primary)]">Startups for you</div>
-                    <div className="text-[11px] text-[var(--color-text-muted)]">Teams and startups matching your interests</div>
+                    <div className="text-sm font-bold text-[var(--color-text-primary)]">
+                      {onboardingState.strengths[0] || 'Full-Stack Builder'}
+                    </div>
+                    <div className="text-xs text-[var(--color-text-muted)]">
+                      {onboardingState.weeklyHours} • {onboardingState.country || 'India (GMT+5:30)'}
+                    </div>
                   </div>
                 </div>
-                <ArrowRight className="w-3.5 h-3.5 text-[var(--color-text-muted)]" />
+                <span className="px-2.5 py-1 bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)]/30 rounded-full text-xs font-mono font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> PASSPORT ACTIVE
+                </span>
               </div>
 
-              <div className="p-3.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-md)] flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Users className="w-4 h-4 text-[var(--color-success)]" />
-                  <div>
-                    <div className="text-xs font-semibold text-[var(--color-text-primary)]">People to meet</div>
-                    <div className="text-[11px] text-[var(--color-text-muted)]">Builders seeking your superpowers</div>
+              {/* Preferences Summary Grid */}
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
+                  <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Objective</div>
+                  <div className="font-semibold text-[var(--color-text-primary)] mt-0.5 truncate">
+                    {onboardingState.objective}
                   </div>
                 </div>
-                <ArrowRight className="w-3.5 h-3.5 text-[var(--color-text-muted)]" />
+                <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
+                  <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Stack</div>
+                  <div className="font-semibold text-[var(--color-text-primary)] mt-0.5 truncate">
+                    {onboardingState.primaryStack || 'Next.js / TypeScript'}
+                  </div>
+                </div>
+                <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
+                  <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Stage</div>
+                  <div className="font-semibold text-[var(--color-text-primary)] mt-0.5 truncate">
+                    {onboardingState.stage || 'Building MVP'}
+                  </div>
+                </div>
+                <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
+                  <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Trial Sprint</div>
+                  <div className="font-semibold text-[var(--color-success)] mt-0.5">
+                    Ready (4 Days) ⚡
+                  </div>
+                </div>
               </div>
 
-              <div className="p-3.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-md)] flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Compass className="w-4 h-4 text-[var(--color-warning)]" />
-                  <div>
-                    <div className="text-xs font-semibold text-[var(--color-text-primary)]">Builds to explore</div>
-                    <div className="text-[11px] text-[var(--color-text-muted)]">Active projects looking for contributors</div>
-                  </div>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-[var(--color-text-muted)]" />
+              {/* Match Output Banner */}
+              <div className="p-3 rounded-[var(--radius-md)] bg-[var(--color-brand-accent-subtle)] border border-[var(--color-brand-accent)]/20 flex items-center gap-2.5 text-xs text-[var(--color-text-primary)]">
+                <Sparkles className="w-4 h-4 text-[var(--color-brand-accent)] shrink-0" />
+                <span>
+                  <strong>18 Startups</strong> and <strong>34 Builders</strong> currently match your exact profile & timezone.
+                </span>
               </div>
             </div>
 
-            {/* Action buttons */}
-            <div className="space-y-2 pt-2">
+            {/* Launch CTA */}
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Button
                 variant="primary"
-                size="md"
-                className="w-full"
-                onClick={completeOnboarding}
+                size="lg"
+                onClick={() => {
+                  completeOnboarding();
+                  setCurrentView('home');
+                }}
+                rightIcon={<ArrowRight className="w-4 h-4" />}
+                className="w-full sm:w-auto shadow-md hover:shadow-lg"
               >
-                Explore ShipWith →
+                Enter ShipWith Feed
               </Button>
-              <button
-                onClick={completeOnboarding}
-                className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer"
-              >
-                Complete profile later
-              </button>
             </div>
           </div>
         )}
 
       </main>
 
-      {/* Bottom Navigation Control Bar */}
-      <footer className="max-w-xl w-full mx-auto flex items-center justify-between pt-6 border-t border-[var(--color-border)]">
-        <div>
-          {currentStep > 1 && currentStep <= totalSteps && (
-            <button
-              onClick={handleBack}
-              aria-label="Previous question"
-              className="p-2 rounded-[var(--radius-md)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-subtle)] border border-[var(--color-border)] transition-colors cursor-pointer"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex items-center gap-3">
-          {/* Feedback Trigger */}
-          <button
-            onClick={() => setIsFeedbackOpen(true)}
-            className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] px-2.5 py-1.5 rounded-[var(--radius-md)] border border-transparent hover:border-[var(--color-border)] transition-colors cursor-pointer"
-          >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>Feedback</span>
-          </button>
-
-          {/* Continue button */}
-          {currentStep <= totalSteps && (
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleNext}
-              rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
-            >
-              {currentStep === totalSteps ? 'Finish setup' : 'Continue'}
-            </Button>
-          )}
-        </div>
+      {/* Footer hint */}
+      <footer className="max-w-2xl w-full mx-auto pt-4 border-t border-[var(--color-border-subtle)] text-center text-xs text-[var(--color-text-muted)] flex items-center justify-between">
+        <span>Click an option to automatically advance to the next question.</span>
+        <span>No credit card required</span>
       </footer>
+
     </div>
   );
 };

@@ -45,6 +45,8 @@ export interface OnboardingState {
   timezone: string;                  // Step 5: e.g. GMT+5:30 (Asia/Kolkata)
   desiredCollaborators: string[];    // Step 6: Co-founder, Developer, Designer, etc.
   weeklyHours: CommitmentOption;     // Step 7: Weekly availability
+  primaryStack?: string;
+  trialAgreement?: boolean;
   completed: boolean;
 }
 

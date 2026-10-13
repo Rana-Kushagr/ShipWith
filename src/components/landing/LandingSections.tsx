@@ -24,7 +24,7 @@ export const LandingSections: React.FC = () => {
 
         {/* 3 Pillars Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 animate-scroll-reveal delay-100 hover:border-[var(--color-border-strong)] transition-all">
             <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-brand-accent)]">
               <Users className="w-5 h-5" />
             </div>
@@ -34,7 +34,7 @@ export const LandingSections: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 animate-scroll-reveal delay-200 hover:border-[var(--color-border-strong)] transition-all">
             <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-success)]">
               <GitCommit className="w-5 h-5" />
             </div>
@@ -44,7 +44,7 @@ export const LandingSections: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 animate-scroll-reveal delay-300 hover:border-[var(--color-border-strong)] transition-all">
             <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-warning)]">
               <Trophy className="w-5 h-5" />
             </div>
