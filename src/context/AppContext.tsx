@@ -68,14 +68,21 @@ interface AppContextType {
 }
 
 const DEFAULT_ONBOARDING: OnboardingState = {
-  objective: 'Find people for mine',
-  interests: ['Tech', 'AI'],
-  strengths: ['UI/UX Design', 'Tech'],
-  stage: 'Building something',
+  objective: 'Recruit for startup',
+  strengths: ['Full-Stack Engineer'],
+  techStacks: ['React 19 / Next.js / TypeScript'],
+  experienceYears: '3–5 years',
+  industries: ['AI & LLM Tools', 'B2B SaaS'],
+  stage: 'Building MVP',
+  weeklyHours: '10–20 hrs/week',
+  workingStyle: 'Mostly Async',
+  desiredCollaborators: ['Product Designer', 'Growth Lead'],
+  compensationPhilosophy: 'Equal / Fair Equity Split',
+  trialAgreement: true,
+  githubUsername: '',
+  headline: 'Building next-gen AI tools for developers',
   country: 'India',
   timezone: 'GMT+5:30 (Asia/Kolkata)',
-  desiredCollaborators: ['Developer', 'Co-founder'],
-  weeklyHours: '10–20 hrs/week',
   completed: false,
 };
 

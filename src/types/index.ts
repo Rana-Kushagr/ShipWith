@@ -37,16 +37,21 @@ export type PostType =
   | 'shipped';
 
 export interface OnboardingState {
-  objective: string;                 // Step 1: Join startup | Find people | Start together
-  interests: string[];               // Step 2: Tech, AI, Marketing, etc.
-  strengths: string[];               // Step 3: Up to 3 core strengths
-  stage: string;                     // Step 4: Just starting, Building something, etc.
-  country: string;                   // Step 5: Country / Region
-  timezone: string;                  // Step 5: e.g. GMT+5:30 (Asia/Kolkata)
-  desiredCollaborators: string[];    // Step 6: Co-founder, Developer, Designer, etc.
-  weeklyHours: CommitmentOption;     // Step 7: Weekly availability
-  primaryStack?: string;
-  trialAgreement?: boolean;
+  objective: string;                 // Question 1: Primary goal
+  strengths: string[];               // Question 2: Core crafts (multi-select)
+  techStacks: string[];              // Question 3: Primary tools/stacks (multi-select)
+  experienceYears: string;           // Question 4: Years of experience
+  industries: string[];              // Question 5: Domains / industries (multi-select)
+  stage: string;                     // Question 6: Project stage
+  weeklyHours: CommitmentOption;     // Question 7: Weekly availability
+  workingStyle: string;              // Question 8: Async / Hybrid / Live
+  desiredCollaborators: string[];    // Question 9: Missing roles (multi-select)
+  compensationPhilosophy: string;   // Question 10: Equity & terms
+  trialAgreement: boolean;           // Question 11: 4-Day Trial Sprint Protocol
+  githubUsername?: string;           // Question 12: GitHub / Portfolio link
+  headline?: string;                 // Question 12: 1-sentence bio
+  country: string;
+  timezone: string;
   completed: boolean;
 }
 
