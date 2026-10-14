@@ -395,7 +395,7 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="pt-2 flex items-center justify-between">
               <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {currentStrengths.length} craft(s) selected
+                {currentStrengths.length === 0 ? 'Select at least 1 craft' : `${currentStrengths.length} craft(s) selected`}
               </span>
               <Button
                 variant="primary"
@@ -403,7 +403,7 @@ export const OnboardingWizard: React.FC = () => {
                 disabled={currentStrengths.length === 0}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Continue ({currentStrengths.length})
+                {currentStrengths.length === 0 ? 'Select a craft to continue' : `Continue (${currentStrengths.length})`}
               </Button>
             </div>
           </div>
@@ -451,7 +451,7 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="pt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)]">
               <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {currentTechStacks.length} tool(s) selected
+                {currentTechStacks.length === 0 ? 'Select at least 1 tool' : `${currentTechStacks.length} tool(s) selected`}
               </span>
               <Button
                 variant="primary"
@@ -459,7 +459,7 @@ export const OnboardingWizard: React.FC = () => {
                 disabled={currentTechStacks.length === 0}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Continue ({currentTechStacks.length})
+                {currentTechStacks.length === 0 ? 'Select a tool to continue' : `Continue (${currentTechStacks.length})`}
               </Button>
             </div>
           </div>
@@ -557,7 +557,7 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="pt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)]">
               <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {currentIndustries.length} domain(s) selected
+                {currentIndustries.length === 0 ? 'Select at least 1 domain' : `${currentIndustries.length} domain(s) selected`}
               </span>
               <Button
                 variant="primary"
@@ -565,7 +565,7 @@ export const OnboardingWizard: React.FC = () => {
                 disabled={currentIndustries.length === 0}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Continue ({currentIndustries.length})
+                {currentIndustries.length === 0 ? 'Select a domain to continue' : `Continue (${currentIndustries.length})`}
               </Button>
             </div>
           </div>
@@ -766,7 +766,7 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="pt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)]">
               <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {currentCollaborators.length} role(s) selected
+                {currentCollaborators.length === 0 ? 'Select at least 1 role' : `${currentCollaborators.length} role(s) selected`}
               </span>
               <Button
                 variant="primary"
@@ -774,7 +774,7 @@ export const OnboardingWizard: React.FC = () => {
                 disabled={currentCollaborators.length === 0}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Continue ({currentCollaborators.length})
+                {currentCollaborators.length === 0 ? 'Select a role to continue' : `Continue (${currentCollaborators.length})`}
               </Button>
             </div>
           </div>
@@ -937,8 +937,8 @@ export const OnboardingWizard: React.FC = () => {
         )}
 
         {/* STEP 13: Instant Profile Passport Review */}
-        {currentStep === 13 && (
-          <div className="space-y-6 text-center animate-in fade-in zoom-in-95 duration-300">
+        {currentStep >= 13 && (
+          <div className="space-y-6 text-center step-enter">
             <div className="w-14 h-14 rounded-full bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)]/30 flex items-center justify-center mx-auto shadow-sm">
               <ShieldCheck className="w-8 h-8" />
             </div>

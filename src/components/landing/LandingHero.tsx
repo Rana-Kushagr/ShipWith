@@ -65,8 +65,8 @@ export const LandingHero: React.FC = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentY = window.scrollY;
-          // Scale from 0 (at top) to 1 (at 380px scrolled)
-          const maxScroll = 380;
+          // Scale from 0 (at top) to 1 (at 420px scrolled)
+          const maxScroll = 420;
           const ratio = Math.min(1, Math.max(0, currentY / maxScroll));
           setScrollProgress(ratio);
           ticking = false;
@@ -90,12 +90,12 @@ export const LandingHero: React.FC = () => {
   };
 
   // 3D Transform calculations based on scrollProgress
-  // At scrollProgress = 0: rotateX = 22deg, scale = 0.91, translateY = 50px (laying still in perspective)
+  // At scrollProgress = 0: rotateX = 32deg, scale = 0.88, translateY = 65px (laying still in perspective like on a desk)
   // At scrollProgress = 1: rotateX = 0deg, scale = 1.0, translateY = 0px (comes upright facing the user)
-  const currentRotateX = (1 - scrollProgress) * 22;
-  const currentScale = 0.91 + scrollProgress * 0.09;
-  const currentTranslateY = (1 - scrollProgress) * 50;
-  const currentOpacity = 0.94 + scrollProgress * 0.06;
+  const currentRotateX = (1 - scrollProgress) * 32;
+  const currentScale = 0.88 + scrollProgress * 0.12;
+  const currentTranslateY = (1 - scrollProgress) * 65;
+  const currentOpacity = 0.90 + scrollProgress * 0.10;
 
   return (
     <section className="relative pt-12 pb-24 md:pt-16 md:pb-32 overflow-hidden bg-[var(--color-canvas)] transition-colors duration-200">
@@ -120,13 +120,13 @@ export const LandingHero: React.FC = () => {
           </div>
 
           {/* Master Display Heading with High-End Font Mixture */}
-          <h1 className="text-4xl sm:text-6xl lg:text-[68px] font-extrabold tracking-tight text-[var(--color-text-primary)] leading-[1.06] font-display">
+          <h1 className="text-4xl sm:text-6xl lg:text-[72px] font-extrabold tracking-tight text-[var(--color-text-primary)] leading-[1.04] font-display max-w-4xl mx-auto">
             Find your co-founder.{' '}
             <br className="hidden sm:inline" />
-            <span className="font-serif-italic font-normal text-[var(--color-brand-accent)] text-[1.12em] tracking-normal inline-block pr-1.5">
+            <span className="font-serif-italic font-normal text-[var(--color-brand-accent)] text-[1.18em] tracking-normal inline-block pr-2">
               Build
             </span>
-            <span className="bg-gradient-to-r from-[var(--color-text-primary)] via-[var(--color-brand-accent)] to-[var(--color-text-primary)] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[var(--color-text-primary)] via-[var(--color-brand-accent)] to-[var(--color-text-primary)] bg-clip-text text-transparent font-black">
               what actually ships.
             </span>
           </h1>
@@ -220,7 +220,8 @@ export const LandingHero: React.FC = () => {
           <div 
             className="hero-preview-canvas relative rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] shadow-2xl overflow-hidden text-left"
             style={{
-              transform: `perspective(1200px) rotateX(${currentRotateX}deg) scale(${currentScale}) translateY(${currentTranslateY}px)`,
+              transform: `perspective(1100px) rotateX(${currentRotateX}deg) scale(${currentScale}) translateY(${currentTranslateY}px)`,
+              transformOrigin: 'top center',
               opacity: currentOpacity,
               boxShadow: scrollProgress > 0.4
                 ? '0 30px 70px -15px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(226, 232, 240, 0.9)'
