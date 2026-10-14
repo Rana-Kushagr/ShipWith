@@ -1,6 +1,6 @@
 // ============================================================
 // SHIPWITH TYPES & DATA CONTRACTS
-// Aligned with ShipWith PRD v1.0 and Product Quality Constitution
+// Aligned with Simplify.jobs & Peerlist.io specifications
 // ============================================================
 
 export type RoleCategory = 
@@ -37,36 +37,49 @@ export type PostType =
   | 'shipped';
 
 export interface OnboardingState {
-  objective: string;                 // Question 1: Primary goal
-  strengths: string[];               // Question 2: Core crafts (multi-select)
-  techStacks: string[];              // Question 3: Primary tools/stacks (multi-select)
-  experienceYears: string;           // Question 4: Years of experience
-  industries: string[];              // Question 5: Domains / industries (multi-select)
-  stage: string;                     // Question 6: Project stage
-  weeklyHours: CommitmentOption | '';     // Question 7: Weekly availability
-  workingStyle: string;              // Question 8: Async / Hybrid / Live
-  desiredCollaborators: string[];    // Question 9: Missing roles (multi-select)
-  compensationPhilosophy: string;   // Question 10: Equity & terms
-  trialAgreement: boolean;           // Question 11: 4-Day Trial Sprint Protocol
-  githubUsername?: string;           // Question 12: GitHub / Portfolio link
-  headline?: string;                 // Question 12: 1-sentence bio
-  country: string;
-  timezone: string;
+  // Simplify-Style 7-Question Guided Flow
+  step1Goal: string; // 1. How do you want to start? (Join a startup / Find people for mine / Start together)
+  step2Interests: string[]; // 2. What are you most into? (Entrepreneurship, Tech, AI, etc.)
+  step3Skills: string[]; // 3. What can you help with? (Max 3: Tech, Design, Marketing, etc.)
+  step4Stage: string; // 4. Where are you right now? (Just starting / Building / Experienced)
+  step5Location: { country: string; timezone: string }; // 5. Where are you based?
+  step6Meet: string[]; // 6. Who do you want to meet? (Co-founder / Developer / Designer, etc.)
+  step7Hours: string; // 7. How much time can you give?
+  claimedHandle: string;
   completed: boolean;
+
+  // Compatibility fields
+  objective?: string;
+  strengths?: string[];
+  techStacks?: string[];
+  experienceYears?: string;
+  industries?: string[];
+  stage?: string;
+  weeklyHours?: CommitmentOption | '';
+  workingStyle?: string;
+  desiredCollaborators?: string[];
+  compensationPhilosophy?: string;
+  trialAgreement?: boolean;
+  githubUsername?: string;
+  headline?: string;
+  country?: string;
+  timezone?: string;
 }
 
 export interface UserProfile {
   id: string;
   name: string;
   username: string;
+  handle?: string;
   avatar: string;
   headline: string;
   bio: string;
-  role: RoleCategory;
+  role: RoleCategory | string;
   country: string;
   timezone: string;
-  availability: 'Available' | 'Few hours' | 'Busy';
-  weeklyHours: CommitmentOption;
+  location?: string;
+  availability: 'Available' | 'Few hours' | 'Busy' | string;
+  weeklyHours: CommitmentOption | string;
   lookingFor: string[];
   skills: string[];
   proofLinks: {
@@ -77,6 +90,7 @@ export interface UserProfile {
     x?: string;
     portfolio?: string;
   };
+  verifiedWorkplaces?: string[];
   stats: {
     shipsCount: number;
     trialBuildsCount: number;

@@ -1,427 +1,726 @@
 import React, { useState } from 'react';
-import { useApp } from '../../context/AppContext';
-import { Badge } from '../common/Badge';
-import { Button } from '../common/Button';
-import { Modal } from '../common/Modal';
 import { 
-  CheckSquare, 
+  CheckCircle2, 
+  Clock, 
   ExternalLink, 
-  Code2, 
-  Layers, 
-  Send, 
+  FileText, 
   Plus, 
-  Sparkles,
-  Rocket
+  Send, 
+  Rocket, 
+  Check, 
+  Award, 
+  X, 
+  Zap, 
+  Globe,
+  Code2,
+  Palette
 } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 
 export const WorkspaceView: React.FC = () => {
-  const { workspaceTasks, trialBuild, addToast, currentUser, setCurrentView } = useApp();
-  const [tasks, setTasks] = useState(workspaceTasks);
-  const [activeTab, setActiveTab] = useState<'tasks' | 'team' | 'links' | 'chat'>('tasks');
-  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
-  const [newTaskOwner, setNewTaskOwner] = useState(currentUser.name);
-  const [dailyStandupText, setDailyStandupText] = useState('');
-  const [messages, setMessages] = useState<{ id: string; sender: string; text: string; time: string }[]>([]);
-  const [chatInput, setChatInput] = useState('');
+  const { 
+    workspaces, 
+    activeWorkspaceId, 
+    setActiveWorkspaceId, 
+    addWorkspaceTask, 
+    toggleWorkspaceTaskStatus, 
+    addWorkspaceShipLog, 
+    sendWorkspaceChatMessage, 
+    completeTrialSprint, 
+    shipToShipPad, 
+    addToast,
+    setCurrentView
+  } = useApp();
 
-  const toggleTaskStatus = (id: string) => {
-    setTasks(prev => prev.map(t => {
-      if (t.id === id) {
-        const nextStatus = t.status === 'done' ? 'in_progress' : t.status === 'in_progress' ? 'done' : 'in_progress';
-        return { ...t, status: nextStatus };
-      }
-      return t;
-    }));
-  };
+  const activeWorkspace = workspaces.find(w => w.id === activeWorkspaceId) || workspaces[0];
 
-  const handleAddTask = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTaskTitle.trim()) return;
+  const [activeTab, setActiveTab] = useState<'overview' | 'tasks' | 'chat' | 'team' | 'links'>('overview');
+  const [dailyLogInput, setDailyLogInput] = useState<string>('');
+  const [newTaskTitle, setNewTaskTitle] = useState<string>('');
+  const [chatMessage, setChatMessage] = useState<string>('');
+  
+  // Trial completion review modal
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
+  const [reviewDecision, setReviewDecision] = useState<string>('continue');
+  const [teammateChecks, setTeammateChecks] = useState<{ [id: string]: boolean }>({
+    'work': true,
+    'comm': true,
+    'again': true
+  });
 
-    const newTask = {
-      id: `tsk_${Date.now()}`,
-      title: newTaskTitle.trim(),
-      ownerName: newTaskOwner,
-      status: 'not_started' as const
-    };
-    setTasks(prev => [...prev, newTask]);
-    addToast('Task added to workspace sprint!', 'success');
-    setNewTaskTitle('');
-    setIsAddTaskOpen(false);
-  };
+  // Ship to ShipPad modal
+  const [isShipModalOpen, setIsShipModalOpen] = useState<boolean>(false);
+  const [shipTitle, setShipTitle] = useState<string>(activeWorkspace ? activeWorkspace.title : '');
+  const [shipTagline, setShipTagline] = useState<string>(activeWorkspace ? activeWorkspace.tagline : 'Autonomous background workflow engine for modern dev teams');
+  const [shipCategory, setShipCategory] = useState<string>('Developer Tools & AI');
+  const [shipDemoUrl, setShipDemoUrl] = useState<string>('https://pulseai.dev');
 
-  const handleSendChat = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chatInput.trim()) return;
-    setMessages(prev => [...prev, {
-      id: String(Date.now()),
-      sender: currentUser.name,
-      text: chatInput,
-      time: 'Just now'
-    }]);
-    setChatInput('');
-  };
-
-  const handleDailyStandup = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!dailyStandupText.trim()) return;
-    addToast('Daily standup recorded! Team progress updated.', 'success');
-    setDailyStandupText('');
-  };
-
-  if (!trialBuild) {
+  if (!activeWorkspace) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-left space-y-6">
-        <div className="p-10 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-4 shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] mx-auto flex items-center justify-center">
-            <Layers className="w-7 h-7" />
-          </div>
-          <div className="space-y-1.5 max-w-md mx-auto">
-            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
-              No Active Trial Sprint
-            </h2>
-            <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
-              A 4-Day Trial Sprint is ShipWith's core mechanism for founders and builders to test real working compatibility before making long-term equity or co-founder commitments.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <Button
-              variant="primary"
-              size="md"
-              onClick={() => setCurrentView('startups')}
-              leftIcon={<Rocket className="w-4 h-4" />}
-            >
-              Explore Startups & Apply
-            </Button>
-            <Button
-              variant="outline"
-              size="md"
-              onClick={() => setCurrentView('people')}
-            >
-              Find Potential Teammates
-            </Button>
-          </div>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 py-12 text-center text-xs font-mono">
+        No active workspaces found.
       </div>
     );
   }
 
-  return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 text-left space-y-6">
-      
-      {/* Workspace Header & Trial Status Bar */}
-      <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                {trialBuild.buildTitle} — Build Room
-              </h1>
-              <Badge variant="warning" size="sm">5-Day Trial Collaboration</Badge>
-            </div>
-            <p className="text-xs text-[var(--color-text-secondary)]">
-              Lightweight team alignment container. Connected to repo, tasks, and Ship proof.
-            </p>
-          </div>
+  const handleAddLog = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!dailyLogInput.trim()) return;
+    addWorkspaceShipLog(activeWorkspace.id, dailyLogInput);
+    addToast('Daily ship log submitted! Proof heatmap updated.', 'success');
+    setDailyLogInput('');
+  };
 
-          {/* Trial Decision Controls (PRD TRIAL-02) */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => addToast('Feedback recorded: Trial completed smoothly!', 'info')}
-            >
-              End Trial
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => addToast('Decision recorded: Continue building together!', 'success')}
-            >
-              Continue Together ✓
-            </Button>
+  const handleCreateTask = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+    addWorkspaceTask(activeWorkspace.id, newTaskTitle);
+    addToast('Task added to sprint!', 'info');
+    setNewTaskTitle('');
+  };
+
+  const handleSendChat = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatMessage.trim()) return;
+    sendWorkspaceChatMessage(activeWorkspace.id, chatMessage);
+    setChatMessage('');
+  };
+
+  const handleCompleteTrial = () => {
+    completeTrialSprint(activeWorkspace.id, reviewDecision, ['Maya Lin', 'Arjun Verma']);
+    setIsReviewModalOpen(false);
+  };
+
+  const handleShipSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    shipToShipPad(activeWorkspace.id, {
+      title: shipTitle,
+      tagline: shipTagline,
+      description: `Shipped by the ${activeWorkspace.title} collaborative trial team on ShipWith.`,
+      demoUrl: shipDemoUrl,
+      category: shipCategory
+    });
+    setIsShipModalOpen(false);
+    setCurrentView('feed');
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      {/* 1. TOP PROJECT SWITCHER BAR */}
+      <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#1A5052] text-white flex items-center justify-center font-bold text-sm shadow-2xs">
+            {activeWorkspace.title.substring(0, 2).toUpperCase()}
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-base font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                {activeWorkspace.title}
+              </span>
+              {activeWorkspace.isTrial && (
+                <span className="text-[10px] font-mono font-bold bg-[#E8F8EE] text-[#00AA45] px-2 py-0.5 rounded-full border border-[#C6F0D6]">
+                  Trial Sprint
+                </span>
+              )}
+            </div>
+            <span className="text-xs font-mono text-[var(--text-muted)]">
+              Lightweight Build Room
+            </span>
           </div>
         </div>
 
-        {/* Weekly Objective Card */}
-        <div className="p-3.5 bg-[var(--color-surface-subtle)] rounded-[var(--radius-md)] border border-[var(--color-border)] flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div>
-            <span className="font-mono text-[11px] text-[var(--color-text-muted)] uppercase">Weekly Sprint Objective:</span>
-            <div className="font-semibold text-[var(--color-text-primary)] mt-0.5">{trialBuild.objective}</div>
-          </div>
-          <div className="font-mono text-[11px] text-[var(--color-text-muted)]">
-            Timeline: {trialBuild.startDate} – {trialBuild.endDate}
-          </div>
+        {/* Switcher Pills */}
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <span className="text-[var(--text-muted)] text-[11px] hidden md:inline">Active Rooms:</span>
+          {workspaces.map((w) => (
+            <button
+              key={w.id}
+              onClick={() => setActiveWorkspaceId(w.id)}
+              className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                activeWorkspace.id === w.id
+                  ? 'bg-[#1A5052] text-white border-[#12393B] font-bold shadow-2xs'
+                  : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border-crisp)] hover:border-[#1A5052]'
+              }`}
+            >
+              {w.title}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Tabs navigation */}
-      <div className="flex items-center gap-1.5 border-b border-[var(--color-border)] pb-2">
+      {/* 2. TRIAL BUILD COUNTDOWN BANNER (If Trial) */}
+      {activeWorkspace.isTrial && (
+        <div className="bg-gradient-to-r from-[#1A5052] to-[#102223] text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono text-[#34D399] bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10 font-bold flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                DAY 4 OF 5 TRIAL SPRINT • {activeWorkspace.trialDaysLeft || 5} DAYS REMAINING
+              </span>
+              <span className="text-xs font-mono text-white/80">
+                Zero Equity Risk Protection
+              </span>
+            </div>
+            <h2 className="text-xl font-bold font-['Plus_Jakarta_Sans'] text-white">
+              Sprint Objective: {activeWorkspace.objective}
+            </h2>
+            <p className="text-xs text-zinc-300 font-mono">
+              Build Room Members: {activeWorkspace.team.map(m => `${m.name} (${m.role})`).join(', ')}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
+            <button
+              onClick={() => setIsReviewModalOpen(true)}
+              className="bg-[#00AA45] hover:bg-[#008A37] text-white px-4 py-2.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+            >
+              <Award className="w-4 h-4" />
+              <span>Complete Trial & Review</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 3. NAVIGATION TABS */}
+      <div className="flex items-center gap-2 border-b border-[var(--border-crisp)] pb-2 font-mono text-xs overflow-x-auto scrollbar-none">
         {[
-          { id: 'tasks', label: 'Tasks & Checklist', count: tasks.length },
-          { id: 'chat', label: 'Team Chat', count: messages.length },
-          { id: 'team', label: 'Collaborators', count: trialBuild.participants.length },
-          { id: 'links', label: 'Links & Demos' }
-        ].map(tab => (
+          { id: 'overview', label: 'Overview & Daily Log' },
+          { id: 'tasks', label: `Sprint Tasks (${activeWorkspace.tasks.length})` },
+          { id: 'chat', label: `Team Chat (${activeWorkspace.chatMessages.length})` },
+          { id: 'team', label: `Team & Roles (${activeWorkspace.team.length})` },
+          { id: 'links', label: 'Connected Links & Demo' }
+        ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`px-3 py-1.5 rounded-[var(--radius-md)] text-xs font-semibold transition-colors cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl transition-all font-semibold shrink-0 cursor-pointer ${
               activeTab === tab.id
-                ? 'bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)]'
-                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-subtle)]'
+                ? 'bg-[#1A5052] text-white shadow-xs'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white'
             }`}
           >
-            <span>{tab.label}</span>
-            {tab.count !== undefined && (
-              <span className="ml-1.5 opacity-80 font-mono text-[10px]">({tab.count})</span>
-            )}
+            {tab.label}
           </button>
         ))}
       </div>
 
-      {/* Tab 1: Tasks & Standup */}
-      {activeTab === 'tasks' && (
+      {/* 4. MAIN WORKSPACE CONTENT */}
+      {/* TAB: OVERVIEW & DAILY LOG */}
+      {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-[var(--color-text-primary)] uppercase tracking-wider font-mono">
-                Sprint Task Roster
-              </h2>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsAddTaskOpen(true)}
-                leftIcon={<Plus className="w-3.5 h-3.5" />}
-              >
-                Add Task
-              </Button>
+          {/* Left (7 cols): Daily Log Prompt & Activity */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* Daily Prompt Input */}
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-card)] space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-[#00AA45]" />
+                  <span>"What did you ship today?"</span>
+                </label>
+                <span className="text-[11px] font-mono text-[var(--text-muted)]">
+                  Updates your Proof Heatmap
+                </span>
+              </div>
+
+              <form onSubmit={handleAddLog} className="space-y-3">
+                <textarea
+                  rows={3}
+                  value={dailyLogInput}
+                  onChange={(e) => setDailyLogInput(e.target.value)}
+                  placeholder="e.g. Wired up LangGraph subagent execution retry logic and passed dry run regressions."
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl p-3 text-xs font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-[#1A5052] resize-none"
+                />
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">
+                    Share concise technical progress with your trial team.
+                  </span>
+                  <button
+                    type="submit"
+                    className="bg-[#1A5052] hover:bg-[#12393B] text-white px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Log Ship</span>
+                  </button>
+                </div>
+              </form>
             </div>
 
-            <div className="space-y-2">
-              {tasks.map(task => {
-                const isDone = task.status === 'done';
-                return (
-                  <div
-                    key={task.id}
-                    className="p-3.5 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs flex items-center justify-between gap-3 hover:border-[var(--color-border-strong)] transition-all"
-                  >
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => toggleTaskStatus(task.id)}
-                        className="cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-brand-accent)]"
-                        aria-label="Toggle task status"
-                      >
-                        <CheckSquare className={`w-4 h-4 ${isDone ? 'text-[var(--color-success)]' : ''}`} />
-                      </button>
-                      <div>
-                        <div className={`text-xs font-semibold text-[var(--color-text-primary)] ${isDone ? 'line-through opacity-60' : ''}`}>
-                          {task.title}
-                        </div>
-                        {task.ownerName && (
-                          <div className="text-[10px] text-[var(--color-text-muted)] font-mono mt-0.5">
-                            Assigned to: {task.ownerName}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+            {/* Daily Ship Logs Feed */}
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-card)] space-y-4">
+              <span className="text-xs font-mono font-bold text-[var(--text-primary)] uppercase tracking-wider block pb-2 border-b border-[var(--border-crisp)]">
+                Recent Daily Ship Logs
+              </span>
 
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${
-                      isDone 
-                        ? 'bg-[var(--color-success-subtle)] text-[var(--color-success)]'
-                        : task.status === 'in_progress'
-                        ? 'bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)]'
-                        : 'bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]'
-                    }`}>
-                      {task.status.replace('_', ' ')}
-                    </span>
+              <div className="space-y-3">
+                {activeWorkspace.shipLogs.map((log) => (
+                  <div key={log.id} className="p-3 bg-[var(--bg-canvas)] rounded-xl border border-[var(--border-crisp)] text-xs font-mono space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-[var(--text-primary)]">{log.author}</span>
+                      <span className="text-[10px] text-[var(--text-muted)]">{log.time}</span>
+                    </div>
+                    <p className="text-[var(--text-secondary)]">{log.content}</p>
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Daily Standup Box (PRD WORK-03) */}
-          <div className="lg:col-span-4 space-y-4">
-            <div className="p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[var(--color-brand-accent)]" />
-                <h3 className="text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider font-mono">
-                  Daily Check-in
-                </h3>
+          {/* Right (5 cols): Demo Preview + Primary Ship Button */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-card)] space-y-4">
+              <span className="text-xs font-mono font-bold text-[#D94E1F] uppercase tracking-wider block">
+                Final Product Launch
+              </span>
+
+              <div className="p-4 bg-[var(--bg-canvas)] rounded-xl border border-[var(--border-crisp)] space-y-2">
+                <h4 className="font-bold text-sm font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                  {activeWorkspace.title}
+                </h4>
+                <p className="text-xs text-[var(--text-secondary)] font-mono">
+                  Ready to present your collaboration to the ShipWith community? Publishing adds your product directly to Week 42 ShipPad.
+                </p>
+                <div className="pt-2 flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]">
+                  <Globe className="w-3.5 h-3.5 text-[#00AA45]" />
+                  <span>Demo: https://pulseai.dev</span>
+                </div>
               </div>
-              <p className="text-xs text-[var(--color-text-secondary)]">
-                Keep the team in sync. What did you ship or learn today?
-              </p>
-              <form onSubmit={handleDailyStandup} className="space-y-2">
-                <textarea
-                  rows={3}
-                  value={dailyStandupText}
-                  onChange={e => setDailyStandupText(e.target.value)}
-                  placeholder="e.g. Completed Vercel deployment preview and tested token latency..."
-                  className="w-full text-xs p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none resize-none"
-                />
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="sm"
-                  className="w-full"
-                  disabled={!dailyStandupText.trim()}
-                >
-                  Record Update
-                </Button>
-              </form>
+
+              <button
+                onClick={() => setIsShipModalOpen(true)}
+                className="w-full bg-[#D94E1F] hover:bg-[#C2410C] text-white py-3 px-4 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer"
+              >
+                <Rocket className="w-4 h-4" />
+                <span>Ship to Weekly ShipPad</span>
+              </button>
+            </div>
+
+            {/* Quick Connected Links Card */}
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-card)] space-y-3">
+              <span className="text-xs font-mono font-bold text-[var(--text-primary)] uppercase tracking-wider block">
+                Toolchain Links
+              </span>
+              <div className="space-y-2 text-xs font-mono">
+                {activeWorkspace.connectedLinks.map((link, idx) => (
+                  <a
+                    key={idx}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-lg bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)] flex items-center justify-between transition-colors"
+                  >
+                    <span className="flex items-center gap-2">
+                      {link.type === 'github' && <Code2 className="w-4 h-4" />}
+                      {link.type === 'figma' && <Palette className="w-4 h-4 text-[#A259FF]" />}
+                      {link.type === 'demo' && <Globe className="w-4 h-4 text-[#00AA45]" />}
+                      {link.type === 'docs' && <FileText className="w-4 h-4 text-[#1A5052]" />}
+                      <span>{link.label}</span>
+                    </span>
+                    <ExternalLink className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Tab 2: Team Chat */}
-      {activeTab === 'chat' && (
-        <div className="max-w-2xl mx-auto p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-4">
-          <div className="h-64 overflow-y-auto space-y-3 p-2">
-            {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center text-xs text-[var(--color-text-muted)] space-y-1">
-                <p className="font-semibold text-[var(--color-text-primary)]">Sprint Channel</p>
-                <p>No messages yet. Send an update to coordinate with your sprint teammate.</p>
-              </div>
-            ) : (
-              messages.map(m => (
-                <div key={m.id} className="p-3 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-xs space-y-1">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-[var(--color-text-muted)]">
-                    <span className="font-bold text-[var(--color-text-primary)]">{m.sender}</span>
-                    <span>{m.time}</span>
-                  </div>
-                  <div className="text-[var(--color-text-secondary)]">{m.text}</div>
-                </div>
-              ))
-            )}
+      {/* TAB: SPRINT TASKS */}
+      {activeTab === 'tasks' && (
+        <div className="space-y-6">
+          {/* Add Task Bar */}
+          <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)]">
+            <form onSubmit={handleCreateTask} className="flex gap-2">
+              <input
+                type="text"
+                value={newTaskTitle}
+                onChange={(e) => setNewTaskTitle(e.target.value)}
+                placeholder="Add sprint milestone task..."
+                className="flex-1 bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3.5 py-2 text-xs font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-[#1A5052]"
+              />
+              <button
+                type="submit"
+                className="bg-[#1A5052] hover:bg-[#12393B] text-white px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Task</span>
+              </button>
+            </form>
           </div>
 
-          <form onSubmit={handleSendChat} className="flex gap-2 pt-2 border-t border-[var(--color-border)]">
+          {/* Kanban Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Column 1: Todo */}
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
+                <span className="text-xs font-mono font-bold text-[var(--text-muted)] uppercase">
+                  Todo ({activeWorkspace.tasks.filter(t => t.status === 'todo').length})
+                </span>
+              </div>
+              <div className="space-y-2">
+                {activeWorkspace.tasks.filter(t => t.status === 'todo').map((task) => (
+                  <div
+                    key={task.id}
+                    onClick={() => toggleWorkspaceTaskStatus(activeWorkspace.id, task.id)}
+                    className="p-3 bg-[var(--bg-canvas)] hover:bg-[var(--bg-hover)] rounded-xl border border-[var(--border-crisp)] transition-all cursor-pointer space-y-1"
+                  >
+                    <span className="text-xs font-medium text-[var(--text-primary)] block">
+                      {task.title}
+                    </span>
+                    <div className="flex items-center justify-between text-[10px] font-mono text-[var(--text-muted)]">
+                      <span>{task.assignee}</span>
+                      <span className="text-[#1A5052] font-semibold">Click to advance →</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Column 2: In Progress */}
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
+                <span className="text-xs font-mono font-bold text-amber-600 uppercase">
+                  In Progress ({activeWorkspace.tasks.filter(t => t.status === 'in_progress').length})
+                </span>
+              </div>
+              <div className="space-y-2">
+                {activeWorkspace.tasks.filter(t => t.status === 'in_progress').map((task) => (
+                  <div
+                    key={task.id}
+                    onClick={() => toggleWorkspaceTaskStatus(activeWorkspace.id, task.id)}
+                    className="p-3 bg-amber-50/50 hover:bg-amber-50 rounded-xl border border-amber-200 transition-all cursor-pointer space-y-1"
+                  >
+                    <span className="text-xs font-medium text-[var(--text-primary)] block">
+                      {task.title}
+                    </span>
+                    <div className="flex items-center justify-between text-[10px] font-mono text-amber-800">
+                      <span>{task.assignee}</span>
+                      <span className="font-semibold">Click to mark Done ✔</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Column 3: Done */}
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
+                <span className="text-xs font-mono font-bold text-[#00AA45] uppercase">
+                  Done ({activeWorkspace.tasks.filter(t => t.status === 'done').length}) ✔
+                </span>
+              </div>
+              <div className="space-y-2">
+                {activeWorkspace.tasks.filter(t => t.status === 'done').map((task) => (
+                  <div
+                    key={task.id}
+                    onClick={() => toggleWorkspaceTaskStatus(activeWorkspace.id, task.id)}
+                    className="p-3 bg-[#E8F8EE]/60 hover:bg-[#E8F8EE] rounded-xl border border-[#C6F0D6] transition-all cursor-pointer space-y-1"
+                  >
+                    <span className="text-xs font-medium text-[var(--text-secondary)] line-through block">
+                      {task.title}
+                    </span>
+                    <div className="flex items-center justify-between text-[10px] font-mono text-[#00AA45]">
+                      <span>{task.assignee}</span>
+                      <span className="font-bold">Shipped ✔</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB: TEAM CHAT */}
+      {activeTab === 'chat' && (
+        <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-6 shadow-[var(--shadow-card)] space-y-4 max-w-3xl mx-auto">
+          <div className="flex items-center justify-between pb-3 border-b border-[var(--border-crisp)]">
+            <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider">
+              {activeWorkspace.title} Sprint Team Chat
+            </span>
+            <span className="text-[11px] font-mono text-[var(--text-muted)]">
+              End-to-end encrypted build room
+            </span>
+          </div>
+
+          <div className="space-y-3 min-h-[280px] max-h-[400px] overflow-y-auto pr-2 scrollbar-thin">
+            {activeWorkspace.chatMessages.map((msg) => (
+              <div key={msg.id} className="p-3 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-crisp)] text-xs font-mono space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[var(--text-primary)]">{msg.sender}</span>
+                  <span className="text-[10px] text-[var(--text-muted)]">{msg.time}</span>
+                </div>
+                <p className="text-[var(--text-secondary)] font-sans">{msg.text}</p>
+              </div>
+            ))}
+          </div>
+
+          <form onSubmit={handleSendChat} className="flex gap-2 pt-2 border-t border-[var(--border-crisp)]">
             <input
               type="text"
-              value={chatInput}
-              onChange={e => setChatInput(e.target.value)}
-              placeholder="Send message to build room..."
-              className="flex-1 text-xs p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
+              value={chatMessage}
+              onChange={(e) => setChatMessage(e.target.value)}
+              placeholder="Send a message to sprint collaborators..."
+              className="flex-1 bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3.5 py-2 text-xs font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-[#1A5052]"
             />
-            <Button type="submit" variant="primary" size="sm" rightIcon={<Send className="w-3.5 h-3.5" />}>
-              Send
-            </Button>
+            <button
+              type="submit"
+              className="bg-[#1A5052] hover:bg-[#12393B] text-white px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>Send</span>
+            </button>
           </form>
         </div>
       )}
 
-      {/* Tab 3: Team */}
+      {/* TAB: TEAM & ROLES */}
       {activeTab === 'team' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl">
-          {trialBuild.participants.map(p => (
-            <div key={p.userId} className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between">
-              <div>
-                <div className="text-sm font-bold text-[var(--color-text-primary)]">{p.name}</div>
-                <div className="text-xs text-[var(--color-text-muted)] font-mono">{p.role}</div>
+        <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-6 shadow-[var(--shadow-card)] space-y-4 max-w-3xl mx-auto">
+          <span className="text-xs font-mono font-bold text-[var(--text-primary)] uppercase tracking-wider block pb-2 border-b border-[var(--border-crisp)]">
+            Sprint Collaborators & Exact Role Credits
+          </span>
+
+          <div className="space-y-3">
+            {activeWorkspace.team.map((member, idx) => (
+              <div key={idx} className="p-4 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-crisp)] flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <img src={member.avatar} alt={member.name} className="w-10 h-10 rounded-full object-cover border border-[var(--border-crisp)]" />
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-sm text-[var(--text-primary)]">{member.name}</span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" />
+                    </div>
+                    <span className="text-xs font-mono text-[#1A5052]">{member.role}</span>
+                  </div>
+                </div>
+
+                <span className="text-xs font-mono text-[#00AA45] bg-[#E8F8EE] px-2.5 py-1 rounded-full border border-[#C6F0D6] font-semibold">
+                  Verified Active ✔
+                </span>
               </div>
-              <Badge variant="success" size="sm">Active Member</Badge>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Tab 4: Links */}
+      {/* TAB: CONNECTED LINKS */}
       {activeTab === 'links' && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <a
-            href={trialBuild.repoUrl || 'https://github.com'}
-            target="_blank"
-            rel="noreferrer"
-            className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-strong)] transition-all flex items-center gap-3 text-xs"
-          >
-            <Code2 className="w-5 h-5 text-[var(--color-text-primary)]" />
-            <div>
-              <div className="font-bold text-[var(--color-text-primary)]">GitHub Repository</div>
-              <div className="text-[11px] text-[var(--color-text-muted)] font-mono">{trialBuild.repoUrl || 'Connected via sprint'}</div>
-            </div>
-          </a>
+        <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-6 shadow-[var(--shadow-card)] space-y-4 max-w-2xl mx-auto">
+          <span className="text-xs font-mono font-bold text-[var(--text-primary)] uppercase tracking-wider block pb-2 border-b border-[var(--border-crisp)]">
+            Connected Build Toolchain
+          </span>
 
-          <a
-            href={trialBuild.figmaUrl || '#'}
-            target="_blank"
-            rel="noreferrer"
-            className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-strong)] transition-all flex items-center gap-3 text-xs"
-          >
-            <Layers className="w-5 h-5 text-[var(--color-text-primary)]" />
-            <div>
-              <div className="font-bold text-[var(--color-text-primary)]">Figma Design Specs</div>
-              <div className="text-[11px] text-[var(--color-text-muted)] font-mono">{trialBuild.figmaUrl || 'Design deliverables'}</div>
-            </div>
-          </a>
-
-          <a
-            href={trialBuild.demoUrl || '#'}
-            target="_blank"
-            rel="noreferrer"
-            className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-border-strong)] transition-all flex items-center gap-3 text-xs"
-          >
-            <ExternalLink className="w-5 h-5 text-[var(--color-brand-accent)]" />
-            <div>
-              <div className="font-bold text-[var(--color-text-primary)]">Live Demo Preview</div>
-              <div className="text-[11px] text-[var(--color-text-muted)] font-mono">{trialBuild.demoUrl || 'Staging URL'}</div>
-            </div>
-          </a>
+          <div className="space-y-3 text-xs font-mono">
+            {activeWorkspace.connectedLinks.map((link, idx) => (
+              <div key={idx} className="p-3 rounded-xl bg-[var(--bg-canvas)] border border-[var(--border-crisp)] flex items-center justify-between">
+                <span className="flex items-center gap-2 font-bold">
+                  {link.type === 'github' && <Code2 className="w-4 h-4" />}
+                  {link.type === 'figma' && <Palette className="w-4 h-4 text-[#A259FF]" />}
+                  {link.type === 'demo' && <Globe className="w-4 h-4 text-[#00AA45]" />}
+                  {link.type === 'docs' && <FileText className="w-4 h-4 text-[#1A5052]" />}
+                  <span>{link.label}</span>
+                </span>
+                <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-[#1A5052] hover:underline flex items-center gap-1">
+                  <span>Open URL</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Add Task Modal */}
-      <Modal
-        isOpen={isAddTaskOpen}
-        onClose={() => setIsAddTaskOpen(false)}
-        title="Add Task to Workspace"
-        description="Keep tasks scoped and clear for team execution."
-      >
-        <form onSubmit={handleAddTask} className="space-y-4 text-xs">
-          <div>
-            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1">
-              Task Title
-            </label>
-            <input
-              type="text"
-              required
-              value={newTaskTitle}
-              onChange={e => setNewTaskTitle(e.target.value)}
-              placeholder="e.g. Implement user login session error recovery..."
-              className="w-full text-xs p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1">
-              Assignee
-            </label>
-            <select
-              value={newTaskOwner}
-              onChange={e => setNewTaskOwner(e.target.value)}
-              className="w-full text-xs p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
+      {/* 5. MODAL: COMPLETE TRIAL & REVIEW */}
+      {isReviewModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl border border-[var(--border-crisp)] shadow-[var(--shadow-float)] max-w-lg w-full p-6 sm:p-8 relative">
+            <button
+              onClick={() => setIsReviewModalOpen(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
             >
-              <option value={currentUser.name}>{currentUser.name} (You)</option>
-              {trialBuild.participants.filter(p => p.name !== currentUser.name).map(p => (
-                <option key={p.userId} value={p.name}>{p.name}</option>
-              ))}
-            </select>
-          </div>
+              <X className="w-4 h-4" />
+            </button>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--color-border)]">
-            <Button type="button" variant="ghost" size="sm" onClick={() => setIsAddTaskOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" size="sm">
-              Save Task
-            </Button>
-          </div>
-        </form>
-      </Modal>
+            <div className="text-center space-y-1">
+              <div className="w-10 h-10 rounded-xl bg-[#00AA45] text-white flex items-center justify-center mx-auto mb-2 shadow-xs">
+                <Award className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                Complete Trial Sprint & Review
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)]">
+                Structured decision for {activeWorkspace.title}. Submitting updates all teammates' Build Passport reputation.
+              </p>
+            </div>
 
+            <div className="my-5 space-y-4 text-xs font-mono">
+              {/* Decision Selector */}
+              <div>
+                <label className="block font-bold text-[var(--text-primary)] mb-1.5">
+                  Collaboration Decision:
+                </label>
+                <div className="space-y-2">
+                  {[
+                    { id: 'continue', label: 'Continue building together long-term (Co-founder / Core Teammate)' },
+                    { id: 'another', label: 'Try another scoped project collaboration' },
+                    { id: 'end', label: 'End collaboration amicably with positive reputation marks' }
+                  ].map((dec) => (
+                    <button
+                      key={dec.id}
+                      type="button"
+                      onClick={() => setReviewDecision(dec.id)}
+                      className={`w-full p-3 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                        reviewDecision === dec.id
+                          ? 'bg-[var(--bg-selected)] border-[#0D9488] font-bold text-[#1A5052]'
+                          : 'bg-white border-[var(--border-crisp)] text-[var(--text-secondary)]'
+                      }`}
+                    >
+                      <span>{dec.label}</span>
+                      {reviewDecision === dec.id && <Check className="w-4 h-4 text-[#00AA45]" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Teammate Verification Checkboxes */}
+              <div className="p-4 bg-[var(--bg-canvas)] rounded-xl border border-[var(--border-crisp)] space-y-2.5">
+                <span className="font-bold text-[var(--text-primary)] block">
+                  Teammate Verification Ledger:
+                </span>
+                {[
+                  { id: 'work', label: 'Completed all agreed trial deliverables' },
+                  { id: 'comm', label: 'Communicated clearly and met async deadlines' },
+                  { id: 'again', label: 'Would build together again (Increments Build Passport ✔)' }
+                ].map((item) => (
+                  <label key={item.id} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={teammateChecks[item.id] !== false}
+                      onChange={(e) => setTeammateChecks({ ...teammateChecks, [item.id]: e.target.checked })}
+                      className="rounded border-[var(--border-crisp)] text-[#00AA45] focus:ring-0"
+                    />
+                    <span className="text-[var(--text-secondary)]">{item.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsReviewModalOpen(false)}
+                className="px-4 py-2 rounded-xl text-xs font-mono font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleCompleteTrial}
+                className="bg-[#00AA45] hover:bg-[#008A37] text-white px-5 py-2.5 rounded-xl text-xs font-mono font-bold shadow-xs cursor-pointer"
+              >
+                Submit & Sign Ledger
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. MODAL: SHIP TO SHIPPAD */}
+      {isShipModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl border border-[var(--border-crisp)] shadow-[var(--shadow-float)] max-w-lg w-full p-6 sm:p-8 relative">
+            <button
+              onClick={() => setIsShipModalOpen(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="text-center space-y-1">
+              <div className="w-10 h-10 rounded-xl bg-[#D94E1F] text-white flex items-center justify-center mx-auto mb-2 shadow-xs">
+                <Rocket className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                Launch to Weekly ShipPad
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)]">
+                Present {activeWorkspace.title} on the Week 42 Leaderboard.
+              </p>
+            </div>
+
+            <form onSubmit={handleShipSubmit} className="my-5 space-y-3.5 text-xs font-mono">
+              <div>
+                <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                  Product Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={shipTitle}
+                  onChange={(e) => setShipTitle(e.target.value)}
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                  1-Line Tagline
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={shipTagline}
+                  onChange={(e) => setShipTagline(e.target.value)}
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                  Live Demo URL
+                </label>
+                <input
+                  type="url"
+                  required
+                  value={shipDemoUrl}
+                  onChange={(e) => setShipDemoUrl(e.target.value)}
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                  Category
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={shipCategory}
+                  onChange={(e) => setShipCategory(e.target.value)}
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052]"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setIsShipModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-mono font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)] cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#D94E1F] hover:bg-[#C2410C] text-white px-5 py-2.5 rounded-xl text-xs font-mono font-bold shadow-xs cursor-pointer flex items-center gap-1.5"
+                >
+                  <Rocket className="w-3.5 h-3.5" />
+                  <span>Publish to ShipPad</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

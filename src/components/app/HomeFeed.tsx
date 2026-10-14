@@ -1,514 +1,392 @@
 import React, { useState } from 'react';
-import { useApp } from '../../context/AppContext';
-import { Badge } from '../common/Badge';
-import { Button } from '../common/Button';
 import { 
-  Users, 
+  ArrowRight, 
   Clock, 
-  Globe, 
-  ExternalLink, 
-  CheckSquare,
-  Sparkles,
-  ChevronRight,
-  Filter,
-  Rocket,
-  Plus
+  CheckCircle2, 
+  Zap, 
+  Trophy, 
+  Users, 
+  ChevronRight, 
+  ChevronUp, 
+  CreditCard, 
+  Eye
 } from 'lucide-react';
-import { Drawer } from '../common/Drawer';
-import type { BuildRecord } from '../../types';
+import { useApp } from '../../context/AppContext';
 
 export const HomeFeed: React.FC = () => {
   const { 
-    builds, 
-    builders, 
-    setCurrentView, 
-    workspaceTasks, 
-    trialBuild,
-    addToast,
-    toggleBookmark,
-    bookmarks,
-    setIsPostBuildOpen
+    seedStartups, 
+    seedBuilders, 
+    shipPadItems, 
+    workspaces, 
+    activeWorkspaceId,
+    setActiveWorkspaceId,
+    setCurrentView,
+    setSelectedStartupId,
+    setSelectedBuilderId,
+    startTrialSprintWithStartup,
+    voteShipPadItem,
+    onboardingState
   } = useApp();
 
-  const [activeTab, setActiveTab] = useState<'fresh' | 'looking' | 'shipped'>('fresh');
-  const [selectedBuildForApply, setSelectedBuildForApply] = useState<BuildRecord | null>(null);
-  const [pitchText, setPitchText] = useState('');
-  const [isApplying, setIsApplying] = useState(false);
+  const [personaFilter, setPersonaFilter] = useState<'all' | 'founder' | 'designer' | 'developer'>('all');
 
-  // Filter builds based on tab
-  const displayedBuilds = builds.filter(b => {
-    if (activeTab === 'looking') return b.stage === 'Building MVP' || b.stage === 'Idea & Validation';
-    if (activeTab === 'shipped') return b.stage === 'Shipped';
-    return true; // 'fresh' shows all
+  const activeWorkspace = workspaces.find(w => w.id === activeWorkspaceId) || workspaces[0];
+
+  // Filter startups based on persona
+  const filteredStartups = seedStartups.filter(s => {
+    if (personaFilter === 'founder') return s.rolesNeeded.some(r => r.role.toLowerCase().includes('engineer') || r.role.toLowerCase().includes('developer'));
+    if (personaFilter === 'designer') return s.rolesNeeded.some(r => r.role.toLowerCase().includes('design') || r.role.toLowerCase().includes('ui'));
+    if (personaFilter === 'developer') return s.rolesNeeded.some(r => r.role.toLowerCase().includes('architect') || r.role.toLowerCase().includes('full-stack'));
+    return true;
   });
 
-  const handleApplySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!pitchText.trim()) return;
-    setIsApplying(true);
-    setTimeout(() => {
-      addToast(`Application sent for ${selectedBuildForApply?.title}!`, 'success');
-      setSelectedBuildForApply(null);
-      setPitchText('');
-      setIsApplying(false);
-    }, 500);
-  };
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* Left / Center Column: Builds Feed (8 cols on desktop) */}
-        <div className="lg:col-span-8 space-y-6">
-          
-          {/* Header Segmented Tabs & Sort */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-2 border-b border-[var(--color-border)]">
-            <div className="flex items-center gap-1.5 p-1 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)]">
-              <button
-                onClick={() => setActiveTab('fresh')}
-                className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'fresh'
-                    ? 'bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] shadow-xs'
-                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-                }`}
-              >
-                Fresh Builds
-              </button>
-              <button
-                onClick={() => setActiveTab('looking')}
-                className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'looking'
-                    ? 'bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] shadow-xs'
-                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-                }`}
-              >
-                Looking for People
-              </button>
-              <button
-                onClick={() => setActiveTab('shipped')}
-                className={`px-3 py-1.5 rounded-[var(--radius-sm)] text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'shipped'
-                    ? 'bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] shadow-xs'
-                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-                }`}
-              >
-                Shipped
-              </button>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* 1. TOP PERSONALIZATION PERSONA BAR */}
+      <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-card)]">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#00AA45] animate-pulse" />
+              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider">
+                PERSONALIZED RADAR
+              </span>
+              <span className="text-[11px] font-mono text-[var(--text-muted)] bg-[var(--bg-subtle)] px-2 py-0.5 rounded">
+                Based on: {onboardingState.step1Goal || 'Join a startup'} · {onboardingState.step7Hours || '10–20 hrs/wk'}
+              </span>
             </div>
-
-            <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)] font-mono">
-              <Filter className="w-3.5 h-3.5" />
-              <span>Sorted by Most Recent</span>
-            </div>
+            <h1 className="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] mt-1">
+              Welcome back to ShipWith
+            </h1>
           </div>
 
-          {/* Builds Cards Stream */}
-          <div className="space-y-4">
-            {displayedBuilds.length === 0 ? (
-              <div className="p-10 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] mx-auto flex items-center justify-center">
-                  <Rocket className="w-6 h-6" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-base font-bold text-[var(--color-text-primary)]">
-                    No builds posted in this category yet
-                  </h3>
-                  <p className="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto leading-relaxed">
-                    ShipWith is a 100% genuine maker platform with zero synthetic profiles or bots. Be the first real builder to post an MVP or recruit co-founders!
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => setIsPostBuildOpen(true)}
-                    leftIcon={<Plus className="w-4 h-4" />}
-                  >
-                    Post a Build
-                  </Button>
-                  {activeTab !== 'fresh' && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setActiveTab('fresh')}
+          {/* Quick Persona Switcher Pills */}
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+            <span className="text-[var(--text-muted)] hidden lg:inline">Filter Mode:</span>
+            {[
+              { id: 'all', label: 'All Telemetry' },
+              { id: 'founder', label: 'Founders Seeking Devs' },
+              { id: 'designer', label: 'Design Collaborations' },
+              { id: 'developer', label: 'Tech Co-founder' }
+            ].map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setPersonaFilter(p.id as any)}
+                className={`px-3 py-1.5 rounded-lg transition-all border cursor-pointer ${
+                  personaFilter === p.id
+                    ? 'bg-[#1A5052] text-white border-[#12393B] font-bold shadow-2xs'
+                    : 'bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] border-[var(--border-crisp)]'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 2. ACTIVE TRIAL SPRINT STATUS BANNER */}
+      {activeWorkspace && activeWorkspace.isTrial && (
+        <div className="bg-gradient-to-r from-[#1A5052] to-[#102223] text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono text-[#34D399] bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10 font-bold flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                ACTIVE TRIAL SPRINT • {activeWorkspace.trialDaysLeft ?? 5} DAYS REMAINING
+              </span>
+              <span className="text-xs font-mono text-white/80">
+                Milestones: {activeWorkspace.tasks.filter(t => t.status === 'done').length}/{activeWorkspace.tasks.length} Done
+              </span>
+            </div>
+            <h2 className="text-xl font-bold font-['Plus_Jakarta_Sans'] text-white">
+              {activeWorkspace.title}
+            </h2>
+            <p className="text-xs text-zinc-300 font-mono">
+              Sprint Objective: {activeWorkspace.objective}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 self-start md:self-auto">
+            <button
+              onClick={() => {
+                setActiveWorkspaceId(activeWorkspace.id);
+                setCurrentView('workspace');
+              }}
+              className="bg-[#00AA45] hover:bg-[#008A37] text-white px-5 py-2.5 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all shadow-xs cursor-pointer"
+            >
+              <span>Open Build Room</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 3. HIGH-MATCH STARTUPS FOR YOU (With SVG Rings) */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] flex items-center gap-2">
+              High-Match Startups for You
+              <Zap className="w-4 h-4 text-[#0D9488]" />
+            </h2>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+              Ranked by stack synergy, weekly hours, and stage compatibility.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setCurrentView('startups')}
+            className="text-xs font-mono text-[#1A5052] hover:underline font-semibold flex items-center gap-1"
+          >
+            <span>View all 8 startups</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filteredStartups.slice(0, 4).map((startup) => (
+            <div
+              key={startup.id}
+              className="bg-white rounded-xl border border-[var(--border-crisp)] p-5 hover:border-[var(--border-hover)] shadow-[var(--shadow-card)] transition-all flex flex-col justify-between"
+            >
+              <div>
+                {/* Header with Circular SVG Match Ring */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div 
+                      style={{ backgroundColor: startup.logoBg }}
+                      className="w-10 h-10 rounded-xl text-white font-mono font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs"
                     >
-                      View All Categories
-                    </Button>
+                      {startup.logoText}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-base font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                          {startup.name}
+                        </h3>
+                        <span className="text-[10px] font-mono font-semibold bg-[var(--bg-selected)] text-[#0D9488] px-2 py-0.5 rounded-full border border-[#BCE5DC]">
+                          {startup.stage}
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-mono text-[var(--text-muted)]">
+                        {startup.industry}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* SVG Gauge */}
+                  <div className="flex flex-col items-center shrink-0">
+                    <div className="relative w-12 h-12 flex items-center justify-center">
+                      <svg className="w-12 h-12 transform -rotate-90">
+                        <circle
+                          cx="24"
+                          cy="24"
+                          r="19"
+                          stroke="#F2EFE9"
+                          strokeWidth="3.5"
+                          fill="transparent"
+                        />
+                        <circle
+                          cx="24"
+                          cy="24"
+                          r="19"
+                          stroke="#0D9488"
+                          strokeWidth="3.5"
+                          strokeDasharray={2 * Math.PI * 19}
+                          strokeDashoffset={2 * Math.PI * 19 * (1 - startup.matchScore / 100)}
+                          strokeLinecap="round"
+                          fill="transparent"
+                        />
+                      </svg>
+                      <span className="absolute text-[11px] font-mono font-bold text-[#1A5052]">
+                        {startup.matchScore}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-xs text-[var(--text-secondary)] mt-3 leading-relaxed font-medium">
+                  {startup.tagline}
+                </p>
+
+                {/* Tech stack */}
+                <div className="flex flex-wrap gap-1 mt-3">
+                  {startup.techStack.slice(0, 4).map((tech, idx) => (
+                    <span key={idx} className="text-[10px] font-mono bg-[var(--bg-subtle)] text-[var(--text-secondary)] px-2 py-0.5 rounded border border-[var(--border-crisp)]">
+                      {tech}
+                    </span>
+                  ))}
+                  {startup.techStack.length > 4 && (
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] self-center">
+                      +{startup.techStack.length - 4}
+                    </span>
                   )}
                 </div>
               </div>
-            ) : (
-              displayedBuilds.map(build => {
-                const isShipped = build.stage === 'Shipped';
-                const isSaved = bookmarks.includes(build.id);
 
-                return (
-                  <article
-                    key={build.id}
-                    className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm hover:border-[var(--color-border-strong)] transition-all space-y-4 text-left"
+              {/* Bottom Actions */}
+              <div className="mt-4 pt-3 border-t border-[var(--border-crisp)] flex items-center justify-between text-xs font-mono">
+                <span className="text-[var(--text-muted)] flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" /> {startup.weeklyHours}
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSelectedStartupId(startup.id)}
+                    className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] px-2.5 py-1.5 rounded-lg border border-[var(--border-crisp)] transition-colors cursor-pointer flex items-center gap-1"
                   >
-                    {/* Top Status & Timestamp */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Badge 
-                          variant={isShipped ? 'success' : 'info'}
-                          size="sm"
-                        >
-                          {isShipped ? 'Shipped Product' : 'Looking for teammates'}
-                        </Badge>
-                        <span className="text-[11px] font-mono text-[var(--color-text-muted)]">
-                          {build.createdAt}
-                        </span>
-                      </div>
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Details</span>
+                  </button>
 
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => toggleBookmark(build.id)}
-                          className={`text-xs px-2 py-1 rounded transition-colors cursor-pointer ${
-                            isSaved 
-                              ? 'text-[var(--color-brand-accent)] font-semibold' 
-                              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]'
-                          }`}
-                        >
-                          {isSaved ? '★ Saved' : '☆ Save'}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Build Title & Pitch */}
-                    <div className="space-y-1.5">
-                      <h2 className="text-lg font-bold text-[var(--color-text-primary)] hover:underline cursor-pointer" onClick={() => setCurrentView('startups')}>
-                        {build.title}
-                      </h2>
-                      <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] leading-relaxed">
-                        {build.description}
-                      </p>
-                    </div>
-
-                    {/* Tech Stack Chips */}
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      {build.techStack.map(tech => (
-                        <span 
-                          key={tech} 
-                          className="px-2 py-0.5 text-[11px] font-mono rounded-[var(--radius-sm)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-[var(--color-text-secondary)]"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Metadata Row */}
-                    <div className="pt-2 border-t border-[var(--color-border)] flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--color-text-muted)]">
-                      <div className="flex items-center gap-4">
-                        {isShipped ? (
-                          <>
-                            <span className="font-semibold text-[var(--color-text-primary)]">Verified Shipped</span>
-                            <span>•</span>
-                            <span>Live Product</span>
-                          </>
-                        ) : (
-                          <>
-                            <div className="flex items-center gap-1.5">
-                              <Users className="w-3.5 h-3.5 text-[var(--color-brand-accent)]" />
-                              <span>{build.neededRoles.length} open roles</span>
-                            </div>
-                            <span>•</span>
-                            <div className="flex items-center gap-1.5">
-                              <Clock className="w-3.5 h-3.5" />
-                              <span>{build.hoursPerWeek}</span>
-                            </div>
-                            <span>•</span>
-                            <div className="flex items-center gap-1.5">
-                              <Globe className="w-3.5 h-3.5" />
-                              <span>Remote</span>
-                            </div>
-                          </>
-                        )}
-                      </div>
-
-                      {/* Action buttons */}
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => setCurrentView('startups')}
-                        >
-                          {isShipped ? 'View Details' : 'View Startup'}
-                        </Button>
-                        
-                        {isShipped ? (
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => {
-                              if (build.demoUrl) {
-                                window.open(build.demoUrl, '_blank');
-                              } else {
-                                addToast('No demo URL provided yet by creator.', 'info');
-                              }
-                            }}
-                            rightIcon={<ExternalLink className="w-3.5 h-3.5" />}
-                          >
-                            Try Demo
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => setSelectedBuildForApply(build)}
-                          >
-                            Apply to Team
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </article>
-                );
-              })
-            )}
-          </div>
+                  <button
+                    onClick={() => startTrialSprintWithStartup(startup.id)}
+                    className="bg-[#1A5052] hover:bg-[#12393B] text-white px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                  >
+                    <Zap className="w-3.5 h-3.5 text-[#34D399]" />
+                    <span>Start Trial</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
+      </div>
 
-        {/* Right Rail: Context & Momentum Widgets (4 cols on desktop) */}
-        <aside className="lg:col-span-4 space-y-6 text-left">
-          
-          {/* Widget 1: People for you (Matching Image 3) */}
-          <div className="p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider font-mono">
-                People for you
-              </h3>
-              <button 
-                onClick={() => setCurrentView('people')}
-                className="text-[11px] font-mono text-[var(--color-brand-accent)] hover:underline cursor-pointer"
-              >
-                View all →
-              </button>
-            </div>
-
-            {builders.length === 0 ? (
-              <div className="py-4 text-center space-y-2">
-                <p className="text-xs text-[var(--color-text-secondary)]">No other builders joined yet.</p>
-                <button
-                  onClick={() => setCurrentView('onboarding')}
-                  className="text-[11px] font-mono text-[var(--color-brand-accent)] hover:underline block mx-auto cursor-pointer"
-                >
-                  Mint your Builder Passport →
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {builders.slice(0, 3).map(builder => (
-                  <div key={builder.id} className="flex items-start justify-between gap-3 pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
-                    <div className="flex items-start gap-2.5">
-                      <img 
-                        src={builder.avatar} 
-                        alt={builder.name} 
-                        className="w-8 h-8 rounded-full object-cover shrink-0 border border-[var(--color-border)]"
-                      />
-                      <div>
-                        <div className="text-xs font-semibold text-[var(--color-text-primary)] leading-tight">
-                          {builder.name}
-                        </div>
-                        <div className="text-[11px] text-[var(--color-text-muted)] mt-0.5">
-                          {builder.headline}
-                        </div>
-                        <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-[var(--color-text-muted)]">
-                          <span className="text-[var(--color-success)]">● Available</span>
-                          <span>{builder.weeklyHours}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs py-1 px-2.5 shrink-0"
-                      onClick={() => addToast(`Invite sent to ${builder.name}!`, 'success')}
-                    >
-                      Invite
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Widget 2: Build together task checklist (Matching Image 3) */}
-          <div className="p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider font-mono">
-                Build Together Tracker
-              </h3>
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)]">Active Sprint</span>
-            </div>
-
-            {workspaceTasks.length === 0 ? (
-              <div className="py-3 text-center space-y-1">
-                <p className="text-xs text-[var(--color-text-secondary)]">No active trial sprint tasks.</p>
-                <p className="text-[10px] text-[var(--color-text-muted)]">Team up with a co-founder to launch 4-day sprint goals.</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {workspaceTasks.slice(0, 4).map(task => (
-                  <div key={task.id} className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
-                    <CheckSquare className={`w-3.5 h-3.5 shrink-0 ${task.status === 'done' ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`} />
-                    <span className={task.status === 'done' ? 'line-through opacity-70' : ''}>{task.title}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
+      {/* 4. BUILDERS TO MEET & RECENT SHIPPAD LAUNCHES (2 Columns) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left (7 cols): Builders to Meet */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] flex items-center gap-2">
+              Verified Builders to Meet
+              <Users className="w-4 h-4 text-[#00AA45]" />
+            </h2>
             <button
-              onClick={() => setCurrentView('workspace')}
-              className="w-full text-center text-xs font-semibold text-[var(--color-brand-accent)] hover:underline pt-2 border-t border-[var(--color-border)] cursor-pointer"
+              onClick={() => setCurrentView('people')}
+              className="text-xs font-mono text-[#1A5052] hover:underline font-semibold"
             >
-              Open Build Room →
+              Browse all →
             </button>
           </div>
 
-          {/* Widget 3: Workspace preview & Standup Prompt */}
-          <div className="p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider font-mono">
-                Workspace Preview
-              </h3>
-              <button 
-                onClick={() => setCurrentView('workspace')}
-                className="text-[11px] font-mono text-[var(--color-brand-accent)] cursor-pointer"
+          <div className="space-y-3">
+            {seedBuilders.slice(0, 3).map((builder) => (
+              <div
+                key={builder.id}
+                onClick={() => setSelectedBuilderId(builder.id)}
+                className="bg-white rounded-xl border border-[var(--border-crisp)] p-4 hover:border-[#1A5052] shadow-[var(--shadow-card)] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer"
               >
-                Open →
-              </button>
-            </div>
-
-            {trialBuild ? (
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
-                  <span>Active tasks:</span>
-                  <span className="font-mono font-semibold text-[var(--color-text-primary)]">{workspaceTasks.length} tasks</span>
+                <div className="flex items-start gap-3">
+                  <img src={builder.avatar} alt={builder.name} className="w-11 h-11 rounded-xl object-cover border border-[var(--border-crisp)]" />
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-sm font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                        {builder.name}
+                      </span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" />
+                      <span className="text-xs font-mono text-[var(--text-muted)]">{builder.handle}</span>
+                    </div>
+                    <span className="text-xs font-medium text-[#1A5052] block mt-0.5">
+                      {builder.role}
+                    </span>
+                    <div className="flex flex-wrap items-center gap-2 mt-1 text-[11px] font-mono text-[var(--text-muted)]">
+                      <span>{builder.weeklyHours}</span>
+                      <span>•</span>
+                      <span>{builder.stats.ships} Ships</span>
+                      <span>•</span>
+                      <span className="text-[#00AA45] font-semibold">{builder.stats.wouldBuildAgainRate} Would Build Again ✔</span>
+                    </div>
+                  </div>
                 </div>
-                {trialBuild.repoUrl && (
-                  <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
-                    <span>Code repo:</span>
-                    <span className="font-mono text-[11px] text-[var(--color-brand-accent)]">{trialBuild.repoUrl.replace(/^https?:\/\//, '')}</span>
-                  </div>
-                )}
-                {trialBuild.demoUrl && (
-                  <div className="flex items-center justify-between text-[var(--color-text-secondary)]">
-                    <span>Preview:</span>
-                    <span className="font-mono text-[11px] text-[var(--color-success)]">{trialBuild.demoUrl.replace(/^https?:\/\//, '')}</span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="py-2 text-center text-xs text-[var(--color-text-muted)] space-y-1">
-                <p>No active trial sprint running.</p>
-                <p className="text-[11px]">Join or post a build to launch a 4-day trial.</p>
-              </div>
-            )}
 
-            {/* Daily shipping prompt (PRD WORK-03) */}
-            <div 
-              onClick={() => setCurrentView('workspace')}
-              className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-between text-xs cursor-pointer hover:bg-[var(--color-surface-strong)] transition-colors"
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedBuilderId(builder.id);
+                  }}
+                  className="bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)] px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border border-[var(--border-crisp)] self-start sm:self-auto shrink-0 transition-colors"
+                >
+                  View Profile
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right (5 cols): Week 42 ShipPad Launches */}
+        <div className="lg:col-span-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] flex items-center gap-2">
+              Week 42 ShipPad
+              <Trophy className="w-4 h-4 text-amber-500" />
+            </h2>
+            <button
+              onClick={() => setCurrentView('feed')}
+              className="text-xs font-mono text-[#1A5052] hover:underline font-semibold"
             >
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-[var(--color-brand-accent)]" />
-                <span className="font-medium text-[var(--color-text-primary)]">What did you ship today?</span>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-[var(--color-text-muted)]" />
-            </div>
+              Full Leaderboard →
+            </button>
           </div>
 
-          {/* Widget 4: Build Momentum (Reputation scorecard) */}
-          <div className="p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider font-mono">
-                Build Momentum
-              </h3>
-              <span className="text-[10px] font-mono text-[var(--color-text-muted)]">This month</span>
-            </div>
+          <div className="bg-white rounded-xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+            {shipPadItems.slice(0, 3).map((item) => (
+              <div key={item.id} className="p-3 rounded-lg bg-[var(--bg-canvas)] border border-[var(--border-crisp)] space-y-2">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-amber-100 text-amber-800 text-[10px] font-mono font-bold flex items-center justify-center border border-amber-300">
+                      #{item.rank}
+                    </span>
+                    <h3 className="font-bold text-xs font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                      {item.title}
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-[var(--text-muted)] bg-white px-1.5 py-0.5 rounded border border-[var(--border-crisp)]">
+                    {item.category}
+                  </span>
+                </div>
 
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="p-2 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)]">
-                <div className="text-base font-bold font-mono text-[var(--color-text-primary)]">3</div>
-                <div className="text-[10px] text-[var(--color-text-muted)]">Ships</div>
+                <p className="text-[11px] text-[var(--text-secondary)] line-clamp-1">
+                  {item.tagline}
+                </p>
+
+                <div className="flex items-center justify-between pt-1 text-xs font-mono">
+                  <span className="text-[10px] text-[var(--text-muted)]">
+                    Built by {item.contributors[0]?.name}
+                  </span>
+
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => voteShipPadItem(item.id, 'tried')}
+                      className={`px-2 py-0.5 rounded text-[11px] font-bold border transition-colors flex items-center gap-1 ${
+                        item.userVoted?.tried
+                          ? 'bg-[#00AA45] text-white border-[#008A37]'
+                          : 'bg-white text-[var(--text-primary)] border-[var(--border-crisp)] hover:border-[#00AA45]'
+                      }`}
+                    >
+                      <ChevronUp className="w-3 h-3" />
+                      <span>{item.triedCount}</span>
+                    </button>
+
+                    <button
+                      onClick={() => voteShipPadItem(item.id, 'wouldPay')}
+                      className={`px-2 py-0.5 rounded text-[11px] font-bold border transition-colors flex items-center gap-1 ${
+                        item.userVoted?.wouldPay
+                          ? 'bg-[#1A5052] text-white border-[#12393B]'
+                          : 'bg-white text-[var(--text-primary)] border-[var(--border-crisp)] hover:border-[#1A5052]'
+                      }`}
+                    >
+                      <CreditCard className="w-3 h-3" />
+                      <span>{item.wouldPayCount}</span>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="p-2 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)]">
-                <div className="text-base font-bold font-mono text-[var(--color-text-primary)]">2</div>
-                <div className="text-[10px] text-[var(--color-text-muted)]">Collabs</div>
-              </div>
-              <div className="p-2 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)]">
-                <div className="text-xs font-bold font-mono text-[var(--color-success)] mt-1">Top 10%</div>
-                <div className="text-[10px] text-[var(--color-text-muted)]">Builder Rank</div>
-              </div>
-            </div>
+            ))}
           </div>
-
-        </aside>
-
+        </div>
       </div>
-
-      {/* Slide-over Pitch Drawer for Applying */}
-      <Drawer
-        isOpen={!!selectedBuildForApply}
-        onClose={() => setSelectedBuildForApply(null)}
-        title={`Apply to ${selectedBuildForApply?.title}`}
-        description="Introduce yourself and share proof of what you have built."
-      >
-        <form onSubmit={handleApplySubmit} className="space-y-4">
-          <div className="p-3 bg-[var(--color-surface-subtle)] rounded-[var(--radius-md)] border border-[var(--color-border)] text-xs space-y-1">
-            <div className="font-semibold text-[var(--color-text-primary)]">Needed Roles:</div>
-            <div className="text-[var(--color-text-secondary)]">
-              {selectedBuildForApply?.neededRoles.map(r => r.role).join(', ')}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
-              Your message to the founder
-            </label>
-            <textarea
-              rows={4}
-              required
-              value={pitchText}
-              onChange={e => setPitchText(e.target.value)}
-              placeholder="Why this project excites you and what you will build in the first 5-day trial..."
-              className="w-full text-xs p-3 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none resize-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">
-              Proof of Work (GitHub / Demo / Figma)
-            </label>
-            <input
-              type="url"
-              placeholder="https://github.com/your-username or portfolio link"
-              className="w-full text-xs p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
-            />
-          </div>
-
-          <div className="pt-4 flex items-center justify-end gap-2 border-t border-[var(--color-border)]">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelectedBuildForApply(null)}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              size="sm"
-              isLoading={isApplying}
-              disabled={!pitchText.trim()}
-            >
-              Send Application
-            </Button>
-          </div>
-        </form>
-      </Drawer>
     </div>
   );
 };

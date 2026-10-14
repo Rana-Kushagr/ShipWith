@@ -1,294 +1,275 @@
 import React, { useState } from 'react';
+import { 
+  Search, 
+  Clock, 
+  Zap, 
+  PlusCircle, 
+  Eye, 
+  ArrowUpDown
+} from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { Badge } from '../common/Badge';
-import { Button } from '../common/Button';
-import { Modal } from '../common/Modal';
-import { ExternalLink, Search, Code2, Rocket, Plus } from 'lucide-react';
-import type { BuildRecord } from '../../types';
 
 export const StartupsDirectory: React.FC = () => {
-  const { builds, addToast, setIsPostBuildOpen } = useApp();
-  const [selectedStage, setSelectedStage] = useState<string>('all');
-  const [searchFilter, setSearchFilter] = useState('');
-  const [selectedBuildForDetails, setSelectedBuildForDetails] = useState<BuildRecord | null>(null);
+  const { 
+    seedStartups, 
+    setSelectedStartupId, 
+    startTrialSprintWithStartup,
+    setIsPostBuildOpen 
+  } = useApp();
 
-  const filteredBuilds = builds.filter(b => {
-    const matchesStage = selectedStage === 'all' || b.stage.toLowerCase().includes(selectedStage.toLowerCase());
-    const matchesSearch = b.title.toLowerCase().includes(searchFilter.toLowerCase()) ||
-                          b.tagline.toLowerCase().includes(searchFilter.toLowerCase()) ||
-                          b.techStack.some(t => t.toLowerCase().includes(searchFilter.toLowerCase()));
-    return matchesStage && matchesSearch;
+  const [selectedStage, setSelectedStage] = useState<string>('all');
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortBy, setSortBy] = useState<'match' | 'newest'>('match');
+
+  const filteredStartups = seedStartups.filter((s) => {
+    const matchesStage = selectedStage === 'all' || s.stage.toLowerCase() === selectedStage.toLowerCase();
+    const matchesIndustry = selectedIndustry === 'all' || s.industry.toLowerCase().includes(selectedIndustry.toLowerCase());
+    const matchesSearch = 
+      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.techStack.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      s.rolesNeeded.some(r => r.role.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    return matchesStage && matchesIndustry && matchesSearch;
+  }).sort((a, b) => {
+    if (sortBy === 'match') return b.matchScore - a.matchScore;
+    return b.upvotesCount - a.upvotesCount;
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-left space-y-6">
-      {/* Page Title & Context */}
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
-          Explore Startups & Builds
-        </h1>
-        <p className="text-xs text-[var(--color-text-secondary)]">
-          Discover real products being built right now. Filter by stage, stack, and needed roles.
-        </p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#1A5052] animate-pulse" />
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#1A5052] bg-[var(--simplify-teal-soft)] px-2.5 py-0.5 rounded-full border border-[#BCE5DC]">
+              STARTUP RADAR & DIRECTORY
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] mt-1">
+            Explore Active Startups & Builds
+          </h1>
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-0.5">
+            Discover real products in active development. Filter by stage, stack, and step into 5-day trial sprints.
+          </p>
+        </div>
+
+        <button
+          onClick={() => setIsPostBuildOpen(true)}
+          className="bg-[#D94E1F] hover:bg-[#C2410C] text-white px-4 py-2.5 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all shadow-xs self-start sm:self-auto cursor-pointer"
+        >
+          <PlusCircle className="w-4 h-4" />
+          <span>+ Post a Build</span>
+        </button>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-        {/* Search Input */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 text-[var(--color-text-muted)] absolute left-3 top-3" />
-          <input
-            type="text"
-            value={searchFilter}
-            onChange={e => setSearchFilter(e.target.value)}
-            placeholder="Search startups by name, problem, or stack..."
-            className="w-full text-xs pl-9 pr-3 py-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
-          />
+      {/* Filter & Search Bar */}
+      <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          {/* Search Input */}
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3 top-3" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by startup name, stack (e.g. React 19, Python), or role needed..."
+              className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl pl-9 pr-3 py-2 text-xs font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-[#1A5052]"
+            />
+          </div>
+
+          {/* Sort Control */}
+          <div className="flex items-center gap-2 text-xs font-mono self-end md:self-auto">
+            <span className="text-[var(--text-muted)] flex items-center gap-1">
+              <ArrowUpDown className="w-3.5 h-3.5" /> Sort:
+            </span>
+            <button
+              onClick={() => setSortBy('match')}
+              className={`px-3 py-1.5 rounded-lg border transition-all ${
+                sortBy === 'match'
+                  ? 'bg-[#1A5052] text-white border-[#12393B] font-bold shadow-2xs'
+                  : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border-crisp)]'
+              }`}
+            >
+              Best Match %
+            </button>
+            <button
+              onClick={() => setSortBy('newest')}
+              className={`px-3 py-1.5 rounded-lg border transition-all ${
+                sortBy === 'newest'
+                  ? 'bg-[#1A5052] text-white border-[#12393B] font-bold shadow-2xs'
+                  : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)] border-[var(--border-crisp)]'
+              }`}
+            >
+              Most Upvoted
+            </button>
+          </div>
         </div>
 
         {/* Stage Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-          {[
-            { id: 'all', label: 'All Stages' },
-            { id: 'mvp', label: 'Building MVP' },
-            { id: 'shipped', label: 'Shipped' },
-            { id: 'idea', label: 'Ideation' },
-          ].map(stg => (
+        <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-[var(--border-crisp)] text-xs font-mono scrollbar-none">
+          <span className="text-[var(--text-muted)] shrink-0">Stage:</span>
+          {['all', 'Building', 'Hiring', 'Beta', 'Live'].map((stg) => (
             <button
-              key={stg.id}
-              onClick={() => setSelectedStage(stg.id)}
-              className={`px-3 py-1.5 rounded-[var(--radius-md)] text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
-                selectedStage === stg.id
-                  ? 'bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)]'
-                  : 'bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+              key={stg}
+              onClick={() => setSelectedStage(stg)}
+              className={`px-3 py-1 rounded-lg border transition-all shrink-0 cursor-pointer ${
+                selectedStage === stg
+                  ? 'bg-[#1A5052] text-white border-[#12393B] font-bold shadow-2xs'
+                  : 'bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] border-[var(--border-crisp)]'
               }`}
             >
-              {stg.label}
+              {stg === 'all' ? 'All Stages' : stg}
+            </button>
+          ))}
+        </div>
+
+        {/* Industry Filter Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-[var(--border-crisp)] text-xs font-mono scrollbar-none">
+          <span className="text-[var(--text-muted)] shrink-0">Industry:</span>
+          {['all', 'AI', 'Developer Tools', 'Fintech', 'Productivity', 'Creator'].map((ind) => (
+            <button
+              key={ind}
+              onClick={() => setSelectedIndustry(ind)}
+              className={`px-3 py-1 rounded-lg border transition-all shrink-0 cursor-pointer ${
+                selectedIndustry === ind
+                  ? 'bg-[#0D9488] text-white border-[#0F766E] font-bold shadow-2xs'
+                  : 'bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] text-[var(--text-secondary)] border-[var(--border-crisp)]'
+              }`}
+            >
+              {ind === 'all' ? 'All Industries' : ind}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Grid of Startup Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredBuilds.map(build => (
+      {/* Startups Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {filteredStartups.map((startup) => (
           <div
-            key={build.id}
-            className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm hover:border-[var(--color-border-strong)] transition-all flex flex-col justify-between space-y-4"
+            key={startup.id}
+            className="bg-white rounded-2xl border border-[var(--border-crisp)] p-6 hover:border-[var(--border-hover)] shadow-[var(--shadow-card)] transition-all flex flex-col justify-between"
           >
-            <div className="space-y-3">
-              {/* Header with Stage badge */}
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <h3 className="font-bold text-base text-[var(--color-text-primary)] leading-snug">
-                    {build.title}
-                  </h3>
-                  <div className="text-[11px] text-[var(--color-text-muted)] font-mono mt-0.5">
-                    Founded by {build.creatorName}
+            <div>
+              {/* Card Top: Logo, Name, Match Ring */}
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div
+                    style={{ backgroundColor: startup.logoBg }}
+                    className="w-12 h-12 rounded-xl text-white font-mono font-bold text-base flex items-center justify-center shrink-0 shadow-2xs"
+                  >
+                    {startup.logoText}
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-lg font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] hover:text-[#1A5052] transition-colors cursor-pointer"
+                        onClick={() => setSelectedStartupId(startup.id)}
+                      >
+                        {startup.name}
+                      </h3>
+                      <span className="text-[10px] font-mono font-semibold bg-[var(--bg-selected)] text-[#0D9488] px-2 py-0.5 rounded-full border border-[#BCE5DC]">
+                        {startup.stage}
+                      </span>
+                    </div>
+                    <span className="text-xs font-mono text-[var(--text-muted)] mt-0.5 block">
+                      {startup.industry}
+                    </span>
                   </div>
                 </div>
-                <Badge variant={build.stage === 'Shipped' ? 'success' : 'info'} size="sm">
-                  {build.stage}
-                </Badge>
+
+                {/* SVG Circular Match Gauge */}
+                <div className="flex flex-col items-center shrink-0">
+                  <div className="relative w-12 h-12 flex items-center justify-center">
+                    <svg className="w-12 h-12 transform -rotate-90">
+                      <circle
+                        cx="24"
+                        cy="24"
+                        r="19"
+                        stroke="#F2EFE9"
+                        strokeWidth="3.5"
+                        fill="transparent"
+                      />
+                      <circle
+                        cx="24"
+                        cy="24"
+                        r="19"
+                        stroke="#0D9488"
+                        strokeWidth="3.5"
+                        strokeDasharray={2 * Math.PI * 19}
+                        strokeDashoffset={2 * Math.PI * 19 * (1 - startup.matchScore / 100)}
+                        strokeLinecap="round"
+                        fill="transparent"
+                      />
+                    </svg>
+                    <span className="absolute text-[11px] font-mono font-bold text-[#1A5052]">
+                      {startup.matchScore}%
+                    </span>
+                  </div>
+                  <span className="text-[8px] font-mono font-bold text-[#0D9488]">Match</span>
+                </div>
               </div>
 
-              {/* Tagline */}
-              <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed line-clamp-2">
-                {build.description}
+              {/* Tagline Pitch */}
+              <p className="text-xs text-[var(--text-secondary)] mt-3 leading-relaxed font-medium">
+                {startup.tagline}
               </p>
 
-              {/* Needed Roles Pills */}
-              {build.neededRoles.length > 0 && (
-                <div className="space-y-1">
-                  <div className="text-[10px] font-mono text-[var(--color-text-muted)] uppercase tracking-wider">
-                    Seeking:
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {build.neededRoles.map(r => (
-                      <span
-                        key={r.role}
-                        className="text-[11px] font-medium px-2 py-0.5 rounded bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] border border-[var(--color-brand-accent)]/20"
-                      >
-                        {r.role}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Tech Stack */}
-              <div className="flex flex-wrap gap-1 pt-1">
-                {build.techStack.map(tech => (
-                  <span
-                    key={tech}
-                    className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"
-                  >
+              {/* Tech Stack Pills */}
+              <div className="flex flex-wrap gap-1.5 mt-3.5">
+                {startup.techStack.map((tech, idx) => (
+                  <span key={idx} className="text-[10px] font-mono bg-[var(--bg-subtle)] text-[var(--text-secondary)] px-2.5 py-0.5 rounded-md border border-[var(--border-crisp)] font-medium">
                     {tech}
                   </span>
                 ))}
               </div>
-            </div>
 
-            {/* Bottom Card Actions */}
-            <div className="pt-3 border-t border-[var(--color-border)] flex items-center justify-between">
-              <span className="text-[11px] font-mono text-[var(--color-text-muted)]">
-                {build.hoursPerWeek}
-              </span>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => setSelectedBuildForDetails(build)}
-              >
-                View Startup →
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filteredBuilds.length === 0 && (
-        <div className="p-12 text-center rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] mx-auto flex items-center justify-center">
-            <Rocket className="w-6 h-6" />
-          </div>
-          {builds.length === 0 ? (
-            <div className="space-y-2 max-w-md mx-auto">
-              <h3 className="text-base font-bold text-[var(--color-text-primary)]">
-                No Startups or Builds Listed Yet
-              </h3>
-              <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
-                ShipWith contains only 100% genuine creator builds. Be the first founder to post your project, request collaborators, and initiate 4-day trial sprints.
-              </p>
-              <div className="pt-2">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => setIsPostBuildOpen(true)}
-                  leftIcon={<Plus className="w-4 h-4" />}
-                >
-                  Post a Build
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <p className="text-xs text-[var(--color-text-muted)]">No startups matching "{searchFilter}".</p>
-              <Button variant="outline" size="sm" onClick={() => { setSearchFilter(''); setSelectedStage('all'); }}>
-                Clear Filters
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Startup Detail Modal */}
-      <Modal
-        isOpen={!!selectedBuildForDetails}
-        onClose={() => setSelectedBuildForDetails(null)}
-        title={selectedBuildForDetails?.title || ''}
-        description={selectedBuildForDetails?.tagline}
-        maxWidth="lg"
-      >
-        {selectedBuildForDetails && (
-          <div className="space-y-5 text-left text-xs">
-            {/* Stage and Terms bar */}
-            <div className="p-3 bg-[var(--color-surface-subtle)] rounded-[var(--radius-md)] border border-[var(--color-border)] flex flex-wrap items-center justify-between gap-3 font-mono">
-              <div>Stage: <strong className="text-[var(--color-text-primary)]">{selectedBuildForDetails.stage}</strong></div>
-              <div>Terms: <strong className="text-[var(--color-text-primary)]">{selectedBuildForDetails.equityOrTerms}</strong></div>
-              <div>Commitment: <strong className="text-[var(--color-text-primary)]">{selectedBuildForDetails.hoursPerWeek}</strong></div>
-            </div>
-
-            {/* Problem & Vision */}
-            <div className="space-y-1.5">
-              <h4 className="font-bold text-sm text-[var(--color-text-primary)]">About this Project</h4>
-              <p className="text-[var(--color-text-secondary)] leading-relaxed">
-                {selectedBuildForDetails.description}
-              </p>
-            </div>
-
-            {/* Open Roles */}
-            {selectedBuildForDetails.neededRoles.length > 0 && (
-              <div className="space-y-2">
-                <h4 className="font-bold text-sm text-[var(--color-text-primary)]">Open Roles Needed</h4>
-                <div className="space-y-1.5">
-                  {selectedBuildForDetails.neededRoles.map(r => (
-                    <div key={r.role} className="p-2.5 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-between">
-                      <div>
-                        <div className="font-semibold text-[var(--color-text-primary)]">{r.role}</div>
-                        <div className="text-[11px] text-[var(--color-text-muted)]">Skills: {r.skills.join(', ')}</div>
-                      </div>
-                      <span className="text-[11px] font-mono text-[var(--color-brand-accent)]">{r.commitment}</span>
+              {/* Roles Needed preview */}
+              <div className="mt-4 pt-3 border-t border-[var(--border-crisp)]">
+                <span className="text-[10px] font-mono font-bold text-[var(--text-muted)] uppercase tracking-wider block mb-1.5">
+                  Open Roles ({startup.rolesNeeded.length})
+                </span>
+                <div className="space-y-1">
+                  {startup.rolesNeeded.map((r, rIdx) => (
+                    <div key={rIdx} className="flex items-center justify-between text-xs font-mono">
+                      <span className="text-[var(--text-primary)] font-semibold truncate max-w-[200px]">
+                        • {r.role}
+                      </span>
+                      <span className="text-[11px] text-[var(--text-muted)]">{r.commitment}</span>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
+            </div>
 
-            {/* Existing Team */}
-            <div className="space-y-2">
-              <h4 className="font-bold text-sm text-[var(--color-text-primary)]">Team Members</h4>
-              <div className="flex items-center gap-3">
-                {selectedBuildForDetails.team.map(member => (
-                  <div key={member.userId} className="flex items-center gap-2 p-2 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)]">
-                    <img src={member.userAvatar} alt={member.userName} className="w-6 h-6 rounded-full object-cover" />
-                    <div>
-                      <div className="font-semibold text-[var(--color-text-primary)] leading-tight">{member.userName}</div>
-                      <div className="text-[10px] text-[var(--color-text-muted)]">{member.role}</div>
-                    </div>
-                  </div>
-                ))}
+            {/* Bottom Actions Row */}
+            <div className="mt-5 pt-3 border-t border-[var(--border-crisp)] flex items-center justify-between text-xs font-mono">
+              <span className="text-[var(--text-muted)] flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" /> {startup.weeklyHours}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedStartupId(startup.id)}
+                  className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] px-3 py-1.5 rounded-lg border border-[var(--border-crisp)] transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>View Details</span>
+                </button>
+
+                <button
+                  onClick={() => startTrialSprintWithStartup(startup.id)}
+                  className="bg-[#1A5052] hover:bg-[#12393B] text-white px-3.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                >
+                  <Zap className="w-3.5 h-3.5 text-[#34D399]" />
+                  <span>Start 5-Day Trial</span>
+                </button>
               </div>
             </div>
-
-            {/* External Links */}
-            <div className="flex items-center gap-3 pt-2 border-t border-[var(--color-border)]">
-              {selectedBuildForDetails.demoUrl && (
-                <a
-                  href={selectedBuildForDetails.demoUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[var(--color-brand-accent)] hover:underline font-mono"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Live Demo</span>
-                </a>
-              )}
-              {selectedBuildForDetails.repoUrl && (
-                <a
-                  href={selectedBuildForDetails.repoUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[var(--color-text-secondary)] hover:underline font-mono"
-                >
-                  <Code2 className="w-3.5 h-3.5" />
-                  <span>GitHub Repository</span>
-                </a>
-              )}
-            </div>
-
-            {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[var(--color-border)]">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => setSelectedBuildForDetails(null)}
-              >
-                Close
-              </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => {
-                  addToast(`Application request initiated for ${selectedBuildForDetails.title}!`, 'success');
-                  setSelectedBuildForDetails(null);
-                }}
-              >
-                Apply / Start Trial
-              </Button>
-            </div>
           </div>
-        )}
-      </Modal>
+        ))}
+      </div>
     </div>
   );
 };

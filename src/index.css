@@ -1,102 +1,112 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
-  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', Menlo, Monaco, Consolas, monospace;
+  --font-mono: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
 }
 
 /* ============================================================
-   SHIPWITH DESIGN SYSTEM TOKENS
-   Strict adherence to Product Quality Constitution (§5, §6, §7, §8, §9)
+   WARM SIMPLIFY + PEERLIST DAYLIGHT SYSTEM
+   Strict adherence to <step_1_typography_and_color_system>
    ============================================================ */
 
 :root {
-  /* LIGHT THEME (Simplify: Pure crisp white canvas, deep charcoal text, electric accents) */
-  --color-canvas: #FFFFFF;
-  --color-surface: #FFFFFF;
-  --color-surface-subtle: #F8FAFC;
-  --color-surface-strong: #F1F5F9;
-  --color-surface-hover: #F8FAFC;
-  
-  --color-border: #E2E8F0;
-  --color-border-strong: #CBD5E1;
-  --color-border-subtle: #F1F5F9;
+  /* 60% Warm Simplify Cream Canvas */
+  --bg-canvas: #FBF9F5;
+  --bg-onboarding: #F9F7F1;
 
-  --color-text-primary: #0F172A;     /* 14.2:1 contrast ratio against #FFFFFF */
-  --color-text-secondary: #475569;   /* 7.3:1 contrast ratio */
-  --color-text-muted: #64748B;       /* 4.8:1 contrast ratio - WCAG AA compliant */
+  /* 30% Crisp Elevated Cards & Glass Bars */
+  --bg-surface: #FFFFFF;
+  --bg-glass: rgba(251, 249, 245, 0.88);
 
-  --color-brand-primary: #0F172A;
-  --color-brand-primary-hover: #1E293B;
+  /* 8% Recessed Warm Sand Wells (Workspace columns, inputs, stack tags) */
+  --bg-subtle: #F2EFE9;
+  --bg-hover: #ECE8DF;
+  --bg-selected: #EAF6F4;
+
+  /* Dark Bento Contrast Surface (Simplify Bento Section) */
+  --bg-dark-bento: #102223;
+
+  /* Peerlist Crisp 1px Hairline Borders & Subtle Elevation */
+  --border-crisp: #E4E2DC;
+  --border-hover: #C8C4B8;
+  --border-grid: rgba(18, 19, 18, 0.04);
+  --shadow-card: 0 1px 2px rgba(18, 19, 18, 0.04);
+  --shadow-float: 0 16px 36px -8px rgba(26, 80, 82, 0.09), 0 4px 10px -2px rgba(18, 19, 18, 0.04);
+
+  /* Ink Hierarchy */
+  --text-primary: #121312;
+  --text-secondary: #4E514E;
+  --text-muted: #828580;
+
+  /* 2% High-Signal Accents */
+  --simplify-teal: #1A5052;       /* Simplify deep teal for primary badges & match rings */
+  --simplify-teal-soft: #E6F4F1;
+  --simplify-cyan: #0D9488;       /* Active Match % ring stroke & live progress bars */
+  --peerlist-green: #00AA45;      /* Verified proof checkmarks (✔) & active upvote/tried states */
+  --peerlist-green-soft: #E8F8EE;
+  --ship-orange: #D94E1F;         /* "+ Post a Build" & "Ship Product" primary action accent */
+  --ship-orange-soft: #FFF1EB;
+
+  /* Semantic Compatibility Bridges */
+  --color-canvas: var(--bg-canvas);
+  --color-surface: var(--bg-surface);
+  --color-surface-subtle: var(--bg-subtle);
+  --color-surface-strong: var(--bg-hover);
+  --color-surface-hover: var(--bg-hover);
+
+  --color-border: var(--border-crisp);
+  --color-border-strong: var(--border-hover);
+  --color-border-subtle: rgba(18, 19, 18, 0.06);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-brand-primary: var(--simplify-teal);
+  --color-brand-primary-hover: #133E3F;
   --color-brand-on-primary: #FFFFFF;
-  --color-brand-subtle: #F1F5F9;
-  
-  --color-brand-accent: #2563EB;
-  --color-brand-accent-hover: #1D4ED8;
-  --color-brand-accent-subtle: #EFF6FF;
+  --color-brand-subtle: var(--simplify-teal-soft);
 
-  --color-success: #16A34A;
-  --color-success-subtle: #DCFCE7;
+  --color-brand-accent: var(--simplify-cyan);
+  --color-brand-accent-hover: #0F766E;
+  --color-brand-accent-subtle: var(--simplify-teal-soft);
+
+  --color-success: var(--peerlist-green);
+  --color-success-subtle: var(--peerlist-green-soft);
   --color-warning: #D97706;
   --color-warning-subtle: #FEF3C7;
   --color-danger: #DC2626;
   --color-danger-subtle: #FEE2E2;
 
-  /* Typography */
-  --font-display: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Typography Variables */
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
-  --font-code: 'JetBrains Mono', 'IBM Plex Mono', Menlo, Monaco, Consolas, monospace;
+  --font-code: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
 
-  /* Restrained Radii (Constitution §9.1) */
+  /* Restrained Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 18px;
   --radius-pill: 999px;
-
-  /* Refined Simplify-style elevation shadows */
-  --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-overlay: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
 }
 
-[data-theme="dark"] {
-  /* DARK THEME (Vercel + Peerlist: Obsidian matte surfaces, hairline 1px borders) */
-  --color-canvas: #09090B;
-  --color-surface: #121214;
-  --color-surface-subtle: #18181B;
-  --color-surface-strong: #27272A;
-  --color-surface-hover: #1E1E22;
+/* Background Atmosphere Presets */
+.bg-landing-atmosphere {
+  background-color: var(--bg-canvas);
+  background-image:
+    radial-gradient(110% 60% at 50% -5%, #FFFFFF 0%, rgba(230, 244, 241, 0.55) 42%, rgba(251, 249, 245, 0) 100%),
+    linear-gradient(to right, var(--border-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-grid) 1px, transparent 1px);
+  background-size: 100% 100%, 96px 96px, 96px 96px;
+}
 
-  --color-border: #27272A;
-  --color-border-strong: #3F3F46;
-  --color-border-subtle: #1F1F23;
-
-  --color-text-primary: #F4F4F5;     /* 15.5:1 contrast against #09090B */
-  --color-text-secondary: #A1A1AA;   /* 7.1:1 contrast */
-  --color-text-muted: #71717A;       /* 4.6:1 contrast - WCAG AA compliant */
-
-  --color-brand-primary: #F4F4F5;
-  --color-brand-primary-hover: #E4E4E7;
-  --color-brand-on-primary: #09090B;
-  --color-brand-subtle: #18181B;
-
-  --color-brand-accent: #3B82F6;
-  --color-brand-accent-hover: #60A5FA;
-  --color-brand-accent-subtle: #172554;
-
-  --color-success: #22C55E;
-  --color-success-subtle: #052E16;
-  --color-warning: #F59E0B;
-  --color-warning-subtle: #451A03;
-  --color-danger: #EF4444;
-  --color-danger-subtle: #450A0A;
-
-  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-overlay: 0 12px 30px -8px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+.bg-onboarding-focus {
+  background: radial-gradient(90% 80% at 50% 30%, #FFFFFF 0%, #F9F7F1 65%, #F2EFE9 100%);
 }
 
 /* Global Reset & Base */
@@ -107,19 +117,20 @@
 html {
   scroll-behavior: smooth;
   text-rendering: optimizeLegibility;
+  background-color: var(--bg-canvas);
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--color-canvas);
-  color: var(--color-text-primary);
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
+  line-height: 1.55;
+  letter-spacing: -0.011em;
   min-height: 100vh;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -127,17 +138,26 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   letter-spacing: -0.03em;
   margin: 0;
-  color: inherit;
-  line-height: 1.15;
+  color: var(--text-primary);
+  line-height: 1.18;
 }
 
-code, kbd, samp, pre {
+code, kbd, samp, pre, .font-mono {
   font-family: var(--font-code);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Focus Visible Accessible Styling (§17.4) */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Focus Visible Accessible Styling */
 :focus-visible {
-  outline: 2px solid var(--color-brand-accent);
+  outline: 2px solid var(--simplify-cyan);
   outline-offset: 2px;
 }
 
@@ -150,14 +170,14 @@ code, kbd, samp, pre {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border-strong);
+  background: var(--border-hover);
   border-radius: var(--radius-pill);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
+  background: var(--text-muted);
 }
 
-/* Reduced Motion Utility (§18.7) */
+/* Reduced Motion Utility */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
@@ -168,144 +188,52 @@ code, kbd, samp, pre {
 }
 
 /* ============================================================
-   SIMPLIFY-STYLE ANIMATIONS & PATTERNS
+   PEERLIST-STYLE 2-ROW MARQUEE ANIMATION
    ============================================================ */
 
-.bg-dot-grid {
-  background-image: radial-gradient(var(--color-border-strong) 1px, transparent 1px);
-  background-size: 24px 24px;
+@keyframes marquee-scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-[data-theme="dark"] .bg-dot-grid {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+@keyframes marquee-scroll-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
 
-@keyframes float-gentle {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-left 42s linear infinite;
 }
 
-@keyframes float-reverse {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(8px);
-  }
+.animate-marquee-left:hover {
+  animation-play-state: paused;
 }
 
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.3;
-  }
-  100% {
-    transform: scale(0.95);
-    opacity: 0.8;
-  }
+.animate-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-right 46s linear infinite;
 }
 
-@keyframes beam-flow {
-  0% {
-    stroke-dashoffset: 100;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes scan-horizontal {
-  0% {
-    left: 0%;
-  }
-  50% {
-    left: 90%;
-  }
-  100% {
-    left: 0%;
-  }
-}
-
-.animate-float {
-  animation: float-gentle 5s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: float-reverse 6s ease-in-out infinite;
-}
-
-.animate-pulse-ring {
-  animation: pulse-ring 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.animate-beam {
-  stroke-dasharray: 6 6;
-  animation: beam-flow 2s linear infinite;
-}
-
-/* Typography utility classes */
-.font-serif-italic {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-}
-
-.font-display {
-  font-family: var(--font-display);
-}
-
-/* 3D Perspective Hero Stage */
-.hero-3d-stage {
-  perspective: 1100px;
-  perspective-origin: 50% 15%;
-  transform-style: preserve-3d;
-}
-
-.hero-preview-canvas {
-  will-change: transform, box-shadow, opacity;
-  transform-style: preserve-3d;
-  transform-origin: top center;
-  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease-out;
-}
-
-/* Dynamic Scroll Reveal */
-.reveal-on-scroll {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
-}
-
-.reveal-on-scroll.is-revealed {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.delay-75 {
-  transition-delay: 75ms;
-}
-
-.delay-150 {
-  transition-delay: 150ms;
-}
-
-.delay-225 {
-  transition-delay: 225ms;
+.animate-marquee-right:hover {
+  animation-play-state: paused;
 }
 
 /* ============================================================
-   TAILWIND v4 ANIMATE-IN COMPAT
-   These define `animate-in`, `fade-in`, `slide-in-from-*`
-   and `duration-*` utilities so onboarding questions animate
-   correctly without the tailwindcss-animate plugin.
+   SIMPLIFY SCROLL SHOWCASE STICKY UTILITIES
+   ============================================================ */
+
+.sticky-showcase-container {
+  position: sticky;
+  top: 96px;
+  height: 540px;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   TAILWIND ANIMATIONS & TRANSITIONS
    ============================================================ */
 
 @keyframes tw-enter {
@@ -362,113 +290,21 @@ code, kbd, samp, pre {
 .duration-300 { animation-duration: 300ms; }
 .duration-500 { animation-duration: 500ms; }
 
-/* ============================================================
-   ONBOARDING STEP TRANSITION — smooth slide-in per question
-   ============================================================ */
 @keyframes step-enter {
   from {
     opacity: 0;
-    transform: translateX(20px) scale(0.98);
+    transform: translateX(16px);
   }
   to {
     opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: translateX(0);
   }
 }
 
 .step-enter {
-  animation: step-enter 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: step-enter 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ============================================================
-   SILVER / GREY AMBIENT MIXED BACKGROUND SYSTEM
-   Light Mode: Clean white canvas with luminous silver-grey halos,
-               bands, and bevels framing the central content.
-   Dark Mode:  Deep dark canvas with atmospheric metallic silver
-               nebulas, specular rim lights, and silver card frames.
-   ============================================================ */
-
-/* Silver halo aura directly around the central showcase / 3D card */
-.hero-silver-glow {
-  background: radial-gradient(
-    ellipse 85% 65% at 50% 50%,
-    rgba(203, 213, 225, 0.85) 0%,
-    rgba(226, 232, 240, 0.55) 35%,
-    rgba(241, 245, 249, 0.25) 60%,
-    transparent 85%
-  );
-  filter: blur(28px);
-}
-
-[data-theme="dark"] .hero-silver-glow {
-  background: radial-gradient(
-    ellipse 85% 65% at 50% 50%,
-    rgba(148, 163, 184, 0.28) 0%,
-    rgba(100, 116, 139, 0.16) 38%,
-    rgba(51, 65, 85, 0.08) 65%,
-    transparent 85%
-  );
-  filter: blur(36px);
-}
-
-/* Horizontal mixed ambient band in between and behind primary sections */
-.silver-ambient-band {
-  background: radial-gradient(
-    ellipse 95% 65% at 50% 50%,
-    rgba(226, 232, 240, 0.70) 0%,
-    rgba(241, 245, 249, 0.40) 45%,
-    rgba(255, 255, 255, 0) 80%
-  );
-}
-
-[data-theme="dark"] .silver-ambient-band {
-  background: radial-gradient(
-    ellipse 95% 65% at 50% 50%,
-    rgba(148, 163, 184, 0.18) 0%,
-    rgba(71, 85, 105, 0.10) 45%,
-    rgba(9, 9, 11, 0) 80%
-  );
-}
-
-/* Elegant silver sheen border and shadow for prominent cards */
-.silver-sheen-card {
-  border: 1px solid #CBD5E1;
-  box-shadow: 
-    0 10px 30px -5px rgba(148, 163, 184, 0.22),
-    0 0 0 1px rgba(203, 213, 225, 0.45);
-}
-
-[data-theme="dark"] .silver-sheen-card {
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  box-shadow: 
-    0 10px 40px -5px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(148, 163, 184, 0.20),
-    0 0 50px -10px rgba(203, 213, 225, 0.12);
-}
-
-/* Silver pill badge and hairline highlight */
-.silver-badge {
-  background: linear-gradient(180deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.7) 100%);
-  border: 1px solid #CBD5E1;
-  color: #334155;
-}
-
-[data-theme="dark"] .silver-badge {
-  background: linear-gradient(180deg, rgba(39, 39, 42, 0.9) 0%, rgba(24, 24, 27, 0.7) 100%);
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #E2E8F0;
-}
-
-/* Compatibility alias for existing gradient-mesh references */
-.gradient-mesh {
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37, 99, 235, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(148, 163, 184, 0.12) 0%, transparent 60%);
-}
-
-/* ============================================================
-   HORIZONTAL SCROLL (for mobile tag chips, no scrollbar)
-   ============================================================ */
 .scroll-x-hide {
   overflow-x: auto;
   scrollbar-width: none;
@@ -478,9 +314,6 @@ code, kbd, samp, pre {
   display: none;
 }
 
-/* ============================================================
-   PROFILE TAB ACTIVE UNDERLINE
-   ============================================================ */
 .tab-active-underline {
   position: relative;
 }
@@ -491,37 +324,13 @@ code, kbd, samp, pre {
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--color-brand-primary);
+  background: var(--simplify-teal);
   border-radius: var(--radius-pill) var(--radius-pill) 0 0;
 }
 
-/* ============================================================
-   SMOOTH SLIDE TRANSITIONS FOR DRAWERS / MODALS
-   ============================================================ */
-@keyframes slide-up {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
-}
-
-@keyframes slide-down {
-  from { transform: translateY(0); }
-  to   { transform: translateY(100%); }
-}
-
-.animate-slide-up {
-  animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.animate-slide-down {
-  animation: slide-down 0.2s ease-in both;
-}
-
-/* ============================================================
-   BACKDROP BLUR OVERLAY
-   ============================================================ */
+/* Modals & Overlays */
 .backdrop-overlay {
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(18, 19, 18, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
-

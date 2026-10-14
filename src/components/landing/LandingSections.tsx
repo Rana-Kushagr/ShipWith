@@ -1,327 +1,322 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Button } from '../common/Button';
-import { Check, GitCommit, Users, Trophy, Sparkles } from 'lucide-react';
-import { ProductWalkthroughPlayer } from './ProductWalkthroughPlayer';
-import { BorderGlow } from '../common/BorderGlow';
+import { 
+  ArrowRight, 
+  Cpu, 
+  Layers, 
+  Palette, 
+  Rocket, 
+  Code2, 
+  ShoppingBag,
+  CheckCircle2
+} from 'lucide-react';
+import { LandingStickyShowcase } from '../LandingStickyShowcase';
 
 export const LandingSections: React.FC = () => {
-  const { setCurrentView } = useApp();
+  const { setCurrentView, setIsAuthModalOpen } = useApp();
+
+  const bentoCategories = [
+    {
+      id: 'ai-agents',
+      title: 'AI & Autonomous Agents',
+      count: '42 Active Builds',
+      roles: '18 Open Roles',
+      icon: Cpu,
+      color: '#34D399',
+      bgGrad: 'from-emerald-950/60 to-[#102223]',
+      popularStack: ['Python', 'LangGraph', 'FastAPI', 'pgvector']
+    },
+    {
+      id: 'saas',
+      title: 'Full-Stack SaaS',
+      count: '64 Active Builds',
+      roles: '31 Open Roles',
+      icon: Layers,
+      color: '#38BDF8',
+      bgGrad: 'from-sky-950/60 to-[#102223]',
+      popularStack: ['Next.js 15', 'React 19', 'PostgreSQL', 'Tailwind']
+    },
+    {
+      id: 'ui-ux',
+      title: 'UI/UX Design Systems',
+      count: '28 Active Builds',
+      roles: '14 Open Roles',
+      icon: Palette,
+      color: '#F472B6',
+      bgGrad: 'from-pink-950/60 to-[#102223]',
+      popularStack: ['Figma', 'Tokens', 'Design Engineering', 'Micro-interactions']
+    },
+    {
+      id: 'growth',
+      title: 'Growth & GTM',
+      count: '19 Active Builds',
+      roles: '9 Open Roles',
+      icon: Rocket,
+      color: '#FB923C',
+      bgGrad: 'from-amber-950/60 to-[#102223]',
+      popularStack: ['Content Engine', 'Product-Led', 'Viral Loops', 'Analytics']
+    },
+    {
+      id: 'devtools',
+      title: 'DevTools & Infra',
+      count: '37 Active Builds',
+      roles: '22 Open Roles',
+      icon: Code2,
+      color: '#A78BFA',
+      bgGrad: 'from-indigo-950/60 to-[#102223]',
+      popularStack: ['Go', 'Rust', 'Docker', 'Redis Edge']
+    },
+    {
+      id: 'ecommerce',
+      title: 'Modern E-Commerce',
+      count: '15 Active Builds',
+      roles: '8 Open Roles',
+      icon: ShoppingBag,
+      color: '#FBBF24',
+      bgGrad: 'from-yellow-950/60 to-[#102223]',
+      popularStack: ['Shopify Storefront API', 'Headless', 'Stripe', 'Supabase']
+    }
+  ];
 
   return (
-    <div className="w-full bg-[#09090b] text-white">
-      
-      {/* =========================================================================
-          BLOCK 1: WHY SHIPWITH (Contrasting Cool Grey / White Architectural Band)
-          Crisp, high-contrast silver-white palette with pure white cards & hover lift
-          ========================================================================= */}
-      <section className="w-full bg-[#f4f4f7] border-y border-zinc-200/90 py-20 lg:py-24 text-zinc-900 transition-colors">
-        <div className="max-w-[1360px] mx-auto px-6 sm:px-10">
-          
-          {/* Split Header with Artful Font Mixture - High Contrast Dark Typography */}
-          <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-2">
-              <div className="text-xs uppercase font-mono tracking-widest text-zinc-800 font-bold">
-                WHY SHIPWITH
+    <div className="w-full bg-[var(--bg-canvas)] text-[var(--text-primary)]">
+      {/* 1. SIMPLIFY-STYLE STICKY 2-COLUMN SCROLL SHOWCASE */}
+      <div id="sticky-showcase-section">
+        <LandingStickyShowcase />
+      </div>
+
+      {/* 2. SIMPLIFY-STYLE DARK BENTO GRID: FRESH BUILDS & OPEN TRIAL ROLES TODAY */}
+      <section className="py-24 bg-[#102223] text-white border-b border-teal-900/40 relative overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-[#1A5052]/30 to-transparent pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/30 text-[#34D399] px-3.5 py-1 rounded-full text-xs font-mono font-medium mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#34D399] animate-pulse" />
+                <span>REAL-TIME RADAR TELEMETRY</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-[46px] font-extrabold text-zinc-950 font-display tracking-tight leading-tight">
-                Networking is{' '}
-                <span className="font-serif italic font-normal text-zinc-900 text-[1.12em] tracking-normal inline-block pr-1">
-                  only
-                </span>{' '}
-                the beginning.
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-['Plus_Jakarta_Sans'] font-extrabold tracking-tight">
+                Fresh Builds & Open Trial Roles{' '}
+                <span className="font-['Instrument_Serif'] italic font-normal text-[#34D399]">
+                  Added Today
+                </span>
+                .
               </h2>
             </div>
-            <div className="max-w-md text-zinc-700 text-sm sm:text-base leading-relaxed md:text-left font-sans font-medium">
-              Meet the right people, prove you can build together in a 4-day trial, and turn what you ship into verifiable reputation.
-            </div>
-          </div>
-
-          {/* 3 High-Contrast Cards with Interactive BorderGlow & Hover Animations */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            
-            {/* Pillar 1 */}
-            <BorderGlow
-              borderRadius={18}
-              edgeSensitivity={28}
-              glowRadius={22}
-              glowIntensity={1.0}
-              glowColor="215 95 55"
-              backgroundColor="#ffffff"
-              colors={['#3b82f6', '#93c5fd', '#60a5fa']}
-              className="border border-zinc-200/90 hover:border-blue-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
-            >
-              <div className="p-7 space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-blue-600 shadow-xs group-hover:scale-105 transition-transform duration-300">
-                  <Users className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
-                  Proof Over Resumes
-                </h3>
-                <p className="text-sm text-zinc-700 leading-relaxed font-sans font-medium">
-                  No generic self-written bios or follower counts. Filter potential teammates by verified GitHub repos, live demos, and real contributions.
-                </p>
-              </div>
-            </BorderGlow>
-
-            {/* Pillar 2 */}
-            <BorderGlow
-              borderRadius={18}
-              edgeSensitivity={28}
-              glowRadius={22}
-              glowIntensity={1.0}
-              glowColor="152 85 45"
-              backgroundColor="#ffffff"
-              colors={['#10b981', '#6ee7b7', '#34d399']}
-              className="border border-zinc-200/90 hover:border-emerald-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
-            >
-              <div className="p-7 space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 shadow-xs group-hover:scale-105 transition-transform duration-300">
-                  <GitCommit className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
-                  The 4-Day Trial Build
-                </h3>
-                <p className="text-sm text-zinc-700 leading-relaxed font-sans font-medium">
-                  Test working compatibility before committing to equity or months of work. Complete a scoped micro-objective and mutually decide if you want to continue.
-                </p>
-              </div>
-            </BorderGlow>
-
-            {/* Pillar 3 */}
-            <BorderGlow
-              borderRadius={18}
-              edgeSensitivity={28}
-              glowRadius={22}
-              glowIntensity={1.0}
-              glowColor="38 95 50"
-              backgroundColor="#ffffff"
-              colors={['#f59e0b', '#fcd34d', '#fbbf24']}
-              className="border border-zinc-200/90 hover:border-amber-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
-            >
-              <div className="p-7 space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 shadow-xs group-hover:scale-105 transition-transform duration-300">
-                  <Trophy className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
-                  The Build Passport
-                </h3>
-                <p className="text-sm text-zinc-700 leading-relaxed font-sans font-medium">
-                  Every shipped product and verified teammate collaboration stays on your permanent passport. Peer-reviewed credibility you carry anywhere.
-                </p>
-              </div>
-            </BorderGlow>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* =========================================================================
-          BLOCK 2: INTERACTIVE WALKTHROUGH TOUR (Obsidian Canvas Band)
-          Deep canvas transition providing rhythmic visual pacing
-          ========================================================================= */}
-      <section id="engine-section" className="w-full bg-[#09090b] py-20 lg:py-24 border-b border-zinc-800/80 transition-colors">
-        <div className="max-w-[1360px] mx-auto px-6 sm:px-10">
-          
-          <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-sky-500/40 text-xs font-mono font-semibold text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
-              <Sparkles className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
-              <span>THE SHIPWITH ENGINE</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-bold text-white font-display tracking-tight">
-              From mutual discovery to{' '}
-              <span className="font-serif italic font-normal text-zinc-100 text-[1.12em] tracking-normal inline-block pr-1">
-                shipped
-              </span>{' '}
-              software.
-            </h2>
-            <p className="text-sm sm:text-base text-zinc-400 font-sans">
-              Experience how ShipWith replaces unverified CVs and guesswork with hands-on collaboration sprints.
+            <p className="text-sm sm:text-base text-zinc-300 max-w-md font-sans leading-relaxed">
+              Skip traditional resume applications. Browse high-signal builds, review tech stacks, and step directly into a 5-day trial sprint.
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto">
-            <BorderGlow
-              borderRadius={24}
-              edgeSensitivity={28}
-              glowRadius={28}
-              glowIntensity={1.0}
-              coneSpread={26}
-              glowColor="195 90 70"
-              backgroundColor="#09090b"
-              colors={['#38bdf8', '#818cf8', '#c084fc']}
-              className="border border-zinc-800 shadow-2xl p-1.5 sm:p-2 rounded-3xl"
-            >
-              <ProductWalkthroughPlayer />
-            </BorderGlow>
-          </div>
+          {/* 6 High-Contrast Bento Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {bentoCategories.map((cat) => {
+              const Icon = cat.icon;
+              return (
+                <div
+                  key={cat.id}
+                  onClick={() => setCurrentView('startups')}
+                  className={`bg-gradient-to-b ${cat.bgGrad} border border-teal-800/40 hover:border-teal-400/60 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 cursor-pointer group shadow-lg flex flex-col justify-between`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div 
+                        style={{ color: cat.color }} 
+                        className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform"
+                      >
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-mono text-zinc-400 group-hover:text-white flex items-center gap-1 transition-colors">
+                        Explore <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </div>
 
+                    <h3 className="text-lg font-bold font-['Plus_Jakarta_Sans'] text-white group-hover:text-[#34D399] transition-colors">
+                      {cat.title}
+                    </h3>
+
+                    <div className="flex items-center gap-3 mt-2 text-xs font-mono">
+                      <span className="text-[#34D399] font-bold">{cat.count}</span>
+                      <span className="text-zinc-600">•</span>
+                      <span className="text-zinc-300">{cat.roles}</span>
+                    </div>
+
+                    {/* Stack tags */}
+                    <div className="flex flex-wrap gap-1.5 mt-4">
+                      {cat.popularStack.map((stack, sIdx) => (
+                        <span key={sIdx} className="text-[10px] font-mono bg-white/5 border border-white/10 text-zinc-300 px-2 py-0.5 rounded-md">
+                          {stack}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono text-zinc-400">
+                    <span>5-Day Trial Eligible</span>
+                    <span className="text-[#34D399] font-semibold">Instant Matching ✔</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* =========================================================================
-          BLOCK 3: MEMBERSHIP & PLANS (Second Contrasting Grey / White Band)
-          Elevated pricing tiers with high-contrast obsidian & pure white cards
-          ========================================================================= */}
-      <section id="plans-section" className="w-full bg-[#f4f4f7] border-y border-zinc-200/90 py-20 lg:py-28 text-zinc-900 transition-colors">
-        <div className="max-w-[1360px] mx-auto px-6 sm:px-10">
-          
-          <div className="text-center max-w-xl mx-auto mb-16 space-y-3">
-            <div className="text-xs uppercase font-mono tracking-widest text-zinc-800 font-bold">
-              MEMBERSHIP
+      {/* 3. "WHY BUILDERS SWITCH TO SHIPWITH" COMPARISON MATRIX */}
+      <section id="comparison-matrix-section" className="py-24 bg-white border-b border-[var(--border-crisp)]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 bg-[var(--bg-subtle)] border border-[var(--border-crisp)] text-[var(--text-secondary)] px-3 py-1 rounded-full text-xs font-mono font-medium mb-3">
+              <span>UNFAIR ADVANTAGE</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-zinc-950 font-display tracking-tight">
-              Simple, honest plans for{' '}
-              <span className="font-serif italic font-normal text-zinc-900 text-[1.12em] tracking-normal inline-block pr-1">
-                ambitious
-              </span>{' '}
-              builders.
+            <h2 className="text-3xl sm:text-4xl font-['Plus_Jakarta_Sans'] font-extrabold text-[var(--text-primary)] tracking-tight">
+              Why serious builders switch to{' '}
+              <span className="text-[#1A5052]">ShipWith</span>.
             </h2>
-            <p className="text-sm text-zinc-700 font-sans font-medium">
-              ShipWith is free for everyone to discover, collaborate, and ship. Paid tiers unlock advanced recruiting capacity—never unearned reputation.
+            <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+              Replacing the fragmented mess of cold Twitter DMs, awkward Zoom chats, and zero-accountability hackathons.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
-            
-            {/* Free Tier */}
-            <BorderGlow
-              borderRadius={18}
-              edgeSensitivity={28}
-              glowRadius={22}
-              glowIntensity={1.0}
-              glowColor="215 90 55"
-              backgroundColor="#ffffff"
-              colors={['#3b82f6', '#60a5fa', '#93c5fd']}
-              className="border border-zinc-200/90 hover:border-blue-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
-            >
-              <div className="p-7 flex flex-col justify-between h-full">
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-base font-extrabold text-zinc-950 font-display">Builder Free</div>
-                    <div className="text-xs text-zinc-600 mt-1 font-sans font-medium">Full core loop for independent makers.</div>
-                  </div>
-                  <div className="text-3xl font-extrabold font-mono text-zinc-950">
-                    $0 <span className="text-xs font-semibold text-zinc-600 font-sans">/ forever</span>
-                  </div>
-                  <ul className="space-y-2.5 text-xs text-zinc-800 font-medium pt-3 border-t border-zinc-200 font-sans">
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Browse startups & builders</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Post up to 2 active Builds</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Unlimited Trial Builds</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Mint verified Build Passport</li>
-                  </ul>
-                </div>
-                <div className="pt-6">
-                  <Button variant="outline" className="w-full font-bold border-2 border-zinc-900 text-zinc-950 hover:text-white hover:bg-zinc-950 cursor-pointer shadow-xs transition-colors" onClick={() => setCurrentView('onboarding')}>
-                    Get started free
-                  </Button>
-                </div>
-              </div>
-            </BorderGlow>
+          {/* Matrix Table */}
+          <div className="bg-white rounded-2xl border border-[var(--border-crisp)] shadow-[var(--shadow-card)] overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs sm:text-sm font-sans min-w-[640px]">
+              <thead>
+                <tr className="border-b border-[var(--border-crisp)] bg-[var(--bg-canvas)]">
+                  <th className="p-4 sm:p-5 font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">Feature & Capability</th>
+                  <th className="p-4 sm:p-5 font-bold font-['Plus_Jakarta_Sans'] text-[#1A5052] bg-[var(--simplify-teal-soft)] border-x border-[#BCE5DC]">
+                    ShipWith
+                  </th>
+                  <th className="p-4 sm:p-5 font-medium text-[var(--text-muted)]">LinkedIn</th>
+                  <th className="p-4 sm:p-5 font-medium text-[var(--text-muted)]">X / Discord</th>
+                  <th className="p-4 sm:p-5 font-medium text-[var(--text-muted)]">Peerlist / Product Hunt</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border-crisp)] font-mono text-xs">
+                <tr>
+                  <td className="p-4 font-semibold text-[var(--text-primary)] font-sans">
+                    Skill & Commitment Match Telemetry (%)
+                  </td>
+                  <td className="p-4 bg-[var(--simplify-teal-soft)] border-x border-[#BCE5DC] text-[#00AA45] font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#00AA45]" />
+                    <span>Algorithmic Fit (96%)</span>
+                  </td>
+                  <td className="p-4 text-[var(--text-muted)]">Keyword search only</td>
+                  <td className="p-4 text-[var(--text-muted)]">Zero telemetry</td>
+                  <td className="p-4 text-[var(--text-muted)]">Manual browsing</td>
+                </tr>
 
-            {/* Builder Pro (Hero Pitch Black Card with Glowing White Border) */}
-            <BorderGlow
-              borderRadius={18}
-              edgeSensitivity={28}
-              glowRadius={24}
-              glowIntensity={1.0}
-              glowColor="0 0 100"
-              backgroundColor="#09090b"
-              colors={['#ffffff', '#e4e4e7', '#60a5fa', '#a855f7']}
-              className="border border-zinc-700/80 hover:border-zinc-300 shadow-xl relative transform md:-translate-y-1 hover:-translate-y-1.5 group transition-all duration-300 cursor-pointer"
-            >
-              <div className="p-7 flex flex-col justify-between h-full">
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div className="text-base font-bold text-white font-display">Builder Pro</div>
-                    <span className="px-3 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-mono font-bold uppercase shadow-sm">
-                      Popular
-                    </span>
-                  </div>
-                  <div className="text-xs text-zinc-400 font-sans">For active hackers seeking high momentum.</div>
-                  <div className="text-3xl font-extrabold font-mono text-white">
-                    $12 <span className="text-xs font-normal text-zinc-400 font-sans">/ month</span>
-                  </div>
-                  <ul className="space-y-2.5 text-xs text-zinc-300 pt-3 border-t border-zinc-800 font-sans">
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Everything in Free</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Advanced tech-stack filters</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Unlimited active Builds</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Priority match recommendations</li>
-                  </ul>
-                </div>
-                <div className="pt-6">
-                  <Button variant="primary" className="w-full font-semibold bg-white text-zinc-950 hover:bg-zinc-200 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer" onClick={() => setCurrentView('onboarding')}>
-                    Start Builder Pro
-                  </Button>
-                </div>
-              </div>
-            </BorderGlow>
+                <tr>
+                  <td className="p-4 font-semibold text-[var(--text-primary)] font-sans">
+                    3–7 Day Scoped Trial Build Framework
+                  </td>
+                  <td className="p-4 bg-[var(--simplify-teal-soft)] border-x border-[#BCE5DC] text-[#00AA45] font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#00AA45]" />
+                    <span>Built-in Workspace</span>
+                  </td>
+                  <td className="p-4 text-[var(--text-muted)]">None</td>
+                  <td className="p-4 text-[var(--text-muted)]">None</td>
+                  <td className="p-4 text-[var(--text-muted)]">None</td>
+                </tr>
 
-            {/* Startup Pro */}
-            <BorderGlow
-              borderRadius={18}
-              edgeSensitivity={28}
-              glowRadius={22}
-              glowIntensity={1.0}
-              glowColor="270 85 60"
-              backgroundColor="#ffffff"
-              colors={['#8b5cf6', '#a855f7', '#c084fc']}
-              className="border border-zinc-200/90 hover:border-purple-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
-            >
-              <div className="p-7 flex flex-col justify-between h-full">
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-base font-extrabold text-zinc-950 font-display">Startup Pro</div>
-                    <div className="text-xs text-zinc-600 mt-1 font-sans font-medium">For funded teams recruiting core talent.</div>
-                  </div>
-                  <div className="text-3xl font-extrabold font-mono text-zinc-950">
-                    $39 <span className="text-xs font-semibold text-zinc-600 font-sans">/ month</span>
-                  </div>
-                  <ul className="space-y-2.5 text-xs text-zinc-800 font-medium pt-3 border-t border-zinc-200 font-sans">
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Everything in Builder Pro</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Unlimited open roles & applicants</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Candidate pipeline organization</li>
-                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Multi-workspace team seats</li>
-                  </ul>
-                </div>
-                <div className="pt-6">
-                  <Button variant="outline" className="w-full font-bold border-2 border-zinc-900 text-zinc-950 hover:text-white hover:bg-zinc-950 cursor-pointer shadow-xs transition-colors" onClick={() => setCurrentView('onboarding')}>
-                    Contact sales
-                  </Button>
-                </div>
-              </div>
-            </BorderGlow>
+                <tr>
+                  <td className="p-4 font-semibold text-[var(--text-primary)] font-sans">
+                    Weekly Product Launch Leaderboard
+                  </td>
+                  <td className="p-4 bg-[var(--simplify-teal-soft)] border-x border-[#BCE5DC] text-[#00AA45] font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#00AA45]" />
+                    <span>Weekly ShipPad</span>
+                  </td>
+                  <td className="p-4 text-[var(--text-muted)]">None</td>
+                  <td className="p-4 text-[var(--text-muted)]">None</td>
+                  <td className="p-4 text-[#00AA45]">Launch only (no build loop)</td>
+                </tr>
 
+                <tr>
+                  <td className="p-4 font-semibold text-[var(--text-primary)] font-sans">
+                    Un-Buyable Build Passport Reputation
+                  </td>
+                  <td className="p-4 bg-[var(--simplify-teal-soft)] border-x border-[#BCE5DC] text-[#00AA45] font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#00AA45]" />
+                    <span>Verified Teammate Ledger</span>
+                  </td>
+                  <td className="p-4 text-[var(--text-muted)]">Self-reported text</td>
+                  <td className="p-4 text-[var(--text-muted)]">Bio handles</td>
+                  <td className="p-4 text-[var(--text-muted)]">Upvotes</td>
+                </tr>
+
+                <tr>
+                  <td className="p-4 font-semibold text-[var(--text-primary)] font-sans">
+                    Complete Loop (Find → Build → Ship)
+                  </td>
+                  <td className="p-4 bg-[var(--simplify-teal-soft)] border-x border-[#BCE5DC] text-[#00AA45] font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#00AA45]" />
+                    <span>100% Unified</span>
+                  </td>
+                  <td className="p-4 text-[var(--text-muted)]">Fragmented</td>
+                  <td className="p-4 text-[var(--text-muted)]">Fragmented</td>
+                  <td className="p-4 text-[var(--text-muted)]">Fragmented</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-
         </div>
       </section>
 
-      {/* =========================================================================
-          BLOCK 4: FOOTER
-          ========================================================================= */}
-      <footer className="w-full border-t border-zinc-850 bg-[#050507] py-14 transition-colors">
-        <div className="max-w-[1360px] mx-auto px-6 sm:px-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-zinc-400">
-          <div className="flex items-center gap-2.5">
-            <span className="font-display font-bold text-base text-white">ShipWith</span>
-            <span>•</span>
-            <span>A build-first collaboration network</span>
+      {/* 4. FINAL CTA BANNER */}
+      <section className="py-20 bg-[var(--bg-canvas)] border-b border-[var(--border-crisp)] text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="w-12 h-12 rounded-2xl bg-[#1A5052] text-white flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <span className="font-['Plus_Jakarta_Sans'] font-extrabold text-2xl">S</span>
           </div>
-          <div className="flex items-center gap-8 font-medium">
-            <button onClick={() => setCurrentView('startups')} className="hover:text-white transition-colors cursor-pointer">
-              Startups
+          <h2 className="text-3xl sm:text-4xl font-['Plus_Jakarta_Sans'] font-extrabold text-[var(--text-primary)] tracking-tight">
+            Ready to find your co-builder and ship?
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-[var(--text-secondary)] max-w-xl mx-auto leading-relaxed">
+            Claim your free builder handle, take the 60-second guided onboarding, and explore 90%+ match builds today.
+          </p>
+
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className="w-full sm:w-auto bg-[#1A5052] hover:bg-[#12393B] text-white px-8 py-3.5 rounded-xl text-sm font-mono font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer"
+            >
+              <span>Get Started Free</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
-            <button onClick={() => setCurrentView('people')} className="hover:text-white transition-colors cursor-pointer">
-              Builders
+            <button
+              onClick={() => setCurrentView('startups')}
+              className="w-full sm:w-auto bg-white hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] border border-[var(--border-crisp)] px-6 py-3.5 rounded-xl text-sm font-mono font-semibold transition-all shadow-2xs cursor-pointer"
+            >
+              Explore Active Startups
             </button>
-            <button onClick={() => setCurrentView('onboarding')} className="hover:text-white transition-colors cursor-pointer">
-              Join Free
-            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. FOOTER */}
+      <footer className="bg-white py-12 border-t border-[var(--border-crisp)] text-xs font-mono text-[var(--text-secondary)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="font-['Plus_Jakarta_Sans'] font-bold text-sm text-[var(--text-primary)]">ShipWith</span>
+            <span>·</span>
+            <span>Find your people. Build what’s next.</span>
+          </div>
+
+          <div className="flex items-center gap-5">
+            <button onClick={() => setCurrentView('startups')} className="hover:text-[var(--text-primary)]">Startups</button>
+            <button onClick={() => setCurrentView('people')} className="hover:text-[var(--text-primary)]">Builders</button>
+            <button onClick={() => setCurrentView('feed')} className="hover:text-[var(--text-primary)]">ShipPad</button>
+            <a href="https://github.com/Rana-Kushagr/ShipWith" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--text-primary)]">GitHub</a>
+          </div>
+
+          <div className="text-[var(--text-muted)] text-[11px]">
+            © {new Date().getFullYear()} ShipWith. All rights reserved.
           </div>
         </div>
       </footer>
-
     </div>
   );
 };

@@ -1,406 +1,199 @@
 import React, { useState } from 'react';
-import { useApp } from '../../context/AppContext';
-import { Button } from '../common/Button';
 import { 
   ArrowLeft, 
+  ArrowRight, 
   Check, 
-  Rocket, 
-  Users, 
-  Lightbulb, 
-  Terminal, 
-  Cpu, 
-  Palette, 
-  TrendingUp, 
-  Briefcase, 
-  Zap, 
-  Clock, 
-  ShieldCheck, 
-  CheckCircle2,
-  Sparkles,
-  ArrowRight,
-  Code2,
-  Layers,
-  Globe2,
-  DollarSign,
-  MessageSquare,
-  Link as LinkIcon
+  MapPin, 
+  Search, 
+  CheckCircle2, 
+  HelpCircle,
+  Users,
+  Building,
+  Rocket
 } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
+import { ShipWithLogoMark } from '../landing/LandingNavbar';
 
 export const OnboardingWizard: React.FC = () => {
   const { 
     onboardingState, 
     updateOnboarding, 
     completeOnboarding, 
-    resetOnboarding,
-    setCurrentView 
+    setCurrentView,
+    setIsFeedbackOpen,
+    seedStartups,
+    seedBuilders
   } = useApp();
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedInStep, setSelectedInStep] = useState<string | null>(null);
-  const totalSteps = 12;
+  const [step, setStep] = useState<number>(1);
+  const totalSteps = 7;
 
-  // Single-select auto-advance helper with smooth micro-delay
-  const handleAutoSelect = (updater: () => void, valueKey: string) => {
-    setSelectedInStep(valueKey);
-    updater();
+  // Search filter for countries
+  const [countrySearch, setCountrySearch] = useState<string>('');
 
+  const countries = [
+    { country: 'United States', timezone: 'GMT-7:00 (San Francisco)' },
+    { country: 'India', timezone: 'GMT+5:30 (New Delhi / Bengaluru)' },
+    { country: 'United Kingdom', timezone: 'GMT+0:00 (London)' },
+    { country: 'Germany', timezone: 'GMT+1:00 (Berlin)' },
+    { country: 'Singapore', timezone: 'GMT+8:00 (Singapore)' },
+    { country: 'Canada', timezone: 'GMT-4:00 (Toronto)' },
+    { country: 'Australia', timezone: 'GMT+10:00 (Sydney)' },
+    { country: 'Japan', timezone: 'GMT+9:00 (Tokyo)' },
+    { country: 'Netherlands', timezone: 'GMT+1:00 (Amsterdam)' },
+    { country: 'Brazil', timezone: 'GMT-3:00 (São Paulo)' },
+  ];
+
+  const filteredCountries = countries.filter(c => 
+    c.country.toLowerCase().includes(countrySearch.toLowerCase())
+  );
+
+  // Helper for single-select questions with smooth auto-advance
+  const handleSingleSelect = (key: string, value: string) => {
+    updateOnboarding({ [key]: value });
     setTimeout(() => {
-      setSelectedInStep(null);
-      if (currentStep < totalSteps) {
-        setCurrentStep(prev => prev + 1);
+      if (step < totalSteps) {
+        setStep(prev => prev + 1);
       } else {
-        setCurrentStep(13); // Passport Review
+        setStep(8); // Completion Screen
       }
-    }, 220);
+    }, 180);
   };
 
-  // Guaranteed safe multi-select array accessors
-  const currentStrengths = Array.isArray(onboardingState.strengths) ? onboardingState.strengths : [];
-  const currentTechStacks = Array.isArray(onboardingState.techStacks) ? onboardingState.techStacks : [];
-  const currentIndustries = Array.isArray(onboardingState.industries) ? onboardingState.industries : [];
-  const currentCollaborators = Array.isArray(onboardingState.desiredCollaborators) ? onboardingState.desiredCollaborators : [];
+  // Helper for multi-select questions
+  const handleMultiSelect = (key: string, value: string, maxItems?: number) => {
+    const current = (onboardingState as any)[key] || [];
+    let updated: string[];
 
-  // Multi-select toggle helper
-  const handleToggleMulti = (
-    field: 'strengths' | 'techStacks' | 'industries' | 'desiredCollaborators',
-    item: string
-  ) => {
-    const list = Array.isArray(onboardingState[field]) ? onboardingState[field] : [];
-    if (list.includes(item)) {
-      updateOnboarding({ [field]: list.filter((x: string) => x !== item) });
+    if (current.includes(value)) {
+      updated = current.filter((item: string) => item !== value);
     } else {
-      updateOnboarding({ [field]: [...list, item] });
+      if (maxItems && current.length >= maxItems) {
+        return; // Don't allow selecting more than max
+      }
+      updated = [...current, value];
     }
+    updateOnboarding({ [key]: updated });
   };
 
-  const handleNext = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(prev => prev + 1);
-      setSelectedInStep(null);
-    } else {
-      setCurrentStep(13);
-    }
+  const handleFinishOnboarding = (view: 'home' | 'profile') => {
+    completeOnboarding();
+    setCurrentView(view);
   };
-
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
-      setSelectedInStep(null);
-    } else {
-      setCurrentView('landing');
-    }
-  };
-
-  // 1. Objectives (Single)
-  const objectives = [
-    {
-      id: 'Recruit for startup',
-      title: 'Recruit co-founders & builders for my startup',
-      desc: 'I have an active idea or prototype and need dedicated creators.',
-      icon: Rocket,
-    },
-    {
-      id: 'Join active team',
-      title: 'Join an active team or startup as a builder',
-      desc: 'I want to contribute my craft to high-potential builds.',
-      icon: Users,
-    },
-    {
-      id: 'Find co-founder',
-      title: 'Find a co-founder to brainstorm & build from day zero',
-      desc: 'Let’s explore ideas, validate customer pain, and build an MVP together.',
-      icon: Lightbulb,
-    },
-    {
-      id: 'Trial-to-hire',
-      title: 'Trial-to-hire & contract collaboration',
-      desc: 'Explore mutual working chemistry with scoped 4-day milestones.',
-      icon: Zap,
-    },
-  ];
-
-  // 2. Core Crafts & Superpowers (Multi-select)
-  const crafts = [
-    { id: 'Full-Stack Engineer', label: 'Full-Stack Engineer', desc: 'React, Node, TypeScript, Python, REST & GraphQL APIs', icon: Terminal },
-    { id: 'AI & LLM Engineer', label: 'AI / ML & LLM Engineer', desc: 'RAG pipelines, agents, fine-tuning, embeddings, PyTorch', icon: Cpu },
-    { id: 'Frontend Specialist', label: 'Frontend & UI Engineer', desc: 'Vite, Next.js, Tailwind, micro-interactions, accessibility', icon: Code2 },
-    { id: 'Backend Architect', label: 'Backend & Systems Architect', desc: 'Go, Rust, PostgreSQL, scalable microservices, Docker', icon: Layers },
-    { id: 'Mobile Developer', label: 'Mobile App Developer', desc: 'Flutter, React Native, Swift iOS, Kotlin Android', icon: Globe2 },
-    { id: 'UI/UX Product Designer', label: 'UI/UX & Product Designer', desc: 'Figma, design systems, rapid prototyping, wireframes', icon: Palette },
-    { id: 'Growth & Distribution Lead', label: 'Growth, Marketing & Distribution', desc: 'Cold outreach, SEO, viral acquisition, social funnels', icon: TrendingUp },
-    { id: 'Technical Product Co-Founder', label: 'Product Manager & Operator', desc: 'Scoping MVPs, customer discovery, metrics, strategy', icon: Briefcase },
-  ];
-
-  // 3. Tech Stacks & Toolkits (Multi-select)
-  const techToolkits = [
-    'React 19 / Next.js',
-    'TypeScript',
-    'Python / FastAPI',
-    'LLMs / OpenAI / Anthropic',
-    'Node.js / Express',
-    'PostgreSQL / Supabase',
-    'Go (Golang)',
-    'Rust',
-    'Flutter',
-    'React Native',
-    'Tailwind CSS',
-    'Docker / Cloudflare / AWS',
-    'Figma / Design Systems',
-    'Redis / Kafka',
-    'Prisma / Drizzle ORM',
-    'Stripe / Payments'
-  ];
-
-  // 4. Experience Years (Single)
-  const experienceOptions = [
-    { id: 'Early Maker (<1 yr)', title: 'Early Maker (< 1 year)', desc: 'Building first portfolio projects and eager to ship real apps.' },
-    { id: '1–2 years shipping', title: '1–2 years shipping', desc: 'Shipped functional side projects, open-source code, or client apps.' },
-    { id: '3–5 years professional', title: '3–5 years experienced builder', desc: 'Strong track record building and scaling production software.' },
-    { id: '5+ years veteran', title: '5+ years senior engineer / repeat founder', desc: 'Deep technical leadership and architectural expertise.' },
-  ];
-
-  // 5. Industries & Domains (Multi-select)
-  const industryList = [
-    'AI & LLM Tools',
-    'Developer Productivity',
-    'B2B SaaS',
-    'FinTech & Trading',
-    'Consumer Social',
-    'EdTech & Learning',
-    'HealthTech & BioTech',
-    'E-Commerce & Marketplaces',
-    'Hardware & IoT',
-    'Media & Creator Tools'
-  ];
-
-  // 6. Project Maturity (Single)
-  const stages = [
-    { id: 'Idea Stage', title: 'Idea & Validation Stage', desc: 'Exploring problem space and finding a day-zero co-founder.' },
-    { id: 'Building MVP', title: 'Building Prototype / MVP', desc: 'Active sprint to reach our first functional public release.' },
-    { id: 'Live in Production', title: 'Live in Production', desc: 'Have active users or revenue and scaling core team.' },
-    { id: 'Open-Ended Explorer', title: 'Open-ended (No current project)', desc: 'Ready to join or brainstorm whichever build has highest potential.' },
-  ];
-
-  // 7. Weekly Commitment (Single)
-  const commitments = [
-    { id: '5–10 hrs/week', title: '5–10 hours / week', desc: 'Evenings & weekends side project.' },
-    { id: '10–20 hrs/week', title: '10–20 hours / week', desc: 'Serious dedication with consistent daily commits.' },
-    { id: '20+ hrs/week', title: '20–35 hours / week', desc: 'Heavy technical commitment and fast iteration velocity.' },
-    { id: 'Full-time', title: '40+ hours / week (Full-time)', desc: 'All-in co-founder mode seeking venture scale.' },
-  ];
-
-  // 8. Working & Communication Style (Single)
-  const workingStyles = [
-    { id: 'Mostly Async', title: 'Mostly Async (GitHub PRs, Loom, Slack / Discord)', desc: 'Independent deep work with written updates and clean PR reviews.' },
-    { id: 'Hybrid Collaboration', title: 'Hybrid (Daily async updates + 1–2 weekly sync jams)', desc: 'Combines independent focus with structured weekly milestone alignments.' },
-    { id: 'Live Pair Programming', title: 'Live Pair Programming (Live audio/video rooms)', desc: 'Co-coding in real time for maximum speed and instant feedback.' },
-  ];
-
-  // 9. Teammates Looking For (Multi-select)
-  const collaboratorRoles = [
-    { id: 'Full-Stack Engineer', label: 'Full-Stack / Frontend / Backend Engineer' },
-    { id: 'AI & LLM Engineer', label: 'AI / ML & LLM Specialist' },
-    { id: 'UI/UX Designer', label: 'UI/UX & Product Designer' },
-    { id: 'Growth Lead', label: 'Growth, Marketing & Distribution Lead' },
-    { id: 'Technical Founder', label: 'Technical Co-Founder' },
-    { id: 'Domain Visionary', label: 'Business / Domain Expert Co-Founder' },
-  ];
-
-  // 10. Equity & Compensation Philosophy (Single)
-  const equityOptions = [
-    { id: 'Equal Split', title: 'Equal / Fair Equity Split', desc: 'Co-founders taking equal risk and sharing long-term upside.' },
-    { id: 'Equity + Rev-Share', title: 'Equity + Early Revenue Share', desc: 'Performance-based distribution as the product earns revenue.' },
-    { id: 'Scoped Bounties', title: 'Hourly / Milestone Bounties', desc: 'Clear deliverables compensated per sprint or feature.' },
-    { id: 'Pure Collaboration', title: 'Pure Collaboration / Portfolio Building', desc: 'Building for fun, open-source prestige, and real experience.' },
-  ];
-
-  // 11. The 4-Day Trial Sprint Protocol (Single)
-  const sprintProtocols = [
-    { 
-      id: 'Agreed 4-Day Trial', 
-      title: 'Yes, 100%! Ready to build a 4-day scoped test MVP', 
-      desc: 'Verify real work habits, code quality, and mutual communication before equity discussions.' 
-    },
-    { 
-      id: 'Flexible Async Trial', 
-      title: 'Yes, with flexible asynchronous milestones', 
-      desc: 'Collaborate asynchronously with scoped PR deliverables and milestone check-ins.' 
-    },
-  ];
-
-  const progressPercentage = Math.round((currentStep / totalSteps) * 100);
 
   return (
-    <div className="min-h-screen bg-[var(--color-canvas)] text-[var(--color-text-primary)] flex flex-col justify-between p-4 sm:p-6 md:p-8 transition-colors duration-200">
-      
-      {/* Top Header */}
-      <header className="max-w-2xl w-full mx-auto flex items-center justify-between pb-4 border-b border-[var(--color-border)]">
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-1.5 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer px-2 py-1 rounded-[var(--radius-sm)] hover:bg-[var(--color-surface-subtle)]"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>{currentStep === 1 ? 'Exit to Home' : 'Back'}</span>
-        </button>
-
-        {/* Brand */}
+    <div className="min-h-screen bg-onboarding-focus text-[var(--text-primary)] flex flex-col justify-between selection:bg-[#1A5052] selection:text-white relative">
+      {/* 1. TOP SIMPLIFY HEADER */}
+      <header className="w-full max-w-4xl mx-auto px-6 py-6 flex items-center justify-between gap-4">
+        {/* Logo */}
         <div 
-          onClick={() => setCurrentView('landing')}
+          onClick={() => setCurrentView('landing')} 
           className="flex items-center gap-2 cursor-pointer select-none"
         >
-          <div className="w-6 h-6 rounded-[var(--radius-sm)] bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] flex items-center justify-center font-display font-bold text-xs">
-            SW
+          <div className="w-8 h-8 rounded-lg bg-[#1A5052] text-white flex items-center justify-center shadow-xs">
+            <ShipWithLogoMark className="w-4 h-4" />
           </div>
-          <span className="font-display font-bold text-sm tracking-tight text-[var(--color-text-primary)]">
+          <span className="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-[var(--text-primary)]">
             ShipWith
           </span>
         </div>
 
-        {/* Step Counter Indicator & Reset */}
-        <div className="flex items-center gap-3">
-          {currentStep <= totalSteps && (
-            <button
-              onClick={() => {
-                resetOnboarding();
-                setSelectedInStep(null);
-                setCurrentStep(1);
-              }}
-              title="Clear all answers and start fresh"
-              className="text-[11px] font-mono text-[var(--color-text-muted)] hover:text-red-400 transition-colors cursor-pointer px-1.5 py-0.5 rounded border border-transparent hover:border-red-500/30 hover:bg-red-500/10"
-            >
-              Reset
-            </button>
-          )}
-          <div className="text-xs font-mono text-[var(--color-text-muted)]">
-            {currentStep <= totalSteps ? (
-              <span>Question {currentStep} of {totalSteps}</span>
-            ) : (
-              <span className="text-[var(--color-success)] font-semibold">Passport Ready</span>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Progress Line */}
-      {currentStep <= totalSteps && (
-        <div className="max-w-2xl w-full mx-auto mt-2">
-          <div className="w-full h-1 bg-[var(--color-surface-strong)] rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-[var(--color-brand-accent)] transition-all duration-300 ease-out rounded-full"
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Main Content Stage */}
-      <main className="max-w-2xl w-full mx-auto my-auto py-8">
-        
-        {/* QUESTION 1: Objective (Single - Auto-advances ⚡) */}
-        {currentStep === 1 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                Question 1 of 12 • Primary Goal
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                What is your primary objective on ShipWith?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Select your focus. We'll tune your radar to match suitable creators immediately.
-              </p>
+        {/* Progress Bar (visible during questions 1-7) */}
+        {step <= totalSteps && (
+          <div className="flex-1 max-w-xs mx-4 hidden sm:block">
+            <div className="flex items-center justify-between text-[11px] font-mono text-[var(--text-muted)] mb-1">
+              <span>Question {step} of {totalSteps}</span>
+              <span>{Math.round((step / totalSteps) * 100)}%</span>
             </div>
-
-            <div className="space-y-3">
-              {objectives.map((item) => {
-                const Icon = item.icon;
-                const isSelected = selectedInStep === item.id || onboardingState.objective === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleAutoSelect(() => updateOnboarding({ objective: item.id }), item.id)}
-                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-start gap-3.5 transition-all cursor-pointer ${
-                      isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
-                    }`}
-                  >
-                    <div className={`p-2.5 rounded-[var(--radius-md)] border shrink-0 ${
-                      isSelected 
-                        ? 'bg-[var(--color-brand-accent)] text-white border-transparent' 
-                        : 'bg-[var(--color-surface-subtle)] border-[var(--color-border)] text-[var(--color-brand-accent)]'
-                    }`}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
-                        {item.title}
-                      </div>
-                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                        {item.desc}
-                      </div>
-                    </div>
-                    {isSelected && (
-                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0 mt-0.5" />
-                    )}
-                  </button>
-                );
-              })}
+            <div className="w-full h-1.5 bg-[#E4E2DC] rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-[#0D9488] rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${(step / totalSteps) * 100}%` }}
+              />
             </div>
           </div>
         )}
 
-        {/* QUESTION 2: Core Crafts & Superpowers (Multi-select 🔲) */}
-        {currentStep === 2 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <div className="flex items-center justify-between">
-                <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                  Question 2 of 12 • Core Crafts
-                </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] font-mono font-semibold">
-                  Multi-Select Allowed
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                What are your superpowers & abilities?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Choose all abilities you bring to a team. Builders frequently wear multiple hats!
+        {/* Save & Exit Button */}
+        <button
+          onClick={() => {
+            completeOnboarding();
+            setCurrentView('home');
+          }}
+          className="text-xs font-mono font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-white px-3 py-1.5 rounded-lg border border-[var(--border-crisp)] transition-colors shadow-2xs cursor-pointer"
+        >
+          Save & exit
+        </button>
+      </header>
+
+      {/* 2. MAIN QUESTION CANVAS */}
+      <main className="flex-1 max-w-2xl w-full mx-auto px-6 py-8 flex flex-col justify-center">
+        {/* QUESTION 1: How do you want to start? */}
+        {step === 1 && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div>
+              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+                Step 01 / 07
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                How do you want to start?
+              </h1>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+                Choose your primary mode of collaboration on ShipWith.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {crafts.map((item) => {
-                const Icon = item.icon;
-                const isSelected = currentStrengths.includes(item.id);
+            <div className="space-y-3">
+              {[
+                { 
+                  id: 'Join a startup', 
+                  title: 'Join a startup', 
+                  desc: 'Find an early-stage team with open roles and test fit via a 5-day trial sprint.',
+                  icon: Rocket 
+                },
+                { 
+                  id: 'Find people for mine', 
+                  title: 'Find people for mine', 
+                  desc: 'I am building something and need skilled engineers, designers, or marketers.',
+                  icon: Building 
+                },
+                { 
+                  id: 'Start together', 
+                  title: 'Start together from scratch', 
+                  desc: 'Looking for a co-founder or co-builder to brainstorm, build MVP, and launch.',
+                  icon: Users 
+                }
+              ].map((opt) => {
+                const isSelected = onboardingState.step1Goal === opt.id;
+                const Icon = opt.icon;
                 return (
                   <button
-                    key={item.id}
-                    onClick={() => handleToggleMulti('strengths', item.id)}
-                    className={`p-3.5 rounded-[var(--radius-xl)] border text-left flex items-start gap-3 transition-all cursor-pointer ${
+                    key={opt.id}
+                    onClick={() => handleSingleSelect('step1Goal', opt.id)}
+                    className={`w-full p-4 rounded-xl border text-left transition-all duration-150 flex items-center justify-between gap-4 cursor-pointer shadow-2xs ${
                       isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-1 ring-[var(--color-brand-accent)] shadow-xs'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 shadow-sm'
+                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)]'
                     }`}
                   >
-                    <div className={`p-2 rounded-[var(--radius-md)] border shrink-0 ${
-                      isSelected 
-                        ? 'bg-[var(--color-brand-accent)] text-white border-transparent' 
-                        : 'bg-[var(--color-surface-subtle)] border-[var(--color-border)] text-[var(--color-text-primary)]'
-                    }`}>
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs font-bold text-[var(--color-text-primary)]">
-                        {item.label}
+                    <div className="flex items-center gap-3.5">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                        isSelected ? 'bg-[#1A5052] text-white' : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)]'
+                      }`}>
+                        <Icon className="w-5 h-5" />
                       </div>
-                      <div className="text-[11px] text-[var(--color-text-secondary)] mt-0.5 line-clamp-2">
-                        {item.desc}
+                      <div>
+                        <h4 className="font-bold text-sm text-[var(--text-primary)] font-['Plus_Jakarta_Sans']">
+                          {opt.title}
+                        </h4>
+                        <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                          {opt.desc}
+                        </p>
                       </div>
                     </div>
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 mt-0.5 ${
-                      isSelected ? 'bg-[var(--color-brand-accent)] border-[var(--color-brand-accent)] text-white' : 'border-[var(--color-border-strong)]'
+
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
+                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
                     }`}>
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
@@ -408,161 +201,49 @@ export const OnboardingWizard: React.FC = () => {
                 );
               })}
             </div>
-
-            <div className="pt-2 flex items-center justify-between">
-              <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {currentStrengths.length === 0 ? 'Select at least 1 craft' : `${currentStrengths.length} craft(s) selected`}
-              </span>
-              <Button
-                variant="primary"
-                onClick={handleNext}
-                disabled={currentStrengths.length === 0}
-                rightIcon={<ArrowRight className="w-4 h-4" />}
-              >
-                {currentStrengths.length === 0 ? 'Select a craft to continue' : `Continue (${currentStrengths.length})`}
-              </Button>
-            </div>
           </div>
         )}
 
-        {/* QUESTION 3: Primary Tech Stacks & Toolkits (Multi-select 🔲) */}
-        {currentStep === 3 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <div className="flex items-center justify-between">
-                <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                  Question 3 of 12 • Tech Stack & Tools
-                </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] font-mono font-semibold">
-                  Multi-Select Allowed
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                Which tools & tech stacks do you build with?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Select your favorite frameworks, databases, and libraries.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2 pt-1">
-              {techToolkits.map((tool) => {
-                const isSelected = currentTechStacks.includes(tool);
-                return (
-                  <button
-                    key={tool}
-                    onClick={() => handleToggleMulti('techStacks', tool)}
-                    className={`px-3 py-2 rounded-[var(--radius-md)] border text-xs font-mono transition-all cursor-pointer flex items-center gap-2 ${
-                      isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] font-bold shadow-2xs'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'
-                    }`}
-                  >
-                    <span>{tool}</span>
-                    {isSelected && <Check className="w-3.5 h-3.5 text-[var(--color-brand-accent)] stroke-[3]" />}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="pt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)]">
-              <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {currentTechStacks.length === 0 ? 'Select at least 1 tool' : `${currentTechStacks.length} tool(s) selected`}
+        {/* QUESTION 2: What are you most into? */}
+        {step === 2 && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div>
+              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+                Step 02 / 07
               </span>
-              <Button
-                variant="primary"
-                onClick={handleNext}
-                disabled={currentTechStacks.length === 0}
-                rightIcon={<ArrowRight className="w-4 h-4" />}
-              >
-                {currentTechStacks.length === 0 ? 'Select a tool to continue' : `Continue (${currentTechStacks.length})`}
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* QUESTION 4: Years of Building Experience (Single - Auto-advances ⚡) */}
-        {currentStep === 4 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                Question 4 of 12 • Experience Level
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                How long have you been shipping software?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Helps match you with collaborators with complementary experience.
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                What are you most into?
+              </h1>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+                Pick all fields you enjoy exploring and building products in.
               </p>
             </div>
 
-            <div className="space-y-3">
-              {experienceOptions.map((item) => {
-                const isSelected = selectedInStep === item.id || onboardingState.experienceYears === item.id;
+            <div className="grid grid-cols-2 gap-2.5">
+              {[
+                'Entrepreneurship',
+                'Tech & Software',
+                'AI & Agents',
+                'Marketing & Growth',
+                'E-commerce',
+                'Trading & Investing',
+                'Content & Media',
+                'Still exploring'
+              ].map((interest) => {
+                const isSelected = onboardingState.step2Interests.includes(interest);
                 return (
                   <button
-                    key={item.id}
-                    onClick={() => handleAutoSelect(() => updateOnboarding({ experienceYears: item.id }), item.id)}
-                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-center justify-between gap-3 transition-all cursor-pointer ${
+                    key={interest}
+                    onClick={() => handleMultiSelect('step2Interests', interest)}
+                    className={`p-3.5 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer shadow-2xs ${
                       isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
+                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
                     }`}
                   >
-                    <div>
-                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
-                        {item.title}
-                      </div>
-                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                        {item.desc}
-                      </div>
-                    </div>
-                    {isSelected && (
-                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* QUESTION 5: Industry / Domain Interests (Multi-select 🔲) */}
-        {currentStep === 5 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <div className="flex items-center justify-between">
-                <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                  Question 5 of 12 • Domain Interests
-                </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] font-mono font-semibold">
-                  Multi-Select Allowed
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                Which industries or domains excite you?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Pick all areas where you want to build or launch products.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
-              {industryList.map((ind) => {
-                const isSelected = currentIndustries.includes(ind);
-                return (
-                  <button
-                    key={ind}
-                    onClick={() => handleToggleMulti('industries', ind)}
-                    className={`p-3 rounded-[var(--radius-lg)] border text-left text-xs font-semibold transition-all cursor-pointer flex items-center justify-between gap-2 ${
-                      isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] font-bold shadow-2xs'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'
-                    }`}
-                  >
-                    <span>{ind}</span>
-                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'bg-[var(--color-brand-accent)] border-[var(--color-brand-accent)] text-white' : 'border-[var(--color-border-strong)]'
+                    <span>{interest}</span>
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
                     }`}>
                       {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                     </div>
@@ -571,207 +252,136 @@ export const OnboardingWizard: React.FC = () => {
               })}
             </div>
 
-            <div className="pt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)]">
-              <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {currentIndustries.length === 0 ? 'Select at least 1 domain' : `${currentIndustries.length} domain(s) selected`}
-              </span>
-              <Button
-                variant="primary"
-                onClick={handleNext}
-                disabled={currentIndustries.length === 0}
-                rightIcon={<ArrowRight className="w-4 h-4" />}
+            <div className="flex justify-between items-center pt-4">
+              <button
+                onClick={() => setStep(prev => prev - 1)}
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
               >
-                {currentIndustries.length === 0 ? 'Select a domain to continue' : `Continue (${currentIndustries.length})`}
-              </Button>
+                <ArrowLeft className="w-3.5 h-3.5" /> Back
+              </button>
+
+              <button
+                onClick={() => setStep(prev => prev + 1)}
+                disabled={onboardingState.step2Interests.length === 0}
+                className="bg-[#1A5052] hover:bg-[#12393B] disabled:opacity-40 text-white px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+              >
+                <span>Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
         )}
 
-        {/* QUESTION 6: Project Maturity Stage (Single - Auto-advances ⚡) */}
-        {currentStep === 6 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                Question 6 of 12 • Product Maturity
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                Where is your current project stage?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Match with teams at the exact phase where you thrive.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {stages.map((item) => {
-                const isSelected = selectedInStep === item.id || onboardingState.stage === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleAutoSelect(() => updateOnboarding({ stage: item.id }), item.id)}
-                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-center justify-between gap-3 transition-all cursor-pointer ${
-                      isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
-                    }`}
-                  >
-                    <div>
-                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
-                        {item.title}
-                      </div>
-                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                        {item.desc}
-                      </div>
-                    </div>
-                    {isSelected && (
-                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* QUESTION 7: Weekly Commitment (Single - Auto-advances ⚡) */}
-        {currentStep === 7 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                Question 7 of 12 • Availability
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                How much weekly time can you commit?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Clear expectations prevent burnout and ghosting.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {commitments.map((item) => {
-                const isSelected = selectedInStep === item.id || onboardingState.weeklyHours === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleAutoSelect(() => updateOnboarding({ weeklyHours: item.id as any }), item.id)}
-                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-center justify-between gap-3 transition-all cursor-pointer ${
-                      isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] border border-[var(--color-border)]">
-                        <Clock className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-[var(--color-text-primary)]">
-                          {item.title}
-                        </div>
-                        <div className="text-xs text-[var(--color-text-secondary)]">
-                          {item.desc}
-                        </div>
-                      </div>
-                    </div>
-                    {isSelected && (
-                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* QUESTION 8: Working & Communication Style (Single - Auto-advances ⚡) */}
-        {currentStep === 8 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                Question 8 of 12 • Working Style
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                What is your preferred collaboration style?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Matching work rhythms makes collaborations effortless.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {workingStyles.map((item) => {
-                const isSelected = selectedInStep === item.id || onboardingState.workingStyle === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleAutoSelect(() => updateOnboarding({ workingStyle: item.id }), item.id)}
-                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-start gap-3.5 transition-all cursor-pointer ${
-                      isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
-                    }`}
-                  >
-                    <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-[var(--color-text-primary)] shrink-0">
-                      <MessageSquare className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
-                        {item.title}
-                      </div>
-                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                        {item.desc}
-                      </div>
-                    </div>
-                    {isSelected && (
-                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0 mt-0.5" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* QUESTION 9: Teammates Looking For (Multi-select 🔲) */}
-        {currentStep === 9 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
+        {/* QUESTION 3: What can you help with? (Max 3) */}
+        {step === 3 && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div>
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                  Question 9 of 12 • Ideal Collaborators
+                <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider">
+                  Step 03 / 07
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] font-mono font-semibold">
-                  Multi-Select Allowed
+                <span className="text-xs font-mono text-[var(--text-muted)]">
+                  Selected: {onboardingState.step3Skills.length}/3 max
                 </span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                Which roles do you need on your team?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Select all teammate archetypes you want to recruit or collaborate with.
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] mt-1">
+                What can you help with?
+              </h1>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+                Select up to 3 core strengths where you deliver real execution.
               </p>
             </div>
 
-            <div className="space-y-2.5 pt-1">
-              {collaboratorRoles.map((item) => {
-                const isSelected = currentCollaborators.includes(item.id);
+            <div className="grid grid-cols-2 gap-2.5">
+              {[
+                'Tech & Engineering',
+                'Design & UI/UX',
+                'Marketing & Growth',
+                'Sales & BD',
+                'Content Creation',
+                'E-commerce Ops',
+                'Product Strategy',
+                'Operations'
+              ].map((skill) => {
+                const isSelected = onboardingState.step3Skills.includes(skill);
                 return (
                   <button
-                    key={item.id}
-                    onClick={() => handleToggleMulti('desiredCollaborators', item.id)}
-                    className={`w-full p-3.5 rounded-[var(--radius-lg)] border text-left flex items-center justify-between gap-3 transition-all cursor-pointer ${
+                    key={skill}
+                    onClick={() => handleMultiSelect('step3Skills', skill, 3)}
+                    className={`p-3.5 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer shadow-2xs ${
                       isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] font-semibold shadow-2xs'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:border-[var(--color-border-strong)]'
+                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
+                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Users className="w-4 h-4 text-[var(--color-brand-accent)] shrink-0" />
-                      <span className="text-xs font-bold">{item.label}</span>
-                    </div>
+                    <span>{skill}</span>
                     <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'bg-[var(--color-brand-accent)] border-[var(--color-brand-accent)] text-white' : 'border-[var(--color-border-strong)]'
+                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
+                    }`}>
+                      {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex justify-between items-center pt-4">
+              <button
+                onClick={() => setStep(prev => prev - 1)}
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" /> Back
+              </button>
+
+              <button
+                onClick={() => setStep(prev => prev + 1)}
+                disabled={onboardingState.step3Skills.length === 0}
+                className="bg-[#1A5052] hover:bg-[#12393B] disabled:opacity-40 text-white px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+              >
+                <span>Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* QUESTION 4: Where are you right now? */}
+        {step === 4 && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div>
+              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+                Step 04 / 07
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                Where are you right now?
+              </h1>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+                Helps us match you with collaborators at a complementary experience level.
+              </p>
+            </div>
+
+            <div className="space-y-2.5">
+              {[
+                { id: 'Just starting', label: 'Just starting out — exploring project ideas' },
+                { id: 'Learning', label: 'Learning & upskilling — want hands-on trial projects' },
+                { id: 'Building something', label: 'Actively building something — looking for teammates' },
+                { id: 'Already running something', label: 'Already running an active project/company' },
+                { id: 'Experienced', label: 'Experienced builder — looking for high-craft co-builders' }
+              ].map((stage) => {
+                const isSelected = onboardingState.step4Stage === stage.id;
+                return (
+                  <button
+                    key={stage.id}
+                    onClick={() => handleSingleSelect('step4Stage', stage.id)}
+                    className={`w-full p-4 rounded-xl border text-left transition-all duration-150 flex items-center justify-between cursor-pointer shadow-2xs ${
+                      isSelected
+                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
+                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
+                    }`}
+                  >
+                    <span className="text-xs sm:text-sm font-sans">{stage.label}</span>
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
+                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
                     }`}>
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
@@ -780,278 +390,340 @@ export const OnboardingWizard: React.FC = () => {
               })}
             </div>
 
-            <div className="pt-4 flex items-center justify-between border-t border-[var(--color-border-subtle)]">
-              <span className="text-xs text-[var(--color-text-muted)] font-mono">
-                {currentCollaborators.length === 0 ? 'Select at least 1 role' : `${currentCollaborators.length} role(s) selected`}
-              </span>
-              <Button
-                variant="primary"
-                onClick={handleNext}
-                disabled={currentCollaborators.length === 0}
-                rightIcon={<ArrowRight className="w-4 h-4" />}
+            <div className="pt-2">
+              <button
+                onClick={() => setStep(prev => prev - 1)}
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
               >
-                {currentCollaborators.length === 0 ? 'Select a role to continue' : `Continue (${currentCollaborators.length})`}
-              </Button>
+                <ArrowLeft className="w-3.5 h-3.5" /> Back
+              </button>
             </div>
           </div>
         )}
 
-        {/* QUESTION 10: Equity & Terms Philosophy (Single - Auto-advances ⚡) */}
-        {currentStep === 10 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                Question 10 of 12 • Alignment
+        {/* QUESTION 5: Where are you based? */}
+        {step === 5 && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div>
+              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+                Step 05 / 07
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                What is your equity & compensation philosophy?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                Ensures expectations on equity, bounties, and upside match up front.
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                Where are you based?
+              </h1>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+                We use your location to calculate real timezone overlap for async builds.
               </p>
             </div>
 
-            <div className="space-y-3">
-              {equityOptions.map((item) => {
-                const isSelected = selectedInStep === item.id || onboardingState.compensationPhilosophy === item.id;
+            {/* Search input */}
+            <div className="relative">
+              <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3" />
+              <input
+                type="text"
+                value={countrySearch}
+                onChange={(e) => setCountrySearch(e.target.value)}
+                placeholder="Search country or region..."
+                className="w-full bg-white border border-[var(--border-crisp)] rounded-xl pl-10 pr-4 py-2.5 text-xs font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-[#1A5052]"
+              />
+            </div>
+
+            <div className="max-h-60 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
+              {filteredCountries.map((c) => {
+                const isSelected = onboardingState.step5Location?.country === c.country;
                 return (
                   <button
-                    key={item.id}
-                    onClick={() => handleAutoSelect(() => updateOnboarding({ compensationPhilosophy: item.id }), item.id)}
-                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-start gap-3.5 transition-all cursor-pointer ${
+                    key={c.country}
+                    onClick={() => {
+                      updateOnboarding({ step5Location: c });
+                    }}
+                    className={`w-full p-3 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'border-[var(--color-brand-accent)] bg-[var(--color-brand-accent-subtle)] ring-2 ring-[var(--color-brand-accent)]/20 shadow-sm'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
+                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
                     }`}
                   >
-                    <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-[var(--color-brand-accent)] shrink-0">
-                      <DollarSign className="w-4 h-4" />
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                      <span>{c.country}</span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
-                        {item.title}
-                      </div>
-                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                        {item.desc}
-                      </div>
-                    </div>
-                    {isSelected && (
-                      <Check className="w-5 h-5 text-[var(--color-brand-accent)] shrink-0 mt-0.5" />
-                    )}
+                    <span className="text-[11px] text-[var(--text-muted)] bg-[var(--bg-subtle)] px-2 py-0.5 rounded">
+                      {c.timezone}
+                    </span>
                   </button>
                 );
               })}
             </div>
+
+            <div className="flex justify-between items-center pt-4">
+              <button
+                onClick={() => setStep(prev => prev - 1)}
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" /> Back
+              </button>
+
+              <button
+                onClick={() => setStep(prev => prev + 1)}
+                className="bg-[#1A5052] hover:bg-[#12393B] text-white px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+              >
+                <span>Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         )}
 
-        {/* QUESTION 11: 4-Day Trial Sprint Protocol (Single - Auto-advances ⚡) */}
-        {currentStep === 11 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-warning)]">
-                Question 11 of 12 • The ShipWith Protocol
+        {/* QUESTION 6: Who do you want to meet? (Multi-select) */}
+        {step === 6 && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div>
+              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+                Step 06 / 07
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                Are you ready for the 4-Day Trial Sprint?
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                The core innovation of ShipWith: test real teamwork on a scoped micro-objective before committing to equity or months of work.
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                Who do you want to meet?
+              </h1>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+                Select everyone you're interested in connecting and building with.
               </p>
             </div>
 
-            <div className="space-y-3">
-              {sprintProtocols.map((item) => {
-                const isSelected = selectedInStep === item.id || (onboardingState.trialAgreement && item.id === 'i_agree_4day_protocol');
+            <div className="grid grid-cols-2 gap-2.5">
+              {[
+                'Co-founders',
+                'Teammates',
+                'Startup founders',
+                'Developers & Engineers',
+                'UI/UX Designers',
+                'Marketers & Growth',
+                'Business partners',
+                'Just exploring'
+              ].map((role) => {
+                const isSelected = onboardingState.step6Meet.includes(role);
                 return (
                   <button
-                    key={item.id}
-                    onClick={() => handleAutoSelect(() => updateOnboarding({ trialAgreement: item.id === 'i_agree_4day_protocol' }), item.id)}
-                    className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-start gap-3.5 transition-all cursor-pointer ${
+                    key={role}
+                    onClick={() => handleMultiSelect('step6Meet', role)}
+                    className={`p-3.5 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer shadow-2xs ${
                       isSelected
-                        ? 'border-[var(--color-success)] bg-[var(--color-success-subtle)] ring-2 ring-[var(--color-success)]/20 shadow-sm'
-                        : 'border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-subtle)]'
+                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
+                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
                     }`}
                   >
-                    <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)]/20 shrink-0">
-                      <Zap className="w-5 h-5" />
+                    <span>{role}</span>
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
+                    }`}>
+                      {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-[var(--color-text-primary)]">
-                        {item.title}
-                      </div>
-                      <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                        {item.desc}
-                      </div>
-                    </div>
-                    {isSelected && (
-                      <Check className="w-5 h-5 text-[var(--color-success)] shrink-0 mt-0.5" />
-                    )}
                   </button>
                 );
               })}
             </div>
+
+            <div className="flex justify-between items-center pt-4">
+              <button
+                onClick={() => setStep(prev => prev - 1)}
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" /> Back
+              </button>
+
+              <button
+                onClick={() => setStep(prev => prev + 1)}
+                disabled={onboardingState.step6Meet.length === 0}
+                className="bg-[#1A5052] hover:bg-[#12393B] disabled:opacity-40 text-white px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+              >
+                <span>Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         )}
 
-        {/* QUESTION 12: Proof of Work & 1-Sentence Bio */}
-        {currentStep === 12 && (
-          <div className="space-y-6 step-enter">
-            <div className="space-y-1.5 text-left">
-              <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
-                Question 12 of 12 • Proof of Work
+        {/* QUESTION 7: How much time can you give? */}
+        {step === 7 && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div>
+              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+                Step 07 / 07
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                Add your proof of work & bio
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
-                GitHub, live demo link, or 1-sentence bio. Builders care about what you've actually shipped.
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                How much time can you give?
+              </h1>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
+                Real commitments only. ShipWith pairs you with builds matching your exact bandwidth.
               </p>
             </div>
 
-            <div className="space-y-4 text-left">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--color-text-primary)] flex items-center gap-1.5">
-                  <LinkIcon className="w-3.5 h-3.5 text-[var(--color-brand-accent)]" />
-                  GitHub username or Portfolio URL
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. github.com/yourhandle or portfolio.dev"
-                  defaultValue={onboardingState.githubUsername || ''}
-                  onChange={(e) => updateOnboarding({ githubUsername: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] text-xs text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] outline-none"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[var(--color-text-primary)]">
-                  1-Sentence Builder Bio
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="e.g. Full-stack builder passionate about autonomous agents and fast MVPs."
-                  defaultValue={onboardingState.headline || ''}
-                  onChange={(e) => updateOnboarding({ headline: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] text-xs text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] outline-none resize-none"
-                />
-              </div>
+            <div className="space-y-2.5">
+              {[
+                { id: 'A few hrs/week', label: 'A few hrs/week (< 5 hrs)' },
+                { id: '5–10 hrs/week', label: '5–10 hrs/week (Evenings / Weekends)' },
+                { id: '10–20 hrs/week', label: '10–20 hrs/week (Serious Part-Time)' },
+                { id: '20+ hrs/week', label: '20+ hrs/week (Deep Collaboration)' },
+                { id: 'Full-time', label: 'Full-time (35+ hrs/week)' }
+              ].map((time) => {
+                const isSelected = onboardingState.step7Hours === time.id;
+                return (
+                  <button
+                    key={time.id}
+                    onClick={() => handleSingleSelect('step7Hours', time.id)}
+                    className={`w-full p-4 rounded-xl border text-left font-mono text-xs sm:text-sm transition-all duration-150 flex items-center justify-between cursor-pointer shadow-2xs ${
+                      isSelected
+                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
+                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
+                    }`}
+                  >
+                    <span>{time.label}</span>
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
+                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
+                    }`}>
+                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
-            <div className="pt-2 flex justify-end">
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={handleNext}
-                rightIcon={<Sparkles className="w-4 h-4" />}
-                className="w-full sm:w-auto shadow-md"
+            <div className="pt-2">
+              <button
+                onClick={() => setStep(prev => prev - 1)}
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
               >
-                Generate Builder Passport
-              </Button>
+                <ArrowLeft className="w-3.5 h-3.5" /> Back
+              </button>
             </div>
           </div>
         )}
 
-        {/* STEP 13: Instant Profile Passport Review */}
-        {currentStep >= 13 && (
-          <div className="space-y-6 text-center step-enter">
-            <div className="w-14 h-14 rounded-full bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)]/30 flex items-center justify-center mx-auto shadow-sm">
-              <ShieldCheck className="w-8 h-8" />
-            </div>
-
-            <div className="space-y-1.5">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text-primary)] tracking-tight">
-                Your Builder Passport is Minted
-              </h2>
-              <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] max-w-md mx-auto">
-                All 12 profile dimensions analyzed. Your compatibility radar is active across the network.
+        {/* ONBOARDING COMPLETION SCREEN (Step 8) */}
+        {step === 8 && (
+          <div className="space-y-8 animate-in fade-in duration-300 py-4 max-w-3xl -mx-6 sm:mx-auto">
+            {/* Completion Banner */}
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 rounded-full bg-[#E8F8EE] text-[#00AA45] flex items-center justify-center mx-auto border border-[#C6F0D6] shadow-xs">
+                <CheckCircle2 className="w-6 h-6 stroke-[2.5]" />
+              </div>
+              <h1 className="text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                You're in. We personalized ShipWith for you.
+              </h1>
+              <p className="text-sm text-[var(--text-secondary)] max-w-lg mx-auto">
+                Based on your answers ({onboardingState.step1Goal || 'Join a startup'} · {onboardingState.step7Hours || '10–20 hrs/wk'}), we calculated your highest telemetry matches.
               </p>
             </div>
 
-            {/* Live Profile Passport Card */}
-            <div className="p-5 sm:p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-md text-left space-y-4 max-w-lg mx-auto">
-              <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-subtle)]">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] flex items-center justify-center font-bold font-mono border border-[var(--color-brand-accent)]/30">
-                    YOU
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-[var(--color-text-primary)]">
-                      {currentStrengths.slice(0, 2).join(' & ') || 'Full-Stack Maker'}
-                    </div>
-                    <div className="text-xs text-[var(--color-text-muted)]">
-                      {onboardingState.weeklyHours} • {onboardingState.experienceYears}
-                    </div>
-                  </div>
+            {/* 3 Live Personalized Preview Columns */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              {/* Column 1: Startups for you */}
+              <div className="bg-white rounded-xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
+                  <span className="font-mono font-bold text-[#1A5052] uppercase tracking-wider text-[11px]">
+                    Startups for You
+                  </span>
+                  <span className="text-[10px] font-mono text-[#00AA45] font-bold">96% fit</span>
                 </div>
-                <span className="px-2.5 py-1 bg-[var(--color-success-subtle)] text-[var(--color-success)] border border-[var(--color-success)]/30 rounded-full text-[11px] font-mono font-bold flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> PASSPORT ACTIVE
-                </span>
-              </div>
 
-              {/* Preferences Summary Grid */}
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
-                  <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Crafts</div>
-                  <div className="font-semibold text-[var(--color-text-primary)] mt-0.5 truncate">
-                    {currentStrengths.join(', ') || 'Engineering'}
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
-                  <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Stacks</div>
-                  <div className="font-semibold text-[var(--color-text-primary)] mt-0.5 truncate">
-                    {currentTechStacks.slice(0, 3).join(', ') || 'Next.js, TypeScript'}
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
-                  <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Work Style</div>
-                  <div className="font-semibold text-[var(--color-text-primary)] mt-0.5 truncate">
-                    {onboardingState.workingStyle}
-                  </div>
-                </div>
-                <div className="p-2.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
-                  <div className="text-[10px] uppercase font-mono text-[var(--color-text-muted)]">Trial Sprint</div>
-                  <div className="font-semibold text-[var(--color-success)] mt-0.5">
-                    Ready (4 Days) ⚡
-                  </div>
+                <div className="space-y-2.5">
+                  {seedStartups.slice(0, 2).map((s) => (
+                    <div key={s.id} className="p-2.5 rounded-lg bg-[var(--bg-subtle)] space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-[var(--text-primary)]">{s.name}</span>
+                        <span className="text-[10px] font-mono font-bold text-[#0D9488] bg-white px-1.5 py-0.2 rounded border border-[#BCE5DC]">
+                          {s.matchScore}%
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[var(--text-secondary)] line-clamp-1">{s.tagline}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Match Output Banner */}
-              <div className="p-3 rounded-[var(--radius-md)] bg-[var(--color-brand-accent-subtle)] border border-[var(--color-brand-accent)]/20 flex items-center gap-2.5 text-xs text-[var(--color-text-primary)]">
-                <Sparkles className="w-4 h-4 text-[var(--color-brand-accent)] shrink-0" />
-                <span>
-                  Your Builder Passport and execution parameters are calibrated and ready for co-founder matchmaking.
-                </span>
+              {/* Column 2: People to meet */}
+              <div className="bg-white rounded-xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
+                  <span className="font-mono font-bold text-[#0D9488] uppercase tracking-wider text-[11px]">
+                    People to Meet
+                  </span>
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">Verified</span>
+                </div>
+
+                <div className="space-y-2.5">
+                  {seedBuilders.slice(0, 2).map((b) => (
+                    <div key={b.id} className="p-2.5 rounded-lg bg-[var(--bg-subtle)] flex items-center gap-2">
+                      <img src={b.avatar} alt={b.name} className="w-7 h-7 rounded-full object-cover" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1">
+                          <span className="font-bold text-[var(--text-primary)] truncate">{b.name}</span>
+                          <CheckCircle2 className="w-3 h-3 text-[#00AA45] shrink-0" />
+                        </div>
+                        <span className="text-[10px] font-mono text-[var(--text-secondary)] truncate block">{b.role.split('&')[0]}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Column 3: Builds to explore */}
+              <div className="bg-white rounded-xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
+                  <span className="font-mono font-bold text-[#D94E1F] uppercase tracking-wider text-[11px]">
+                    Weekly ShipPad
+                  </span>
+                  <span className="text-[10px] font-mono text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded font-bold">Week 42</span>
+                </div>
+
+                <div className="space-y-2.5">
+                  <div className="p-2.5 rounded-lg bg-[var(--bg-subtle)] space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-[var(--text-primary)]">PulseAI Engine</span>
+                      <span className="text-[10px] font-mono text-[#00AA45] font-bold">▲ 84</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] block">Autonomous dev worker loop</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-[var(--bg-subtle)] space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-[var(--text-primary)]">LayerMint Design</span>
+                      <span className="text-[10px] font-mono text-[#00AA45] font-bold">▲ 72</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-[var(--text-muted)] block">Figma to React tokens</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Launch CTA */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={() => {
-                  completeOnboarding();
-                  setCurrentView('home');
-                }}
-                rightIcon={<ArrowRight className="w-4 h-4" />}
-                className="w-full sm:w-auto shadow-md hover:shadow-lg"
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <button
+                onClick={() => handleFinishOnboarding('home')}
+                className="w-full sm:w-auto bg-[#1A5052] hover:bg-[#12393B] text-white px-8 py-3.5 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer"
               >
-                Enter ShipWith Feed
-              </Button>
+                <span>Explore ShipWith</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => handleFinishOnboarding('profile')}
+                className="w-full sm:w-auto bg-white hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] border border-[var(--border-crisp)] px-6 py-3.5 rounded-xl text-xs font-mono font-semibold transition-all shadow-2xs cursor-pointer"
+              >
+                Complete profile & passport
+              </button>
             </div>
           </div>
         )}
-
       </main>
 
-      {/* Footer hint */}
-      <footer className="max-w-2xl w-full mx-auto pt-4 border-t border-[var(--color-border-subtle)] text-center text-xs text-[var(--color-text-muted)] flex items-center justify-between">
-        <span>Single-select auto-advances; multi-select lets you choose all that apply.</span>
-        <span>ShipWith Verified Network</span>
+      {/* 3. BOTTOM FLOATING FEEDBACK BUTTON */}
+      <footer className="w-full max-w-4xl mx-auto px-6 py-4 flex items-center justify-end">
+        <button
+          onClick={() => setIsFeedbackOpen(true)}
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-white px-3 py-1.5 rounded-lg border border-[var(--border-crisp)] shadow-2xs transition-colors cursor-pointer"
+        >
+          <HelpCircle className="w-3.5 h-3.5 text-[#1A5052]" />
+          <span>Feedback</span>
+        </button>
       </footer>
-
     </div>
   );
 };

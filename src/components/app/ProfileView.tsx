@@ -1,408 +1,584 @@
 import React, { useState } from 'react';
-import { useApp } from '../../context/AppContext';
-import { Badge } from '../common/Badge';
-import { Button } from '../common/Button';
-import { Drawer } from '../common/Drawer';
 import { 
-  Trophy, 
-  ExternalLink, 
-  Code2, 
-  Globe, 
-  Edit3, 
   CheckCircle2, 
-  Share2, 
-  ShieldCheck, 
-  Users
+  Clock, 
+  MapPin, 
+  Copy, 
+  Check, 
+  Edit3, 
+  Award, 
+  ExternalLink, 
+  Globe, 
+  Sparkles, 
+  X,
+  Flame
 } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
+import { ProofHeatmap } from '../ProofHeatmap';
 
 export const ProfileView: React.FC = () => {
-  const { currentUser, builds, addToast } = useApp();
+  const { currentUser, setCurrentUser, addToast, claimHandleText } = useApp();
+
   const [activeTab, setActiveTab] = useState<'overview' | 'ships' | 'activity' | 'passport' | 'links'>('overview');
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editName, setEditName] = useState(currentUser.name);
-  const [editHeadline, setEditHeadline] = useState(currentUser.headline);
-  const [editBio, setEditBio] = useState(currentUser.bio);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Edit form states
+  const [name, setName] = useState(currentUser.name || 'Kushagr Rana');
+  const [role, setRole] = useState(currentUser.role || 'Full-Stack Engineer & Systems Builder');
+  const [headline, setHeadline] = useState(currentUser.headline || 'Building autonomous agent workflows and peer-to-peer software.');
+  const [bio, setBio] = useState(currentUser.bio || 'Obsessed with high-craft software, autonomous agent loops, and peer-to-peer collaboration. Shipped 4 production apps in 2025.');
+  const [weeklyHours, setWeeklyHours] = useState(currentUser.weeklyHours || '15 hrs/wk');
+  const [availability, setAvailability] = useState(currentUser.availability || 'Available for 5-Day Trial');
+
+  const handleCopyLink = () => {
+    const handleStr = currentUser.handle || claimHandleText || 'kushagr';
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(`https://shipwith.app/${handleStr.replace('@', '')}`);
+      setCopiedLink(true);
+      addToast(`Public link copied: shipwith.app/${handleStr.replace('@', '')}`, 'info');
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
+  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    currentUser.name = editName;
-    currentUser.headline = editHeadline;
-    currentUser.bio = editBio;
+    setCurrentUser(prev => ({
+      ...prev,
+      name,
+      role,
+      headline,
+      bio,
+      weeklyHours,
+      availability
+    }));
     addToast('Profile updated successfully!', 'success');
-    setIsEditOpen(false);
+    setIsEditModalOpen(false);
   };
 
+  const userShips = [
+    {
+      title: 'PulseAI Workflow Engine',
+      role: 'Full-Stack Architect',
+      year: '2026',
+      tagline: 'Autonomous background workflow engine for modern dev teams',
+      demoUrl: 'https://pulseai.dev',
+      repoUrl: 'https://github.com/Rana-Kushagr/ShipWith',
+      stack: ['React 19', 'Next.js 15', 'Python', 'FastAPI', 'PostgreSQL']
+    },
+    {
+      title: 'ShipWith Network',
+      role: 'Lead Frontend Engineer',
+      year: '2025',
+      tagline: 'The peer collaboration network for serious builders',
+      demoUrl: 'https://shipwith.app',
+      repoUrl: 'https://github.com/Rana-Kushagr/ShipWith',
+      stack: ['React', 'TypeScript', 'Tailwind CSS', 'Vite']
+    },
+    {
+      title: 'DevRadar CLI',
+      role: 'Open Source Creator',
+      year: '2025',
+      tagline: 'Developer metrics and telemetry aggregator in your terminal',
+      demoUrl: 'https://github.com/Rana-Kushagr/ShipWith',
+      stack: ['Go', 'Cobra', 'SQLite']
+    }
+  ];
+
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 text-left space-y-6">
-      
-      {/* Profile Header Card */}
-      <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-6">
-        
-        {/* Top identity row */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
-              className="w-20 h-20 rounded-full object-cover border-2 border-[var(--color-border)] shadow-sm"
-            />
-            <div className="space-y-1">
-              <div className="flex items-center gap-2.5">
-                <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
-                  {currentUser.name}
-                </h1>
-                <Badge variant="accent" size="sm">{currentUser.role}</Badge>
-              </div>
-              <div className="text-xs font-mono text-[var(--color-text-muted)]">
-                @{currentUser.username} • {currentUser.timezone}
-              </div>
-              <div className="flex items-center gap-2 text-xs font-mono text-[var(--color-text-muted)] pt-0.5">
-                <span className="w-2 h-2 rounded-full bg-[var(--color-success)]" />
-                <span className="text-[var(--color-text-primary)] font-semibold">{currentUser.availability}</span>
-                <span>({currentUser.weeklyHours})</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Action buttons */}
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      {/* 1. PROFILE HEADER CARD WITH PEERLIST STYLING */}
+      <div className="bg-white rounded-2xl border border-[var(--border-crisp)] shadow-[var(--shadow-card)] overflow-hidden">
+        {/* Banner */}
+        <div className="h-36 sm:h-44 bg-gradient-to-r from-[#1A5052] via-[#0D9488] to-[#102223] relative p-4 flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-                addToast('Profile link copied to clipboard!', 'info');
-              }}
-              leftIcon={<Share2 className="w-3.5 h-3.5" />}
-            >
-              Share
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setIsEditOpen(true)}
-              leftIcon={<Edit3 className="w-3.5 h-3.5" />}
-            >
-              Edit Profile
-            </Button>
+            <span className="text-[11px] font-mono text-white/90 bg-black/25 backdrop-blur-xs px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-[#34D399]" />
+              Official Verified Build Passport
+            </span>
           </div>
-        </div>
 
-        {/* Headline & Bio */}
-        <div className="space-y-2 border-t border-[var(--color-border)] pt-4">
-          <p className="text-sm font-medium text-[var(--color-text-primary)]">
-            {currentUser.headline}
-          </p>
-          <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed max-w-3xl">
-            {currentUser.bio}
-          </p>
-        </div>
-
-        {/* Execution Metrics Summary Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-3 border-t border-[var(--color-border)] text-center font-mono">
-          <div className="p-2.5 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)]">
-            <div className="text-lg font-bold text-[var(--color-text-primary)]">{currentUser.stats.shipsCount}</div>
-            <div className="text-[10px] text-[var(--color-text-muted)]">Products Shipped</div>
-          </div>
-          <div className="p-2.5 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)]">
-            <div className="text-lg font-bold text-[var(--color-text-primary)]">{currentUser.stats.trialBuildsCount}</div>
-            <div className="text-[10px] text-[var(--color-text-muted)]">Trial Builds</div>
-          </div>
-          <div className="p-2.5 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)]">
-            <div className="text-lg font-bold text-[var(--color-text-primary)]">{currentUser.stats.collaborationsCount}</div>
-            <div className="text-[10px] text-[var(--color-text-muted)]">Collaborations</div>
-          </div>
-          <div className="p-2.5 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)]">
-            <div className="text-lg font-bold text-[var(--color-text-primary)]">{currentUser.stats.repeatTeammatesCount}</div>
-            <div className="text-[10px] text-[var(--color-text-muted)]">Repeat Teammates</div>
-          </div>
-          <div className="p-2.5 rounded bg-[var(--color-surface-subtle)] border border-[var(--color-border)]">
-            <div className="text-lg font-bold text-[var(--color-success)]">{currentUser.stats.positiveFeedbackPercent}%</div>
-            <div className="text-[10px] text-[var(--color-text-muted)]">Positive Feedback</div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* 5 Profile Tabs (PRD PROF-02) */}
-      <div className="flex items-center gap-1.5 border-b border-[var(--color-border)] pb-2 overflow-x-auto">
-        {[
-          { id: 'overview', label: 'Overview' },
-          { id: 'ships', label: 'Shipped Products' },
-          { id: 'passport', label: 'Build Passport (Verified)' },
-          { id: 'activity', label: 'Activity' },
-          { id: 'links', label: 'Verified Links' }
-        ].map(tab => (
           <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
-            className={`px-3 py-1.5 rounded-[var(--radius-md)] text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
-              activeTab === tab.id
-                ? 'bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)]'
-                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-subtle)]'
-            }`}
+            onClick={() => setIsEditModalOpen(true)}
+            className="inline-flex items-center gap-1.5 bg-white/90 hover:bg-white text-[var(--text-primary)] px-3 py-1.5 rounded-xl text-xs font-mono font-semibold shadow-xs transition-colors cursor-pointer"
           >
-            {tab.label}
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>Edit Profile</span>
           </button>
-        ))}
-      </div>
+        </div>
 
-      {/* Tab 1: Overview */}
-      {activeTab === 'overview' && (
-        <div className="space-y-6">
-          {/* Skills & Tools */}
-          <div className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
-            <h3 className="text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider font-mono">
-              Skills & Daily Stack
-            </h3>
-            <div className="flex flex-wrap gap-1.5">
-              {currentUser.skills.map(s => (
-                <span
-                  key={s}
-                  className="px-2.5 py-1 text-xs font-mono rounded-[var(--radius-sm)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-[var(--color-text-primary)]"
-                >
-                  {s}
+        {/* Identity & Execution Metrics */}
+        <div className="px-6 sm:px-8 pb-6 pt-0 relative border-b border-[var(--border-crisp)]">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-14 mb-4">
+            <div className="flex items-end gap-4">
+              <div className="relative">
+                <img
+                  src={currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+                  alt={currentUser.name}
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-4 border-white shadow-md bg-white"
+                />
+                <span className="absolute -bottom-1 -right-1 bg-[#00AA45] text-white p-1 rounded-full border-2 border-white shadow-xs" title="Verified Proof of Work">
+                  <CheckCircle2 className="w-4 h-4" />
                 </span>
-              ))}
+              </div>
+
+              <div className="mb-1">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl sm:text-2xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                    {currentUser.name}
+                  </h1>
+                  <CheckCircle2 className="w-4 h-4 text-[#00AA45]" />
+                </div>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-xs font-mono text-[var(--text-muted)]">
+                    {currentUser.handle || `@${claimHandleText || 'kushagr'}`}
+                  </span>
+                  {/* Shareable Handle Pill */}
+                  <button
+                    onClick={handleCopyLink}
+                    className="inline-flex items-center gap-1 text-[11px] font-mono text-[var(--text-secondary)] hover:text-[#1A5052] bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] px-2 py-0.5 rounded-md border border-[var(--border-crisp)] transition-colors cursor-pointer"
+                    title="Copy shareable link"
+                  >
+                    <span>shipwith.app/{(currentUser.handle || claimHandleText || 'kushagr').replace('@', '')}</span>
+                    {copiedLink ? <Check className="w-3 h-3 text-[#00AA45]" /> : <Copy className="w-3 h-3 text-[var(--text-muted)]" />}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Looking For */}
-          <div className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
-            <h3 className="text-xs font-bold text-[var(--color-text-primary)] uppercase tracking-wider font-mono">
-              Looking to Team Up With
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {currentUser.lookingFor.map(item => (
-                <span
-                  key={item}
-                  className="px-3 py-1 text-xs font-medium rounded-[var(--radius-md)] bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] border border-[var(--color-brand-accent)]/20"
-                >
-                  Seeking: {item}
-                </span>
-              ))}
+          {/* Role & Bio */}
+          <div className="space-y-1.5">
+            <h2 className="text-sm font-semibold text-[#1A5052] font-['Plus_Jakarta_Sans']">
+              {currentUser.role}
+            </h2>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-2xl">
+              {currentUser.bio}
+            </p>
+          </div>
+
+          {/* Quick Meta Row */}
+          <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-[var(--text-muted)] mt-3.5 pt-3 border-t border-[var(--border-crisp)]">
+            <span className="flex items-center gap-1 text-[#00AA45] font-semibold bg-[#E8F8EE] px-2.5 py-0.5 rounded-md border border-[#C6F0D6]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00AA45] animate-pulse" />
+              {currentUser.availability || 'Available for 5-Day Trial'}
+            </span>
+            <span className="flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5" /> {currentUser.weeklyHours || '15 hrs/wk'}
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5" /> {currentUser.location || 'New Delhi, India'} ({currentUser.timezone || 'GMT+5:30'})
+            </span>
+          </div>
+
+          {/* Execution Metric Tiles */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+            <div className="bg-[var(--bg-canvas)] p-3 rounded-xl border border-[var(--border-crisp)]">
+              <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider block">Products Shipped</span>
+              <span className="text-base font-bold font-mono text-[var(--text-primary)] block mt-0.5">{userShips.length} Live Ships</span>
+            </div>
+            <div className="bg-[var(--bg-canvas)] p-3 rounded-xl border border-[var(--border-crisp)]">
+              <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider block">Trial Sprints</span>
+              <span className="text-base font-bold font-mono text-[#0D9488] block mt-0.5">5 Completed</span>
+            </div>
+            <div className="bg-[var(--bg-canvas)] p-3 rounded-xl border border-[var(--border-crisp)]">
+              <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider block">Repeat Teammates</span>
+              <span className="text-base font-bold font-mono text-[#1A5052] block mt-0.5">4 Builders</span>
+            </div>
+            <div className="bg-[var(--bg-canvas)] p-3 rounded-xl border border-[var(--border-crisp)]">
+              <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider block">Would Build Again</span>
+              <span className="text-base font-bold font-mono text-[#00AA45] block mt-0.5">4/4 (100%) ✔</span>
             </div>
           </div>
         </div>
-      )}
 
-      {/* Tab 2: Shipped Products with Explicit Contributor Role Attribution (PRD PROOF-01) */}
-      {activeTab === 'ships' && (
-        <div className="space-y-4">
-          {builds.filter(b => b.creatorId === currentUser.id && b.stage === 'Shipped').length > 0 ? (
-            builds.filter(b => b.creatorId === currentUser.id && b.stage === 'Shipped').map(ship => (
-              <div key={ship.id} className="p-5 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-4">
-                <div className="flex items-start justify-between">
-                  <div>
+        {/* 5-Tab Navigation Bar */}
+        <div className="px-6 sm:px-8 bg-[var(--bg-canvas)] border-b border-[var(--border-crisp)] flex gap-4 overflow-x-auto scrollbar-none text-xs font-mono">
+          {[
+            { id: 'overview', label: 'Overview' },
+            { id: 'ships', label: `Ships (${userShips.length})` },
+            { id: 'activity', label: 'Activity' },
+            { id: 'passport', label: 'Build Passport ✔' },
+            { id: 'links', label: 'Links' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`py-3.5 font-semibold border-b-2 transition-all shrink-0 cursor-pointer ${
+                activeTab === tab.id
+                  ? 'border-[#1A5052] text-[#1A5052]'
+                  : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 2. TAB BODY CONTENTS */}
+      <div className="space-y-6">
+        {/* TAB 1: OVERVIEW */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            {/* 52-Week Proof Heatmap */}
+            <ProofHeatmap 
+              totalShips={userShips.length} 
+              builderName={currentUser.name} 
+            />
+
+            {/* Currently Building Card */}
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-card)] space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
+                <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider flex items-center gap-1.5">
+                  <Flame className="w-3.5 h-3.5 text-[#D94E1F]" />
+                  Currently Building
+                </span>
+                <span className="text-[10px] font-mono text-[#00AA45] bg-[#E8F8EE] px-2 py-0.5 rounded border border-[#C6F0D6] font-bold">
+                  Day 4 of 5 Trial Sprint
+                </span>
+              </div>
+              <h3 className="font-bold text-base font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                PulseAI Workflow Engine
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)]">
+                Autonomous background workflow engine for modern dev teams. Co-building with Maya Lin and Arjun Verma.
+              </p>
+            </div>
+
+            {/* Skills & Stack */}
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-card)]">
+              <span className="text-xs font-mono font-bold text-[var(--text-primary)] uppercase tracking-wider block mb-2.5">
+                Technical Stack & Core Tools
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {['React 19', 'Next.js 15', 'TypeScript', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'FastAPI', 'Python', 'Redis', 'Docker'].map((skill, idx) => (
+                  <span key={idx} className="text-xs font-mono bg-[var(--bg-subtle)] text-[var(--text-primary)] px-2.5 py-1 rounded-md border border-[var(--border-crisp)] font-medium">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: SHIPS */}
+        {activeTab === 'ships' && (
+          <div className="space-y-4">
+            <span className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider block">
+              Production Products & Codebases Contributed to
+            </span>
+
+            <div className="space-y-3">
+              {userShips.map((ship, idx) => (
+                <div key={idx} className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-card)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="space-y-1.5">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-base text-[var(--color-text-primary)]">
+                      <h3 className="font-bold text-base font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
                         {ship.title}
                       </h3>
-                      <Badge variant="success" size="sm">Shipped & Live</Badge>
+                      <span className="text-[10px] font-mono text-[#00AA45] bg-[#E8F8EE] px-2 py-0.5 rounded-full border border-[#C6F0D6] font-bold">
+                        {ship.year}
+                      </span>
                     </div>
-                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">
-                      {ship.description}
-                    </p>
+                    <span className="text-xs font-mono text-[#1A5052] font-semibold block">
+                      Role Credit: {ship.role}
+                    </span>
+                    <p className="text-xs text-[var(--text-secondary)]">{ship.tagline}</p>
+                    <div className="flex flex-wrap gap-1 pt-1">
+                      {ship.stack.map((s, sIdx) => (
+                        <span key={sIdx} className="text-[10px] font-mono bg-[var(--bg-subtle)] px-2 py-0.5 rounded border border-[var(--border-crisp)] text-[var(--text-secondary)]">
+                          {s}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  {ship.demoUrl && (
+
+                  <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
                     <a
                       href={ship.demoUrl}
                       target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs text-[var(--color-brand-accent)] hover:underline font-mono"
+                      rel="noopener noreferrer"
+                      className="text-xs font-mono text-[#1A5052] bg-[var(--simplify-teal-soft)] hover:bg-[#D5EFEA] border border-[#BCE5DC] px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
                     >
+                      <span>Demo</span>
                       <ExternalLink className="w-3.5 h-3.5" />
-                      <span>{ship.demoUrl.replace(/^https?:\/\//, '')}</span>
                     </a>
-                  )}
-                </div>
-
-                <div className="p-3 bg-[var(--color-surface-subtle)] rounded-[var(--radius-md)] border border-[var(--color-border)] flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-[var(--color-success)]" />
-                    <span>Contributor Role: <strong className="text-[var(--color-text-primary)]">Product Lead & Creator</strong></span>
+                    {ship.repoUrl && (
+                      <a
+                        href={ship.repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-mono text-[var(--text-secondary)] bg-[var(--bg-subtle)] hover:bg-[var(--bg-hover)] border border-[var(--border-crisp)] px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors"
+                      >
+                        <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                          <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                        </svg>
+                        <span>Code</span>
+                      </a>
+                    )}
                   </div>
-                  <span className="font-mono text-[11px] text-[var(--color-success)]">● Verified Creator</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: ACTIVITY */}
+        {activeTab === 'activity' && (
+          <div className="space-y-4">
+            <span className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider block">
+              Timeline of Ships, Trial Sprints & Daily Logs
+            </span>
+
+            <div className="relative pl-6 space-y-6 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[var(--border-crisp)]">
+              <div className="relative">
+                <div className="w-3 h-3 rounded-full bg-[#00AA45] border-2 border-white absolute -left-[23px] top-1 shadow-xs" />
+                <div className="bg-white p-4 rounded-xl border border-[var(--border-crisp)] text-xs">
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">Today</span>
+                  <p className="font-semibold text-[var(--text-primary)] mt-0.5">
+                    Logged ship in PulseAI Sprint: "Wired LangGraph subagent execution retry fallback"
+                  </p>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="p-8 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-[var(--color-surface-subtle)] border border-[var(--color-border)] mx-auto flex items-center justify-center text-[var(--color-text-muted)]">
-                <ShieldCheck className="w-6 h-6" />
+
+              <div className="relative">
+                <div className="w-3 h-3 rounded-full bg-[#1A5052] border-2 border-white absolute -left-[23px] top-1 shadow-xs" />
+                <div className="bg-white p-4 rounded-xl border border-[var(--border-crisp)] text-xs">
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">2 days ago</span>
+                  <p className="font-semibold text-[var(--text-primary)] mt-0.5">
+                    Completed 5-Day Trial Sprint milestone: Redis Event Stream webhook integration
+                  </p>
+                </div>
               </div>
-              <h3 className="text-sm font-bold text-[var(--color-text-primary)]">No Shipped Products Yet</h3>
-              <p className="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto">
-                Products you create, validate, and ship with real collaborators will be verified and permanently showcased here.
+
+              <div className="relative">
+                <div className="w-3 h-3 rounded-full bg-amber-500 border-2 border-white absolute -left-[23px] top-1 shadow-xs" />
+                <div className="bg-white p-4 rounded-xl border border-[var(--border-crisp)] text-xs">
+                  <span className="text-[10px] font-mono text-[var(--text-muted)]">Week 41</span>
+                  <p className="font-semibold text-[var(--text-primary)] mt-0.5">
+                    Shipped DevRadar CLI to Weekly ShipPad (#2 Product of the Week)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: BUILD PASSPORT */}
+        {activeTab === 'passport' && (
+          <div className="space-y-4">
+            <div className="p-4 bg-[var(--bg-selected)] rounded-xl border border-[#BCE5DC] text-xs">
+              <div className="flex items-center gap-2 text-[#1A5052] font-bold text-sm mb-1">
+                <Award className="w-4 h-4 text-[#00AA45]" />
+                <span>Verified Peer Trust Ledger</span>
+              </div>
+              <p className="text-[var(--text-secondary)] leading-relaxed font-mono">
+                Every record on this passport is countersigned by collaborators at the conclusion of 3–7 day trial sprints.
               </p>
             </div>
-          )}
-        </div>
-      )}
 
-      {/* Tab 3: Build Passport (Structured Evidence, NOT an opaque score - PRD §19) */}
-      {activeTab === 'passport' && (
-        <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-6">
-          <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-[var(--color-warning)]" />
-                <h2 className="text-lg font-bold text-[var(--color-text-primary)]">
-                  Build Passport
-                </h2>
-              </div>
-              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                Auditable proof of execution earned from shipped products and genuine team feedback.
-              </p>
-            </div>
-            <Badge variant="accent" size="md">
-              {currentUser.stats.shipsCount > 0 ? 'Verified Builder' : 'New Maker Passport'}
-            </Badge>
-          </div>
-
-          {/* Structured Evidence Checklist */}
-          <div className="space-y-3 text-xs">
-            <div className="p-3.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className={`w-4 h-4 ${currentUser.stats.shipsCount > 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`} />
-                <span className="font-medium text-[var(--color-text-primary)]">
-                  {currentUser.stats.shipsCount} Verified Product Ships
+            <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-card)] space-y-3">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--border-crisp)]">
+                <span className="font-mono text-xs font-bold text-[var(--text-primary)]">
+                  Teammate Verification & Repeat Collaboration
+                </span>
+                <span className="font-mono text-xs font-bold text-[#00AA45]">
+                  4/4 (100%) Would Build Again ✔
                 </span>
               </div>
-              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">
-                {currentUser.stats.shipsCount > 0 ? 'Verified through public release' : 'Earned upon shipping first product'}
-              </span>
-            </div>
 
-            <div className="p-3.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className={`w-4 h-4 ${currentUser.stats.trialBuildsCount > 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`} />
-                <span className="font-medium text-[var(--color-text-primary)]">
-                  {currentUser.stats.trialBuildsCount} Completed Trial Builds
-                </span>
-              </div>
-              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">
-                {currentUser.stats.trialBuildsCount > 0 ? 'Recorded from completed 4-day trial sprints' : 'Earned by finishing collaborative trial builds'}
-              </span>
-            </div>
-
-            <div className="p-3.5 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Users className={`w-4 h-4 ${currentUser.stats.repeatTeammatesCount > 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]'}`} />
-                <span className="font-medium text-[var(--color-text-primary)]">
-                  Teammate Feedback & Repeat Collaborations
-                </span>
-              </div>
-              <span className="font-mono text-[11px] text-[var(--color-text-muted)]">
-                {currentUser.stats.collaborationsCount > 0 
-                  ? `${currentUser.stats.positiveFeedbackPercent}% positive (${currentUser.stats.repeatTeammatesCount} repeat partners)`
-                  : 'Requires at least 1 completed collaboration'}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tab 4: Activity Log */}
-      {activeTab === 'activity' && (
-        <div className="p-8 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-3">
-          <div className="w-10 h-10 rounded-full bg-[var(--color-surface-subtle)] border border-[var(--color-border)] mx-auto flex items-center justify-center text-[var(--color-text-muted)]">
-            <Code2 className="w-5 h-5" />
-          </div>
-          <h3 className="text-sm font-bold text-[var(--color-text-primary)]">No Public Activity Yet</h3>
-          <p className="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto">
-            Your contributions, trial sprint milestones, and shipped product releases will appear here in chronological order.
-          </p>
-        </div>
-      )}
-
-      {/* Tab 5: Verified Links */}
-      {activeTab === 'links' && (
-        <div className="space-y-4">
-          {currentUser.proofLinks && (currentUser.proofLinks.github || currentUser.proofLinks.website) ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {currentUser.proofLinks.github && (
-                <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between text-xs font-mono">
-                  <div className="flex items-center gap-2.5">
-                    <Code2 className="w-4 h-4 text-[var(--color-text-primary)]" />
-                    <span>github.com/{currentUser.proofLinks.github}</span>
+              <div className="space-y-2.5">
+                <div className="p-3.5 bg-[var(--bg-canvas)] rounded-xl text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-[var(--text-primary)]">Maya Lin (Lead UI/UX Designer)</span>
+                    <span className="text-[10px] font-mono text-[#00AA45] font-bold">Verified Teammate ✔</span>
                   </div>
-                  <span className="text-[11px] text-[var(--color-success)]">Verified ✓</span>
+                  <p className="text-[var(--text-secondary)] font-mono text-[11px]">
+                    "Kushagr built and shipped the entire design system tokens in 3 days. Extraordinary technical craft and async speed."
+                  </p>
                 </div>
-              )}
-              {currentUser.proofLinks.website && (
-                <div className="p-4 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between text-xs font-mono">
-                  <div className="flex items-center gap-2.5">
-                    <Globe className="w-4 h-4 text-[var(--color-brand-accent)]" />
-                    <span>{currentUser.proofLinks.website}</span>
+
+                <div className="p-3.5 bg-[var(--bg-canvas)] rounded-xl text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-[var(--text-primary)]">Arjun Verma (Systems Architect)</span>
+                    <span className="text-[10px] font-mono text-[#00AA45] font-bold">Verified Teammate ✔</span>
                   </div>
-                  <span className="text-[11px] text-[var(--color-success)]">Verified ✓</span>
+                  <p className="text-[var(--text-secondary)] font-mono text-[11px]">
+                    "Very clean understanding of edge cache boundaries and reliable async daily ship logs."
+                  </p>
                 </div>
-              )}
-            </div>
-          ) : (
-            <div className="p-8 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-3">
-              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-subtle)] border border-[var(--color-border)] mx-auto flex items-center justify-center text-[var(--color-text-muted)]">
-                <Globe className="w-5 h-5" />
               </div>
-              <h3 className="text-sm font-bold text-[var(--color-text-primary)]">No Verified Links Added</h3>
-              <p className="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto">
-                Connect your GitHub, portfolio, or live product domains to build verifiable credibility on your passport.
-              </p>
             </div>
-          )}
+          </div>
+        )}
+
+        {/* TAB 5: LINKS */}
+        {activeTab === 'links' && (
+          <div className="space-y-3">
+            <span className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-wider block">
+              Verified External Toolchains & Portfolios
+            </span>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+              <a
+                href="https://github.com/Rana-Kushagr/ShipWith"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3.5 bg-white rounded-xl border border-[var(--border-crisp)] hover:border-[#1A5052] transition-colors flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2.5">
+                  <svg className="w-4 h-4 fill-current text-[var(--text-primary)]" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                  </svg>
+                  <span className="font-medium text-[var(--text-primary)]">GitHub: Rana-Kushagr</span>
+                </div>
+                <ExternalLink className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+              </a>
+
+              <a
+                href="https://x.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3.5 bg-white rounded-xl border border-[var(--border-crisp)] hover:border-[#1A5052] transition-colors flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2.5">
+                  <svg className="w-4 h-4 fill-current text-[var(--text-primary)]" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  <span className="font-medium text-[var(--text-primary)]">X: @kushagr</span>
+                </div>
+                <ExternalLink className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+              </a>
+
+              <a
+                href="https://shipwith.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3.5 bg-white rounded-xl border border-[var(--border-crisp)] hover:border-[#1A5052] transition-colors flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Globe className="w-4 h-4 text-[#00AA45]" />
+                  <span className="font-medium text-[var(--text-primary)]">Custom Domain: shipwith.app</span>
+                </div>
+                <ExternalLink className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 3. EDIT PROFILE MODAL */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl border border-[var(--border-crisp)] shadow-[var(--shadow-float)] max-w-lg w-full p-6 sm:p-8 relative">
+            <button
+              onClick={() => setIsEditModalOpen(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <h3 className="text-xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] mb-4">
+              Edit Builder Profile
+            </h3>
+
+            <form onSubmit={handleSaveProfile} className="space-y-3.5 text-xs font-mono">
+              <div>
+                <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                  Primary Role
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                  Headline
+                </label>
+                <input
+                  type="text"
+                  value={headline}
+                  onChange={(e) => setHeadline(e.target.value)}
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                  Bio / Philosophy
+                </label>
+                <textarea
+                  rows={3}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl p-3 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052] resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                    Weekly Hours
+                  </label>
+                  <input
+                    type="text"
+                    value={weeklyHours}
+                    onChange={(e) => setWeeklyHours(e.target.value)}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-bold text-[var(--text-secondary)] mb-1">
+                    Trial Availability
+                  </label>
+                  <input
+                    type="text"
+                    value={availability}
+                    onChange={(e) => setAvailability(e.target.value)}
+                    className="w-full bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-3 py-2 text-xs text-[var(--text-primary)] focus:outline-hidden focus:border-[#1A5052]"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-mono font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-subtle)]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#1A5052] hover:bg-[#12393B] text-white px-5 py-2.5 rounded-xl text-xs font-mono font-bold shadow-xs cursor-pointer"
+                >
+                  Save Profile
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
-
-      {/* Edit Profile Drawer */}
-      <Drawer
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        title="Edit Profile"
-        description="Update your public builder persona and daily stack."
-      >
-        <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
-          <div>
-            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1">Full Name</label>
-            <input
-              type="text"
-              value={editName}
-              onChange={e => setEditName(e.target.value)}
-              className="w-full p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1">Headline</label>
-            <input
-              type="text"
-              value={editHeadline}
-              onChange={e => setEditHeadline(e.target.value)}
-              className="w-full p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1">Bio</label>
-            <textarea
-              rows={4}
-              value={editBio}
-              onChange={e => setEditBio(e.target.value)}
-              className="w-full p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none resize-none"
-            />
-          </div>
-
-          <div className="pt-4 flex items-center justify-end gap-2 border-t border-[var(--color-border)]">
-            <Button type="button" variant="ghost" size="sm" onClick={() => setIsEditOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" size="sm">
-              Save Changes
-            </Button>
-          </div>
-        </form>
-      </Drawer>
-
     </div>
   );
 };

@@ -18,6 +18,13 @@ import { FeedbackModal } from './components/common/FeedbackModal';
 import { PostBuildModal } from './components/app/PostBuildModal';
 import { CommandPalette } from './components/common/CommandPalette';
 import { ToastContainer } from './components/common/ToastContainer';
+import { AuthModal } from './components/modals/AuthModal';
+import { StartupDetailModal } from './components/modals/StartupDetailModal';
+import { BuilderProfileModal } from './components/modals/BuilderProfileModal';
+import { BookmarksView } from './components/app/BookmarksView';
+import { CommunitiesView } from './components/app/CommunitiesView';
+import { AdvertiseView } from './components/app/AdvertiseView';
+import { PremiumView } from './components/app/PremiumView';
 
 const MainRouter: React.FC = () => {
   const { currentView } = useApp();
@@ -82,10 +89,17 @@ const MainRouter: React.FC = () => {
           {currentView === 'workspace' && <WorkspaceView />}
           {currentView === 'messages' && <MessagesView />}
           {currentView === 'profile' && <ProfileView />}
+          {currentView === 'bookmarks' && <BookmarksView />}
+          {currentView === 'communities' && <CommunitiesView />}
+          {currentView === 'advertise' && <AdvertiseView />}
+          {currentView === 'premium' && <PremiumView />}
         </AppLayout>
       )}
 
       {/* Global Modals & Notifications */}
+      <AuthModal />
+      <StartupDetailModal />
+      <BuilderProfileModal />
       <FeedbackModal />
       <PostBuildModal />
       <CommandPalette />

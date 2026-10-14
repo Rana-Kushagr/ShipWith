@@ -1,111 +1,81 @@
 import React, { useState } from 'react';
+import { 
+  Send, 
+  CheckCircle2, 
+  Zap
+} from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { Button } from '../common/Button';
-import { Send, Rocket, MessageSquare } from 'lucide-react';
-import type { UserProfile } from '../../types';
 
 export const MessagesView: React.FC = () => {
-  const { builders, currentUser, setCurrentView } = useApp();
-  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(builders[0] || null);
-  const [threads, setThreads] = useState<{ userId: string; messages: { id: string; sender: string; text: string; time: string }[] }[]>([]);
-  const [inputMessage, setInputMessage] = useState('');
+  const { 
+    messagesThreads, 
+    activeThreadId, 
+    setActiveThreadId, 
+    sendMessageToThread,
+    startTrialSprintWithStartup
+  } = useApp();
 
-  if (builders.length === 0 || !selectedUser) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-left space-y-6">
-        <div className="p-10 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] text-center space-y-4 shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-[var(--color-brand-accent-subtle)] text-[var(--color-brand-accent)] mx-auto flex items-center justify-center">
-            <MessageSquare className="w-7 h-7" />
-          </div>
-          <div className="space-y-1.5 max-w-md mx-auto">
-            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">
-              No Direct Messages Yet
-            </h2>
-            <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
-              When genuine founders or builders connect with you from the talent radar, apply to your builds, or initiate trial sprints, direct conversations will appear here.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <Button
-              variant="primary"
-              size="md"
-              onClick={() => setCurrentView('startups')}
-              leftIcon={<Rocket className="w-4 h-4" />}
-            >
-              Explore Startups & Apply
-            </Button>
-            <Button
-              variant="outline"
-              size="md"
-              onClick={() => setCurrentView('people')}
-            >
-              Discover Builders
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const [inputMessage, setInputMessage] = useState<string>('');
 
-  const currentThread = threads.find(t => t.userId === selectedUser.id) || { userId: selectedUser.id, messages: [] };
+  const currentThread = messagesThreads.find(t => t.id === activeThreadId) || messagesThreads[0];
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
-
-    const newMsg = {
-      id: String(Date.now()),
-      sender: currentUser.name,
-      text: inputMessage.trim(),
-      time: 'Just now'
-    };
-
-    setThreads(prev => prev.map(t => {
-      if (t.userId === selectedUser.id) {
-        return { ...t, messages: [...t.messages, newMsg] };
-      }
-      return t;
-    }));
-
+    sendMessageToThread(currentThread.id, inputMessage);
     setInputMessage('');
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 text-left">
-      <div className="h-[calc(100vh-140px)] rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm flex overflow-hidden">
-        
-        {/* Left: Conversations list */}
-        <div className="w-72 sm:w-80 border-r border-[var(--color-border)] flex flex-col shrink-0">
-          <div className="p-3.5 border-b border-[var(--color-border)]">
-            <h2 className="text-sm font-bold text-[var(--color-text-primary)]">Messages</h2>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="bg-white rounded-2xl border border-[var(--border-crisp)] shadow-[var(--shadow-card)] overflow-hidden h-[750px] flex flex-col md:flex-row">
+        {/* Left: Threads List (w-80) */}
+        <div className="w-full md:w-80 border-r border-[var(--border-crisp)] bg-[var(--bg-canvas)] flex flex-col shrink-0">
+          <div className="p-4 border-b border-[var(--border-crisp)] bg-white">
+            <h2 className="font-['Plus_Jakarta_Sans'] font-bold text-base text-[var(--text-primary)]">
+              Direct Messages
+            </h2>
+            <span className="text-[11px] font-mono text-[var(--text-muted)]">
+              Contextual startup & trial threads
+            </span>
           </div>
 
-          <div className="flex-1 overflow-y-auto divide-y divide-[var(--color-border)]">
-            {builders.map(builder => {
-              const isSelected = selectedUser.id === builder.id;
+          <div className="flex-1 overflow-y-auto divide-y divide-[var(--border-crisp)]">
+            {messagesThreads.map((thread) => {
+              const isSelected = thread.id === currentThread.id;
+              const lastMessage = thread.messages[thread.messages.length - 1];
               return (
                 <button
-                  key={builder.id}
-                  onClick={() => setSelectedUser(builder)}
-                  className={`w-full p-3.5 flex items-start gap-3 text-left transition-colors cursor-pointer ${
-                    isSelected ? 'bg-[var(--color-surface-subtle)]' : 'hover:bg-[var(--color-surface-hover)]'
+                  key={thread.id}
+                  onClick={() => setActiveThreadId(thread.id)}
+                  className={`w-full p-4 text-left flex items-start gap-3 transition-colors cursor-pointer ${
+                    isSelected
+                      ? 'bg-white border-l-4 border-[#1A5052]'
+                      : 'hover:bg-white/60'
                   }`}
                 >
                   <img
-                    src={builder.avatar}
-                    alt={builder.name}
-                    className="w-10 h-10 rounded-full object-cover shrink-0 border border-[var(--color-border)]"
+                    src={thread.participant.avatar}
+                    alt={thread.participant.name}
+                    className="w-10 h-10 rounded-full object-cover border border-[var(--border-crisp)] shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-[var(--color-text-primary)] truncate">
-                        {builder.name}
+                      <span className="font-bold text-xs text-[var(--text-primary)] truncate">
+                        {thread.participant.name}
                       </span>
-                      <span className="text-[10px] font-mono text-[var(--color-text-muted)]">11:12 AM</span>
+                      <span className="text-[10px] font-mono text-[var(--text-muted)]">
+                        {lastMessage ? lastMessage.time : ''}
+                      </span>
                     </div>
-                    <div className="text-[11px] text-[var(--color-text-muted)] truncate mt-0.5">
-                      {builder.headline}
-                    </div>
+
+                    <span className="text-[10px] font-mono text-[#1A5052] font-semibold truncate block">
+                      {thread.contextStartup ? `${thread.contextStartup} • ${thread.contextStage}` : thread.contextStage}
+                    </span>
+
+                    <p className="text-[11px] text-[var(--text-secondary)] truncate mt-0.5">
+                      {lastMessage ? lastMessage.text : 'Start of conversation'}
+                    </p>
                   </div>
                 </button>
               );
@@ -113,80 +83,96 @@ export const MessagesView: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Active Chat Conversation */}
-        <div className="flex-1 flex flex-col min-w-0 bg-[var(--color-canvas)]">
-          
-          {/* Conversation Header with Project Context (PRD MSG-02) */}
-          <div className="p-3.5 bg-[var(--color-surface)] border-b border-[var(--color-border)] flex items-center justify-between gap-3">
+        {/* Right: Active Conversation */}
+        <div className="flex-1 flex flex-col bg-white">
+          {/* Shared Context Header */}
+          <div className="p-4 border-b border-[var(--border-crisp)] bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <img
-                src={selectedUser.avatar}
-                alt={selectedUser.name}
-                className="w-8 h-8 rounded-full object-cover border border-[var(--color-border)]"
+                src={currentThread.participant.avatar}
+                alt={currentThread.participant.name}
+                className="w-10 h-10 rounded-full object-cover border border-[var(--border-crisp)]"
               />
               <div>
-                <div className="text-xs font-bold text-[var(--color-text-primary)]">
-                  {selectedUser.name}
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-sm font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                    {currentThread.participant.name}
+                  </span>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" />
+                  <span className="text-xs font-mono text-[var(--text-muted)]">
+                    {currentThread.participant.handle}
+                  </span>
                 </div>
-                <div className="text-[10px] font-mono text-[var(--color-text-muted)]">
-                  {selectedUser.role} • {selectedUser.timezone}
-                </div>
+                <span className="text-xs text-[var(--text-secondary)] font-mono">
+                  {currentThread.participant.role}
+                </span>
               </div>
             </div>
 
-            {/* Context Badge */}
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-[11px] text-[var(--color-text-muted)] font-mono">
-              <Rocket className="w-3.5 h-3.5 text-[var(--color-brand-accent)]" />
-              <span>Context: Direct Collaboration</span>
+            {/* Context Actions */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono bg-[var(--bg-selected)] text-[#0D9488] px-2.5 py-1 rounded-lg border border-[#BCE5DC] font-semibold">
+                Context: {currentThread.contextStartup} ({currentThread.contextStage})
+              </span>
+              {currentThread.contextStartup.includes('PulseAI') && (
+                <button
+                  onClick={() => startTrialSprintWithStartup('startup-pulseai')}
+                  className="bg-[#1A5052] hover:bg-[#12393B] text-white px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <Zap className="w-3 h-3 text-[#34D399]" />
+                  <span>Start 5-Day Trial</span>
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Messages Stream */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3">
-            {currentThread.messages.map(msg => {
-              const isMine = msg.sender === currentUser.name;
+          {/* Messages Feed */}
+          <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-[var(--bg-canvas)]">
+            {currentThread.messages.map((msg) => {
+              const isMe = msg.sender === 'me';
+              const displayName = isMe ? 'You' : currentThread.participant.name;
               return (
                 <div
                   key={msg.id}
-                  className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}
+                  className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
                 >
-                  <div className={`max-w-sm sm:max-w-md p-3 rounded-[var(--radius-lg)] text-xs ${
-                    isMine
-                      ? 'bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] rounded-br-xs'
-                      : 'bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] rounded-bl-xs'
-                  }`}>
+                  <div className="flex items-center gap-1.5 mb-1 px-1 text-[10px] font-mono text-[var(--text-muted)]">
+                    <span>{displayName}</span>
+                    <span>•</span>
+                    <span>{msg.time}</span>
+                  </div>
+                  <div
+                    className={`max-w-md p-3.5 rounded-2xl text-xs font-mono leading-relaxed shadow-2xs ${
+                      isMe
+                        ? 'bg-[#1A5052] text-white rounded-br-xs'
+                        : 'bg-white text-[var(--text-primary)] border border-[var(--border-crisp)] rounded-bl-xs'
+                    }`}
+                  >
                     {msg.text}
                   </div>
-                  <span className="text-[10px] font-mono text-[var(--color-text-muted)] mt-1 px-1">
-                    {msg.time}
-                  </span>
                 </div>
               );
             })}
           </div>
 
-          {/* Composer Input Bar */}
-          <form onSubmit={handleSendMessage} className="p-3 bg-[var(--color-surface)] border-t border-[var(--color-border)] flex gap-2">
+          {/* Message Input */}
+          <form onSubmit={handleSendMessage} className="p-4 border-t border-[var(--border-crisp)] bg-white flex gap-2">
             <input
               type="text"
               value={inputMessage}
-              onChange={e => setInputMessage(e.target.value)}
-              placeholder={`Message ${selectedUser.name}...`}
-              className="flex-1 text-xs p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] focus:border-[var(--color-brand-accent)] focus:outline-none"
+              onChange={(e) => setInputMessage(e.target.value)}
+              placeholder={`Message ${currentThread.participant.name}...`}
+              className="flex-1 bg-[var(--bg-canvas)] border border-[var(--border-crisp)] rounded-xl px-4 py-2.5 text-xs font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-[#1A5052]"
             />
-            <Button
+            <button
               type="submit"
-              variant="primary"
-              size="sm"
-              disabled={!inputMessage.trim()}
-              rightIcon={<Send className="w-3.5 h-3.5" />}
+              className="bg-[#1A5052] hover:bg-[#12393B] text-white px-5 py-2.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
             >
-              Send
-            </Button>
+              <Send className="w-3.5 h-3.5" />
+              <span>Send</span>
+            </button>
           </form>
-
         </div>
-
       </div>
     </div>
   );

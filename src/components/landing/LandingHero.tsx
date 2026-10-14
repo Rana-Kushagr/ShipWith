@@ -1,938 +1,305 @@
-import React, { useState, useEffect } from 'react';
-import { useApp } from '../../context/AppContext';
-import { ShipWithLogoMark } from './LandingNavbar';
-import { BorderGlow } from '../common/BorderGlow';
-import heroDeskImg from '../../assets/hero-desk.jpg';
-import startupWorkspaceImg from '../../assets/startup-workspace.jpg';
+import React, { useState } from 'react';
 import { 
   ArrowRight, 
-  Home, 
-  LayoutGrid, 
-  Users, 
-  MessageSquare, 
-  FolderKanban, 
-  Bookmark, 
-  Check, 
-  X, 
-  Info, 
-  Box, 
-  BarChart3, 
-  MoreVertical,
-  Play,
-  Pause,
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  Zap,
-  Award,
-  GitCommit,
-  ExternalLink
+  CheckCircle2, 
+  Clock, 
+  Award, 
+  ChevronRight
 } from 'lucide-react';
-
-interface FeatureStep {
-  id: number;
-  name: string;
-  tagline: string;
-  instruction: string;
-}
-
-const FEATURE_STEPS: FeatureStep[] = [
-  {
-    id: 0,
-    name: 'Discover',
-    tagline: 'Discovery Radar & Startup Matching',
-    instruction: 'Search founders, startups, and open collaborator roles filtered by verified skills and availability.',
-  },
-  {
-    id: 1,
-    name: 'Connect',
-    tagline: 'Compatibility & Direct Invitation',
-    instruction: 'Review compatibility (skills, weekly hours, working style) and send scoped trial build invitations.',
-  },
-  {
-    id: 2,
-    name: 'Build',
-    tagline: '4-Day Scoped Trial Sprint',
-    instruction: 'Work together inside a scoped 4-day sprint to test real collaboration before committing equity.',
-  },
-  {
-    id: 3,
-    name: 'Ship',
-    tagline: 'Live Release & Milestone Delivery',
-    instruction: 'Deploy working code to production, merge pull requests, and deliver real software to users.',
-  },
-  {
-    id: 4,
-    name: 'Reputation',
-    tagline: 'Verified Build Passport Minting',
-    instruction: 'Turn mutual delivery into permanent, unforgeable reputation and verified peer reviews on your passport.',
-  },
-];
+import { useApp } from '../../context/AppContext';
 
 export const LandingHero: React.FC = () => {
-  const { setCurrentView } = useApp();
+  const { 
+    setCurrentView, 
+    setIsAuthModalOpen, 
+    claimHandleText, 
+    setClaimHandleText, 
+    seedBuilders,
+    setSelectedBuilderId 
+  } = useApp();
 
-  // Active step in the motion graphic video / walkthrough (0 to 4)
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [progress, setProgress] = useState<number>(0);
+  const [inputHandle, setInputHandle] = useState<string>(claimHandleText || '');
 
-  // Auto-play timer for the motion graphic demonstration
-  useEffect(() => {
-    if (!isPlaying) return;
-
-    const intervalTime = 60; // 60ms tick
-    const stepDuration = 5200; // 5.2 seconds per chapter
-    const stepIncrement = (intervalTime / stepDuration) * 100;
-
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          setActiveStep((curr) => (curr + 1) % FEATURE_STEPS.length);
-          return 0;
-        }
-        return prev + stepIncrement;
-      });
-    }, intervalTime);
-
-    return () => clearInterval(timer);
-  }, [isPlaying, activeStep]);
-
-  const handleSelectStep = (idx: number) => {
-    setActiveStep(idx);
-    setProgress(0);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    setInputHandle(val);
+    setClaimHandleText(val);
   };
 
-  const handlePrevStep = () => {
-    setActiveStep((curr) => (curr - 1 + FEATURE_STEPS.length) % FEATURE_STEPS.length);
-    setProgress(0);
+  const handleClaimSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAuthModalOpen(true);
   };
 
-  const handleNextStep = () => {
-    setActiveStep((curr) => (curr + 1) % FEATURE_STEPS.length);
-    setProgress(0);
-  };
+  // Row 1 & Row 2 builders for marquee
+  const marqueeRow1 = [...seedBuilders, ...seedBuilders];
+  const marqueeRow2 = [...seedBuilders.slice().reverse(), ...seedBuilders.slice().reverse()];
 
   return (
-    <section id="motion-showcase-section" className="relative pt-8 pb-20 overflow-hidden bg-[#09090b] text-white">
-      
-      {/* Background Ambience: Desk Corner Vignette in Bottom-Left */}
-      <div 
-        className="hidden md:block absolute bottom-0 left-0 w-[540px] lg:w-[660px] xl:w-[740px] h-[400px] lg:h-[480px] pointer-events-none select-none z-0 opacity-70 transition-all duration-500"
-        style={{
-          maskImage: 'radial-gradient(ellipse 100% 100% at 0% 100%, black 72%, transparent 100%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 100% 100% at 0% 100%, black 72%, transparent 100%)',
-        }}
-      >
-        <img 
-          src={heroDeskImg} 
-          alt="Designer workspace desk corner" 
-          className="w-full h-full object-cover object-bottom filter contrast-[1.08] brightness-[0.92]"
-        />
-      </div>
-
-      <div className="relative max-w-[1360px] mx-auto px-6 sm:px-10 z-10">
-        
-        {/* Main 2-Column Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center pt-4">
-          
-          {/* =========================================================
-              LEFT COLUMN: Value Proposition & Artful Typography
-              ========================================================= */}
-          <div className="lg:col-span-5 space-y-6 text-left">
-            
-            {/* Top Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-900/90 border border-zinc-800 text-xs font-mono text-zinc-300 shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-sans font-medium text-zinc-200">Networking is only the beginning.</span>
+    <div className="relative overflow-hidden bg-landing-atmosphere border-b border-[var(--border-crisp)]">
+      {/* Hero Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-16 lg:pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          {/* Left Column (7 cols): Editorial Typography + Claim Bar */}
+          <div className="lg:col-span-7 space-y-6 text-left">
+            {/* Simplify Telemetry Pill */}
+            <div className="inline-flex items-center gap-2 bg-[var(--simplify-teal-soft)] border border-[#BCE5DC] text-[#1A5052] px-3.5 py-1.5 rounded-full text-xs font-mono font-medium shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-[#00AA45] animate-ping" />
+              <span>THE PEER COLLABORATION NETWORK FOR SERIOUS BUILDERS</span>
             </div>
 
-            {/* Master Heading with Artful Font Mixture (Outfit + Instrument Serif) */}
-            <h1 className="text-4xl sm:text-6xl lg:text-[70px] font-extrabold tracking-tight text-white leading-[1.04] font-display">
+            {/* Headline with Instrument Serif Italic */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-['Plus_Jakarta_Sans'] font-extrabold text-[var(--text-primary)] tracking-[-0.035em] leading-[1.08]">
               Find your{' '}
-              <span className="font-serif italic font-normal text-zinc-100 text-[1.14em] tracking-normal inline-block pr-1">
-                people.
+              <span className="font-['Instrument_Serif'] italic font-normal text-[#1A5052] tracking-normal">
+                people
               </span>
-              <br />
-              Build{' '}
-              <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent font-black">
-                what’s next.
+              . Build what’s{' '}
+              <span className="font-['Instrument_Serif'] italic font-normal text-[#00AA45] tracking-normal">
+                next
               </span>
+              .
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-base sm:text-[18px] text-zinc-400 leading-relaxed font-normal max-w-md font-sans">
-              Find founders and builders worth working with, build together, ship something real, and turn the work into reputation.
+            {/* Subheadline */}
+            <p className="text-base sm:text-lg text-[var(--text-secondary)] font-normal max-w-xl leading-relaxed">
+              Meet founders, builders and startups that match what you want to create — then connect, collaborate in 5-day scoped trial sprints, and ship together.
             </p>
 
-            {/* Button Actions */}
-            <div className="flex flex-wrap items-center gap-3.5 pt-1">
-              <button
-                onClick={() => setCurrentView('onboarding')}
-                className="bg-white text-black hover:bg-zinc-200 font-semibold text-sm px-6 py-3.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer shadow-md hover:shadow-xl hover:scale-[1.02]"
+            {/* PEERLIST-STYLE LIVE HANDLE CLAIM BAR */}
+            <div className="pt-2 max-w-xl">
+              <form 
+                onSubmit={handleClaimSubmit}
+                className="bg-white p-2 rounded-2xl border-2 border-[var(--border-crisp)] hover:border-[#1A5052] focus-within:border-[#1A5052] shadow-[var(--shadow-float)] transition-all flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
               >
-                <span>Try ShipWith free</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                <div className="flex items-center flex-1 px-3 py-1 font-mono text-sm">
+                  <span className="text-[var(--text-muted)] select-none">shipwith.app/</span>
+                  <input
+                    type="text"
+                    value={inputHandle}
+                    onChange={handleInputChange}
+                    placeholder="yourname"
+                    className="w-full bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden font-bold pl-0.5"
+                  />
+                </div>
 
-              <button
-                onClick={() => {
-                  const el = document.getElementById('plans-section');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="bg-[#121215] hover:bg-zinc-800/80 text-zinc-200 hover:text-white border border-zinc-800 hover:border-zinc-700 font-medium text-sm px-6 py-3.5 rounded-lg transition-all cursor-pointer shadow-xs"
-              >
-                View plans
-              </button>
-            </div>
+                <button
+                  type="submit"
+                  className="bg-[#1A5052] hover:bg-[#12393B] text-white px-5 py-3 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all shadow-xs shrink-0 cursor-pointer"
+                >
+                  <span>Try ShipWith free</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </form>
 
-            {/* Microcopy */}
-            <div className="text-xs text-zinc-400 pt-0.5">
-              <span>No credit card required &nbsp;·&nbsp; Already have an account? </span>
-              <button 
-                onClick={() => setCurrentView('home')}
-                className="text-white underline underline-offset-2 font-medium hover:text-zinc-200 cursor-pointer"
-              >
-                Log in
-              </button>
-            </div>
-
-          </div>
-
-          {/* =========================================================
-              RIGHT COLUMN: Motion Graphic Video / Interactive Tour Card
-              With Hover Floating Animation & Blurry White Light Glow
-              ========================================================= */}
-          <div className="lg:col-span-7 relative flex flex-col items-center">
-            
-            {/* The Main Container holding Browser Window + 3 Floating Cards (Group for Hover Effect) */}
-            <div className="group/herocard relative w-full max-w-[760px]">
-              
-              {/* =======================================================
-                  BLURRY GLOW OF VISIBLE WHITE LIGHT BEHIND HERO CARD
-                  Appears and expands on hover with smooth atmospheric bloom
-                  ======================================================= */}
-              {/* Outer Browser Mockup Window with React Bits BorderGlow */}
-              <BorderGlow
-                borderRadius={20}
-                edgeSensitivity={28}
-                glowRadius={24}
-                glowIntensity={1.0}
-                coneSpread={26}
-                glowColor="0 0 100"
-                backgroundColor="#121215"
-                colors={['#ffffff', '#cbd5e1', '#38bdf8']}
-                className="relative rounded-2xl shadow-xl border border-zinc-800 hover:border-zinc-400/80 transition-all duration-300"
-              >
-                
-                {/* Window Top Bar: Mac Dots + Motion Video Controls */}
-                <div className="h-10 px-4 bg-[#18181c] border-b border-zinc-800/80 flex items-center justify-between">
-                  {/* Left: Mac Dots */}
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
-                    <span className="text-[11px] font-mono text-zinc-400 ml-2 hidden sm:inline">
-                      ShipWith Interactive Tour
+              {/* Instant Handle Availability Feedback */}
+              <div className="mt-2.5 px-2 flex items-center gap-1.5 text-xs font-mono">
+                {inputHandle.length > 0 ? (
+                  <div className="text-[#00AA45] flex items-center gap-1.5 bg-[#E8F8EE] px-2.5 py-1 rounded-lg border border-[#C6F0D6]">
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                    <span>
+                      <strong>shipwith.app/{inputHandle}</strong> is available — Claim your Build Passport
                     </span>
                   </div>
-
-                  {/* Center: Current Step Status Pill with Live Progress Indicator */}
-                  <div className="relative overflow-hidden px-2.5 py-0.5 rounded-full bg-[#0e0e11] border border-zinc-800 text-[10px] font-medium text-zinc-300 flex items-center gap-1.5 shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                    <span className="font-semibold text-white">{FEATURE_STEPS[activeStep].name}</span>
-                    <span className="text-zinc-500">• Step {activeStep + 1} of 5</span>
-                    {isPlaying && (
-                      <div 
-                        className="absolute bottom-0 left-0 h-[2px] bg-emerald-500 transition-all duration-75"
-                        style={{ width: `${progress}%` }}
-                      />
-                    )}
-                  </div>
-
-                  {/* Right: Play / Pause & Step Navigation Controls */}
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={handlePrevStep}
-                      title="Previous Step"
-                      className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer transition-colors"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => setIsPlaying(!isPlaying)}
-                      title={isPlaying ? "Pause auto-tour" : "Play auto-tour"}
-                      className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer transition-colors"
-                    >
-                      {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                    </button>
-                    <button
-                      onClick={handleNextStep}
-                      title="Next Step"
-                      className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer transition-colors"
-                    >
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Window Inner 3-Column Layout */}
-                <div className="grid grid-cols-12 min-h-[440px] text-left">
-                  
-                  {/* Internal Sub-Col 1: Mini Sidebar */}
-                  <div className="col-span-3 border-r border-zinc-800/80 p-3.5 flex flex-col justify-between bg-[#0e0e11]">
-                    <div className="space-y-4">
-                      {/* Inner Logo */}
-                      <div className="flex items-center gap-1.5 px-1 pt-1">
-                        <ShipWithLogoMark className="w-4 h-4 text-white" />
-                        <span className="font-display font-bold text-xs text-white">ShipWith</span>
-                      </div>
-
-                      {/* Nav Links */}
-                      <nav className="space-y-1 text-xs">
-                        <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-zinc-400 hover:text-white cursor-pointer transition-colors">
-                          <Home className="w-3.5 h-3.5" />
-                          <span>Home</span>
-                        </div>
-                        <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md cursor-pointer transition-all ${
-                          activeStep === 0 || activeStep === 3
-                            ? 'bg-zinc-800/80 text-white font-semibold shadow-2xs border border-zinc-700/80' 
-                            : 'text-zinc-400 hover:text-white'
-                        }`}>
-                          <LayoutGrid className="w-3.5 h-3.5" />
-                          <span>Startups</span>
-                        </div>
-                        <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md cursor-pointer transition-all ${
-                          activeStep === 1
-                            ? 'bg-zinc-800/80 text-white font-semibold shadow-2xs border border-zinc-700/80' 
-                            : 'text-zinc-400 hover:text-white'
-                        }`}>
-                          <Users className="w-3.5 h-3.5" />
-                          <span>People</span>
-                        </div>
-                        <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-zinc-400 hover:text-white cursor-pointer transition-colors">
-                          <MessageSquare className="w-3.5 h-3.5" />
-                          <span>Messages</span>
-                        </div>
-                        <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md cursor-pointer transition-all ${
-                          activeStep === 2 || activeStep === 4
-                            ? 'bg-zinc-800/80 text-white font-semibold shadow-2xs border border-zinc-700/80' 
-                            : 'text-zinc-400 hover:text-white'
-                        }`}>
-                          <FolderKanban className="w-3.5 h-3.5" />
-                          <span>Workspace</span>
-                        </div>
-                      </nav>
-                    </div>
-
-                    {/* Bottom User Pill */}
-                    <div className="flex items-center justify-between p-1.5 rounded-lg hover:bg-zinc-800/60 cursor-pointer transition-colors">
-                      <div className="flex items-center gap-2">
-                        <img 
-                          src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80" 
-                          alt="Riya Mehta" 
-                          className="w-6 h-6 rounded-full object-cover"
-                        />
-                        <div className="text-[10px] leading-tight">
-                          <div className="font-semibold text-zinc-200">Riya Mehta</div>
-                          <div className="text-zinc-500 font-mono text-[9px]">Builder</div>
-                        </div>
-                      </div>
-                      <MoreVertical className="w-3 h-3 text-zinc-500" />
-                    </div>
-                  </div>
-
-                  {/* Internal Sub-Col 2: Dynamic Motion Graphic Center Stage */}
-                  <div className="col-span-5 border-r border-zinc-800/80 p-3.5 space-y-3 bg-[#121215]">
-                    
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-bold text-xs text-white">Startups</h3>
-                      <button 
-                        onClick={() => setCurrentView('startups')}
-                        className="text-[10px] text-zinc-400 hover:text-white flex items-center gap-0.5 cursor-pointer"
-                      >
-                        <span>View all</span>
-                        <ArrowRight className="w-2.5 h-2.5" />
-                      </button>
-                    </div>
-
-                    {/* Filter Tabs */}
-                    <div className="flex items-center gap-3 text-[11px] border-b border-zinc-800 pb-1.5">
-                      <span className="font-semibold text-white cursor-pointer">For you</span>
-                      <span className="text-zinc-400 hover:text-zinc-200 cursor-pointer">Trending</span>
-                      <span className="text-zinc-400 hover:text-zinc-200 cursor-pointer">Latest</span>
-                    </div>
-
-                    {/* STEP 0: Discover Stage (Highlighted Radar & Roles) */}
-                    {activeStep === 0 && (
-                      <div className="space-y-2 animate-in fade-in duration-300">
-                        {/* Simulated Search Typing */}
-                        <div className="p-2 bg-[#18181c] border border-zinc-800 rounded-lg flex items-center gap-1.5 text-[10px]">
-                          <Search className="w-3 h-3 text-zinc-400 shrink-0" />
-                          <span className="font-mono text-zinc-200 font-medium">React 19 / Next.js / AI</span>
-                          <span className="w-1.5 h-3 bg-emerald-500 animate-pulse ml-auto" />
-                        </div>
-
-                        {/* Startup Card 1 */}
-                        <BorderGlow
-                          borderRadius={12}
-                          edgeSensitivity={28}
-                          glowRadius={16}
-                          glowIntensity={0.65}
-                          glowColor="160 84 50"
-                          backgroundColor="#151519"
-                          colors={['#10b981', '#34d399', '#6ee7b7']}
-                          className="border border-zinc-800 shadow-2xs"
-                        >
-                          <div className="overflow-hidden">
-                            <div className="relative h-20 bg-zinc-900 overflow-hidden">
-                              <img 
-                                src={startupWorkspaceImg} 
-                                alt="Campus AI Tutor Workspace" 
-                                className="w-full h-full object-cover filter brightness-95"
-                              />
-                              <div className="absolute top-1.5 right-1.5 p-1 rounded-md bg-black/60 backdrop-blur-xs text-zinc-200 shadow-2xs">
-                                <Bookmark className="w-2.5 h-2.5" />
-                              </div>
-                            </div>
-
-                            <div className="p-2.5 space-y-1.5">
-                              <div>
-                                <div className="font-bold text-xs text-white">Campus AI Tutor</div>
-                                <p className="text-[10px] text-zinc-400 line-clamp-2 leading-snug mt-0.5">
-                                  AI study companion looking for a frontend developer and growth collaborator.
-                                </p>
-                              </div>
-
-                              <div className="flex flex-wrap gap-1">
-                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-mono">AI</span>
-                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-mono">EdTech</span>
-                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-mono">Early stage</span>
-                              </div>
-
-                              <div className="flex items-center justify-between text-[9px] text-zinc-400 pt-1 border-t border-zinc-800">
-                                <span className="text-emerald-400 font-semibold font-mono">👤 3 open roles</span>
-                                <span className="font-mono">♡ 12 interested</span>
-                              </div>
-
-                              <button 
-                                onClick={() => setCurrentView('startups')}
-                                className="w-full py-1.5 bg-white text-black text-[10px] font-semibold rounded-lg flex items-center justify-center gap-1 hover:bg-zinc-200 transition-colors cursor-pointer"
-                              >
-                                <span>View build</span>
-                                <ArrowRight className="w-2.5 h-2.5" />
-                              </button>
-                            </div>
-                          </div>
-                        </BorderGlow>
-                      </div>
-                    )}
-
-                    {/* STEP 1: Connect Stage (Active Teammate Pairing) */}
-                    {activeStep === 1 && (
-                      <div className="space-y-2.5 animate-in fade-in duration-300">
-                        <div className="p-2.5 rounded-lg bg-emerald-950/60 border border-emerald-800 text-[10px] text-emerald-300 flex items-center justify-between font-mono">
-                          <span className="font-semibold">⚡ High Synergy Match Found</span>
-                          <span className="font-bold text-emerald-400">98% Match</span>
-                        </div>
-
-                        {/* Match Focus Card */}
-                        <BorderGlow
-                          borderRadius={12}
-                          edgeSensitivity={28}
-                          glowRadius={18}
-                          glowIntensity={0.7}
-                          glowColor="150 80 60"
-                          backgroundColor="#16171d"
-                          colors={['#10b981', '#34d399', '#6ee7b7']}
-                          className="border border-emerald-500/70 shadow-lg"
-                        >
-                          <div className="p-3 space-y-2">
-                            <div className="flex items-center gap-2">
-                              <img 
-                                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" 
-                                alt="Arjun Verma" 
-                                className="w-9 h-9 rounded-full object-cover border border-emerald-500"
-                              />
-                              <div>
-                                <div className="font-bold text-xs text-white">Arjun Verma</div>
-                                <div className="text-[10px] text-zinc-300 font-sans">Full-stack React & Next.js</div>
-                                <div className="text-[9px] text-emerald-400 font-medium font-mono">● Available 10 hrs/week</div>
-                              </div>
-                            </div>
-
-                            <div className="p-2 bg-[#0e0e11] rounded-md border border-zinc-800 text-[9px] text-zinc-300 space-y-1 font-sans">
-                              <div>• Complementary skill: Frontend + UI Polish</div>
-                              <div>• Timezone: Aligned GMT+5:30</div>
-                            </div>
-
-                            <div className="w-full py-1.5 bg-emerald-600 text-white text-[10px] font-semibold rounded-lg text-center shadow-xs flex items-center justify-center gap-1.5 font-sans">
-                              <Check className="w-3 h-3 stroke-[3]" />
-                              <span>Trial Invitation Dispatched</span>
-                            </div>
-                          </div>
-                        </BorderGlow>
-                      </div>
-                    )}
-
-                    {/* STEP 2: Build Stage (4-Day Trial Sprint Kanban) */}
-                    {activeStep === 2 && (
-                      <div className="space-y-2.5 animate-in fade-in duration-300">
-                        <div className="p-2 rounded-lg bg-amber-950/50 border border-amber-800/80 text-[10px] text-amber-300 flex items-center justify-between font-mono">
-                          <span className="font-semibold flex items-center gap-1">
-                            <Zap className="w-3 h-3 text-amber-400" /> 4-Day Trial Sprint
-                          </span>
-                          <span>Day 2 of 4</span>
-                        </div>
-
-                        {/* Kanban Snapshot */}
-                        <div className="grid grid-cols-2 gap-2 text-[10px]">
-                          <div className="p-2 bg-[#0e0e11] border border-zinc-800 rounded-lg space-y-1">
-                            <div className="text-[9px] font-mono text-emerald-400 font-bold uppercase">Shipped (3)</div>
-                            <div className="p-1.5 bg-zinc-900 rounded border border-zinc-800 text-[9px] text-zinc-300">
-                              Repo & CI/CD setup
-                            </div>
-                            <div className="p-1.5 bg-zinc-900 rounded border border-zinc-800 text-[9px] text-zinc-300">
-                              Landing page v1
-                            </div>
-                          </div>
-
-                          <div className="p-2 bg-[#0e0e11] border border-amber-500/50 rounded-lg space-y-1">
-                            <div className="text-[9px] font-mono text-amber-400 font-bold uppercase flex items-center justify-between">
-                              <span>In Progress</span>
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
-                            </div>
-                            <div className="p-1.5 bg-zinc-900 rounded border border-zinc-800 text-[9px] text-white font-medium">
-                              Stripe Checkout MVP
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Git Commit line */}
-                        <div className="p-1.5 bg-[#0e0e11] rounded border border-zinc-800 flex items-center gap-1.5 text-[9px] font-mono text-zinc-300">
-                          <GitCommit className="w-3 h-3 text-emerald-400" />
-                          <span className="truncate">git commit -m "feat: complete MVP sprint"</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* STEP 3: Ship Stage (Live Project Card) */}
-                    {activeStep === 3 && (
-                      <div className="space-y-3 animate-in fade-in duration-300">
-                        <div className="p-2 rounded-lg bg-blue-950/60 border border-blue-800 text-[10px] text-blue-300 flex items-center justify-between font-mono">
-                          <span className="font-semibold">🚀 Live in Production</span>
-                          <span className="text-blue-400">v1.0 Deployed</span>
-                        </div>
-
-                        {/* Startup Card 2: Live Project */}
-                        <BorderGlow
-                          borderRadius={12}
-                          edgeSensitivity={28}
-                          glowRadius={18}
-                          glowIntensity={0.7}
-                          glowColor="215 90 60"
-                          backgroundColor="#14151b"
-                          colors={['#3b82f6', '#60a5fa', '#93c5fd']}
-                          className="border border-blue-500/60 shadow-xs"
-                        >
-                          <div className="p-3 space-y-2.5">
-                            <div className="flex items-start gap-2">
-                              <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-xs">
-                                SW
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-1.5">
-                                  <span className="font-bold text-xs text-white truncate">Campus AI Tutor</span>
-                                  <span className="inline-flex items-center gap-1 text-[8px] font-medium px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-700">
-                                    <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
-                                    Live
-                                  </span>
-                                </div>
-                                <p className="text-[10px] text-zinc-300 line-clamp-2 mt-0.5">
-                                  An AI study companion for students. Learn smarter, together.
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-1.5 border-t border-zinc-800 font-mono">
-                              <div className="flex items-center gap-3">
-                                <span>👥 12.4k users</span>
-                                <span>💬 86 feedbacks</span>
-                              </div>
-                              <button 
-                                onClick={() => setCurrentView('startups')}
-                                className="text-white font-semibold hover:underline flex items-center gap-0.5 cursor-pointer"
-                              >
-                                <span>View project</span>
-                                <ExternalLink className="w-2.5 h-2.5" />
-                              </button>
-                            </div>
-                          </div>
-                        </BorderGlow>
-                      </div>
-                    )}
-
-                    {/* STEP 4: Reputation Stage (Passport Stamp) */}
-                    {activeStep === 4 && (
-                      <div className="space-y-3 animate-in fade-in duration-300">
-                        <div className="p-2 rounded-lg bg-purple-950/60 border border-purple-800 text-[10px] text-purple-300 flex items-center justify-between font-mono">
-                          <span className="font-semibold flex items-center gap-1">
-                            <Award className="w-3.5 h-3.5 text-purple-400" /> Build Passport Minted
-                          </span>
-                          <span className="text-purple-400">100% Verified</span>
-                        </div>
-
-                        <BorderGlow
-                          borderRadius={12}
-                          edgeSensitivity={28}
-                          glowRadius={18}
-                          glowIntensity={0.7}
-                          glowColor="270 80 60"
-                          backgroundColor="#15151a"
-                          colors={['#c084fc', '#f472b6', '#38bdf8']}
-                          className="border border-purple-500/50 shadow-xs text-[10px]"
-                        >
-                          <div className="p-3 space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className="font-bold text-white">Collaboration Review</span>
-                              <span className="px-2 py-0.5 bg-emerald-900/60 text-emerald-300 rounded font-mono font-bold text-[9px] border border-emerald-700/60">
-                                APPROVED
-                              </span>
-                            </div>
-                            <p className="text-zinc-300 text-[10px] italic">
-                              "Arjun delivered clean React 19 components ahead of schedule during our 4-day trial sprint."
-                            </p>
-                            <div className="text-[9px] text-zinc-400 flex items-center justify-between pt-1 border-t border-zinc-800 font-mono">
-                              <span>Reviewed by: Riya Mehta</span>
-                              <span className="text-emerald-400 font-semibold">★ Would Build Again</span>
-                            </div>
-                          </div>
-                        </BorderGlow>
-                      </div>
-                    )}
-
-                  </div>
-
-                  {/* Internal Sub-Col 3: People Suggestions */}
-                  <div className="col-span-4 p-3.5 space-y-3 bg-[#121215]">
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-bold text-xs text-white">People</h3>
-                      <button 
-                        onClick={() => setCurrentView('people')}
-                        className="text-[10px] text-zinc-400 hover:text-white flex items-center gap-0.5 cursor-pointer"
-                      >
-                        <span>View all</span>
-                        <ArrowRight className="w-2.5 h-2.5" />
-                      </button>
-                    </div>
-
-                    {/* People List */}
-                    <div className="space-y-3 pt-1">
-                      
-                      {/* Person 1: Arjun Verma */}
-                      <div className={`flex items-start justify-between gap-2 pb-2.5 border-b border-zinc-800 transition-all ${
-                        activeStep === 1 ? 'ring-2 ring-emerald-500/60 rounded-lg p-1.5 bg-emerald-950/30' : ''
-                      }`}>
-                        <div className="flex items-start gap-2 min-w-0">
-                          <img 
-                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" 
-                            alt="Arjun Verma" 
-                            className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5"
-                          />
-                          <div className="min-w-0 text-[10px]">
-                            <div className="font-bold text-white truncate">Arjun Verma</div>
-                            <div className="text-zinc-400 truncate">Full-stack developer</div>
-                            <div className="text-zinc-500 text-[9px] font-mono">React · Next.js</div>
-                            <div className="flex items-center gap-1 text-[9px] text-emerald-400 font-medium pt-0.5 font-mono">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                              <span>Available 10 hrs/week</span>
-                            </div>
-                          </div>
-                        </div>
-                        <button 
-                          onClick={() => setCurrentView('people')}
-                          className={`px-2.5 py-1 text-[10px] font-semibold rounded-md transition-all shrink-0 cursor-pointer ${
-                            activeStep === 1
-                              ? 'bg-emerald-600 text-white shadow-xs'
-                              : 'bg-white text-black hover:bg-zinc-200'
-                          }`}
-                        >
-                          {activeStep === 1 ? 'Invited' : 'Invite'}
-                        </button>
-                      </div>
-
-                      {/* Person 2: Simran Kaur */}
-                      <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-zinc-800">
-                        <div className="flex items-start gap-2 min-w-0">
-                          <img 
-                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" 
-                            alt="Simran Kaur" 
-                            className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5"
-                          />
-                          <div className="min-w-0 text-[10px]">
-                            <div className="font-bold text-white truncate">Simran Kaur</div>
-                            <div className="text-zinc-400 truncate">Product designer</div>
-                            <div className="text-zinc-500 text-[9px] font-mono">Figma · Product</div>
-                            <div className="flex items-center gap-1 text-[9px] text-emerald-400 font-medium pt-0.5 font-mono">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                              <span>Open to collaborate</span>
-                            </div>
-                          </div>
-                        </div>
-                        <button 
-                          onClick={() => setCurrentView('people')}
-                          className="px-2.5 py-1 bg-[#18181c] border border-zinc-700 text-zinc-200 text-[10px] font-medium rounded-md hover:bg-zinc-800 transition-colors shrink-0 cursor-pointer shadow-2xs"
-                        >
-                          Invite
-                        </button>
-                      </div>
-
-                      {/* Person 3: Aditya Rao */}
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-start gap-2 min-w-0">
-                          <img 
-                            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" 
-                            alt="Aditya Rao" 
-                            className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5"
-                          />
-                          <div className="min-w-0 text-[10px]">
-                            <div className="font-bold text-white truncate">Aditya Rao</div>
-                            <div className="text-zinc-400 truncate">Growth marketer</div>
-                            <div className="text-zinc-500 text-[9px] font-mono">Content · Growth</div>
-                            <div className="flex items-center gap-1 text-[9px] text-emerald-400 font-medium pt-0.5 font-mono">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                              <span>Open to collaborate</span>
-                            </div>
-                          </div>
-                        </div>
-                        <button 
-                          onClick={() => setCurrentView('people')}
-                          className="px-2.5 py-1 bg-[#18181c] border border-zinc-700 text-zinc-200 text-[10px] font-medium rounded-md hover:bg-zinc-800 transition-colors shrink-0 cursor-pointer shadow-2xs"
-                        >
-                          Invite
-                        </button>
-                      </div>
-
-                    </div>
-                  </div>
-
-                </div>
-
-              </BorderGlow>
-
-              {/* =======================================================
-                  3 FLOATING SATELLITE CARDS (FAR RIGHT OVERLAY)
-                  Dynamically highlight in sync with the motion tour
-                  ======================================================= */}
-              <div className="hidden xl:flex flex-col gap-3.5 absolute -right-24 top-2 z-20 w-52 pointer-events-auto">
-                
-                {/* Floating Card 1: Invite Sent (Highlights in Connect Step) */}
-                <BorderGlow
-                  borderRadius={14}
-                  edgeSensitivity={35}
-                  glowRadius={24}
-                  glowIntensity={0.85}
-                  glowColor={activeStep === 1 ? "150 80 70" : "0 0 100"}
-                  backgroundColor="#14151a"
-                  colors={activeStep === 1 ? ['#10b981', '#34d399', '#6ee7b7'] : ['#ffffff', '#cbd5e1', '#94a3b8']}
-                  className={`transition-all duration-200 ${
-                    activeStep === 1 
-                      ? 'border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.22)]' 
-                      : 'border-zinc-800'
-                  }`}
-                >
-                  <div className="p-3 space-y-1 text-left">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-4 h-4 rounded-full bg-emerald-500 text-black flex items-center justify-center">
-                          <Check className="w-2.5 h-2.5 stroke-[3]" />
-                        </div>
-                        <span className="text-xs font-bold text-white">Invite sent</span>
-                      </div>
-                      <X className="w-3 h-3 text-zinc-500 hover:text-white cursor-pointer" />
-                    </div>
-                    <p className="text-[10px] text-zinc-300 leading-tight pl-5.5 font-sans">
-                      Arjun has been invited to Campus AI Tutor
-                    </p>
-                  </div>
-                </BorderGlow>
-
-                {/* Floating Card 2: Build Together Tasks (Highlights in Build Step) */}
-                <BorderGlow
-                  borderRadius={14}
-                  edgeSensitivity={35}
-                  glowRadius={24}
-                  glowIntensity={0.85}
-                  glowColor={activeStep === 2 ? "150 80 70" : "0 0 100"}
-                  backgroundColor="#14151a"
-                  colors={activeStep === 2 ? ['#10b981', '#34d399', '#6ee7b7'] : ['#ffffff', '#cbd5e1', '#94a3b8']}
-                  className={`transition-all duration-200 ${
-                    activeStep === 2
-                      ? 'border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.22)]' 
-                      : 'border-zinc-800'
-                  }`}
-                >
-                  <div className="p-3.5 space-y-2 text-left">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-white">Build together</span>
-                      <span className="text-[9px] text-zinc-400 font-mono">4/4 tasks</span>
-                    </div>
-
-                    <div className="space-y-1.5 text-[10px] text-zinc-300 font-sans">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-3.5 h-3.5 rounded bg-emerald-500 text-black flex items-center justify-center shrink-0">
-                          <Check className="w-2.5 h-2.5 stroke-[3]" />
-                        </div>
-                        <span className="text-zinc-100">Set up repo</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-3.5 h-3.5 rounded bg-emerald-500 text-black flex items-center justify-center shrink-0">
-                          <Check className="w-2.5 h-2.5 stroke-[3]" />
-                        </div>
-                        <span className="text-zinc-100">Design landing page</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-3.5 h-3.5 rounded bg-emerald-500 text-black flex items-center justify-center shrink-0">
-                          <Check className="w-2.5 h-2.5 stroke-[3]" />
-                        </div>
-                        <span className="text-zinc-100">Build MVP</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-3.5 h-3.5 rounded border border-zinc-700 bg-zinc-900 shrink-0" />
-                        <span className="text-zinc-400">Launch and get users</span>
-                      </div>
-                    </div>
-                  </div>
-                </BorderGlow>
-
-                {/* Floating Card 3: Reputation Proof (Highlights in Reputation Step) */}
-                <BorderGlow
-                  borderRadius={14}
-                  edgeSensitivity={35}
-                  glowRadius={24}
-                  glowIntensity={0.85}
-                  glowColor={activeStep === 4 ? "270 80 70" : "0 0 100"}
-                  backgroundColor="#14151a"
-                  colors={activeStep === 4 ? ['#c084fc', '#f472b6', '#a855f7'] : ['#ffffff', '#cbd5e1', '#94a3b8']}
-                  className={`transition-all duration-200 ${
-                    activeStep === 4
-                      ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.22)]' 
-                      : 'border-zinc-800'
-                  }`}
-                >
-                  <div className="p-3.5 space-y-2 text-left">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-white">Reputation</span>
-                      <Info className="w-3 h-3 text-zinc-500" />
-                    </div>
-                    <div className="text-[9px] text-zinc-400 -mt-1 font-mono">Proof from shipped work</div>
-
-                    <div className="space-y-2 pt-1 text-[10px] font-sans">
-                      <div className="flex items-center gap-2">
-                        <Box className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                        <span className="font-bold text-white font-mono">3</span>
-                        <span className="text-zinc-400 text-[9px]">shipped projects</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Users className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                        <span className="font-bold text-white font-mono">2</span>
-                        <span className="text-zinc-400 text-[9px]">verified collaborations</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <BarChart3 className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                        <span className="font-bold text-white font-mono">Top 10%</span>
-                        <span className="text-zinc-400 text-[9px]">builder rank</span>
-                      </div>
-                    </div>
-                  </div>
-                </BorderGlow>
-
+                ) : (
+                  <span className="text-[var(--text-muted)]">
+                    Type a username to claim your un-buyable builder reputation profile. No credit card required.
+                  </span>
+                )}
               </div>
-
             </div>
 
-            {/* =========================================================
-                PIPELINE STEPPER UNDERNEATH THE WINDOW
-                These 5 steps explain the core features step-by-step!
-                ========================================================= */}
-            <div className="w-full max-w-lg mx-auto mt-7 flex flex-col items-center">
-              
-              {/* Stepper Track with Nodes */}
-              <div className="relative w-full flex items-center justify-between px-2">
-                {/* Connecting track line */}
-                <div className="absolute top-1/2 left-6 right-6 h-[2px] -translate-y-1/2 bg-zinc-800 -z-0" />
-                
-                {FEATURE_STEPS.map((step, idx) => {
-                  const isActive = activeStep === idx;
-                  const isPast = activeStep > idx;
-
-                  return (
-                    <button
-                      key={step.id}
-                      onClick={() => handleSelectStep(idx)}
-                      title={`Step ${idx + 1}: ${step.name}`}
-                      className="relative z-10 flex flex-col items-center group cursor-pointer"
-                    >
-                      {/* Node circle */}
-                      <div className={`transition-all duration-300 flex items-center justify-center ${
-                        isActive
-                          ? 'w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-emerald-500/30 shadow-md'
-                          : isPast
-                          ? 'w-3 h-3 rounded-full bg-emerald-600 hover:scale-110'
-                          : 'w-2.5 h-2.5 rounded-full bg-zinc-700 hover:scale-125'
-                      }`} />
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Milestone Labels (Clickable!) */}
-              <div className="w-full flex items-center justify-between text-xs pt-2.5 font-medium px-0.5">
-                {FEATURE_STEPS.map((step, idx) => {
-                  const isActive = activeStep === idx;
-                  return (
-                    <button
-                      key={step.id}
-                      onClick={() => handleSelectStep(idx)}
-                      className={`transition-colors cursor-pointer text-center ${
-                        isActive
-                          ? 'text-white font-bold font-sans'
-                          : 'text-zinc-500 hover:text-zinc-300 font-sans'
-                      }`}
-                    >
-                      <span>{step.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Live Feature Instruction Bar with BorderGlow */}
-              <BorderGlow
-                borderRadius={12}
-                edgeSensitivity={35}
-                glowRadius={24}
-                glowIntensity={1.2}
-                coneSpread={28}
-                glowColor="0 0 100"
-                backgroundColor="#121215"
-                colors={['#ffffff', '#cbd5e1', '#34d399']}
-                className="mt-3.5 max-w-md w-full shadow-xs transition-all duration-300 hover:scale-[1.01]"
+            {/* Secondary Action Link Buttons */}
+            <div className="pt-2 flex flex-wrap items-center gap-4 text-xs font-mono">
+              <button
+                onClick={() => setCurrentView('startups')}
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold flex items-center gap-1 underline underline-offset-4 decoration-[var(--border-crisp)] hover:decoration-[#1A5052] transition-colors"
               >
-                <div className="px-4 py-2 text-xs text-zinc-300 text-center">
-                  <span className="font-semibold text-white">{FEATURE_STEPS[activeStep].tagline}: </span>
-                  <span className="text-zinc-400">{FEATURE_STEPS[activeStep].instruction}</span>
-                </div>
-              </BorderGlow>
-
+                Explore 8+ Active Startups <ChevronRight className="w-3 h-3" />
+              </button>
+              <span className="text-[var(--border-crisp)]">•</span>
+              <button
+                onClick={() => setCurrentView('people')}
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold flex items-center gap-1 underline underline-offset-4 decoration-[var(--border-crisp)] hover:decoration-[#1A5052] transition-colors"
+              >
+                Browse Verified Builders <ChevronRight className="w-3 h-3" />
+              </button>
+              <span className="text-[var(--border-crisp)]">•</span>
+              <button
+                onClick={() => setCurrentView('feed')}
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold flex items-center gap-1 underline underline-offset-4 decoration-[var(--border-crisp)] hover:decoration-[#1A5052] transition-colors"
+              >
+                Weekly ShipPad #1 Launches <ChevronRight className="w-3 h-3" />
+              </button>
             </div>
-
           </div>
 
+          {/* Right Column (5 cols): Layered Simplify Floating Visual Preview */}
+          <div className="lg:col-span-5 relative flex justify-center">
+            <div className="relative w-full max-w-md">
+              {/* Card 1: 96% Builder Match Card */}
+              <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-5 shadow-[var(--shadow-float)] transition-transform hover:-translate-y-1 duration-300">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+                      alt="Kushagr Rana"
+                      className="w-11 h-11 rounded-xl object-cover border border-[var(--border-crisp)]"
+                    />
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-sm font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                          Kushagr Rana
+                        </span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" />
+                      </div>
+                      <span className="text-xs font-mono text-[var(--text-secondary)]">
+                        Full-Stack Engineer · 15 hrs/wk
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Circular SVG Match Gauge 96% */}
+                  <div className="flex flex-col items-center">
+                    <div className="relative w-12 h-12 flex items-center justify-center">
+                      <svg className="w-12 h-12 transform -rotate-90">
+                        <circle
+                          cx="24"
+                          cy="24"
+                          r="19"
+                          stroke="#F2EFE9"
+                          strokeWidth="3.5"
+                          fill="transparent"
+                        />
+                        <circle
+                          cx="24"
+                          cy="24"
+                          r="19"
+                          stroke="#0D9488"
+                          strokeWidth="3.5"
+                          strokeDasharray={2 * Math.PI * 19}
+                          strokeDashoffset={2 * Math.PI * 19 * (1 - 0.96)}
+                          strokeLinecap="round"
+                          fill="transparent"
+                        />
+                      </svg>
+                      <span className="absolute text-[11px] font-mono font-bold text-[#1A5052]">96%</span>
+                    </div>
+                    <span className="text-[8px] font-mono text-[var(--text-muted)] font-semibold">Match</span>
+                  </div>
+                </div>
+
+                <div className="mt-3.5 pt-3 border-t border-[var(--border-crisp)] flex flex-wrap gap-1.5">
+                  <span className="text-[11px] font-mono bg-[var(--bg-selected)] text-[#0D9488] px-2 py-0.5 rounded-md border border-[#BCE5DC]">
+                    React 19 & Next.js ✔
+                  </span>
+                  <span className="text-[11px] font-mono bg-[var(--bg-selected)] text-[#0D9488] px-2 py-0.5 rounded-md border border-[#BCE5DC]">
+                    15 hrs/wk schedule ✔
+                  </span>
+                </div>
+              </div>
+
+              {/* Card 2: 5-Day Trial Sprint Card (Floating overlap) */}
+              <div className="bg-[var(--bg-canvas)] rounded-2xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] mt-3 sm:-ml-4 transition-transform hover:-translate-y-1 duration-300">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="font-bold text-[#1A5052] flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-[#0D9488]" />
+                    5-Day Scoped Trial Sprint
+                  </span>
+                  <span className="text-[#00AA45] font-semibold bg-[#E8F8EE] px-2 py-0.5 rounded border border-[#C6F0D6]">
+                    3/4 Shipped
+                  </span>
+                </div>
+                <div className="mt-2 w-full h-2 bg-white rounded-full overflow-hidden border border-[var(--border-crisp)]">
+                  <div className="h-full bg-[#0D9488] rounded-full w-3/4" />
+                </div>
+                <div className="mt-2 flex justify-between text-[11px] font-mono text-[var(--text-muted)]">
+                  <span>PulseAI Autonomous Worker Engine</span>
+                  <span className="text-[#1A5052] font-semibold">Zero Equity Risk ✔</span>
+                </div>
+              </div>
+
+              {/* Card 3: Build Passport Badge */}
+              <div className="bg-white rounded-xl border border-[var(--border-crisp)] p-3 shadow-md mt-3 sm:ml-8 flex items-center justify-between text-xs font-mono transition-transform hover:-translate-y-1 duration-300">
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-[#00AA45]" />
+                  <span className="font-bold text-[var(--text-primary)]">
+                    4/4 Collaborators Would Build Together Again
+                  </span>
+                </div>
+                <span className="text-[#00AA45] font-bold">100% ✔</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PEERLIST-STYLE 2-ROW INFINITE BUILDER MARQUEE */}
+      <div className="border-t border-[var(--border-crisp)] bg-white py-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]">
+            <span className="w-2 h-2 rounded-full bg-[#00AA45]" />
+            <span className="font-semibold text-[var(--text-primary)]">LIVE BUILDER NETWORK:</span>
+            <span>Active collaborators ready for 5-day trial builds</span>
+          </div>
+          <button 
+            onClick={() => setCurrentView('people')}
+            className="text-xs font-mono text-[#1A5052] hover:underline font-semibold"
+          >
+            View all builders →
+          </button>
         </div>
 
+        {/* Row 1 (scrolls left) */}
+        <div className="relative w-full overflow-hidden flex whitespace-nowrap">
+          <div className="flex gap-3 animate-marquee-left py-1">
+            {marqueeRow1.map((b, idx) => (
+              <div
+                key={`r1-${idx}`}
+                onClick={() => setSelectedBuilderId(b.id)}
+                className="inline-flex items-center gap-2.5 bg-[var(--bg-canvas)] hover:bg-[var(--bg-hover)] border border-[var(--border-crisp)] hover:border-[#1A5052] px-3.5 py-2 rounded-xl transition-all cursor-pointer shadow-2xs shrink-0"
+              >
+                <img src={b.avatar} alt={b.name} className="w-7 h-7 rounded-full object-cover border border-[var(--border-crisp)]" />
+                <div className="text-left">
+                  <div className="flex items-center gap-1">
+                    <span className="font-bold text-xs text-[var(--text-primary)]">{b.name}</span>
+                    <CheckCircle2 className="w-3 h-3 text-[#00AA45]" />
+                    <span className="text-[10px] font-mono text-[var(--text-muted)]">{b.handle}</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-[var(--text-secondary)] block">
+                    {b.role.split('&')[0]} · {b.stats.ships} Ships
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2 (scrolls right) */}
+        <div className="relative w-full overflow-hidden flex whitespace-nowrap mt-2.5">
+          <div className="flex gap-3 animate-marquee-right py-1">
+            {marqueeRow2.map((b, idx) => (
+              <div
+                key={`r2-${idx}`}
+                onClick={() => setSelectedBuilderId(b.id)}
+                className="inline-flex items-center gap-2.5 bg-[var(--bg-canvas)] hover:bg-[var(--bg-hover)] border border-[var(--border-crisp)] hover:border-[#1A5052] px-3.5 py-2 rounded-xl transition-all cursor-pointer shadow-2xs shrink-0"
+              >
+                <img src={b.avatar} alt={b.name} className="w-7 h-7 rounded-full object-cover border border-[var(--border-crisp)]" />
+                <div className="text-left">
+                  <div className="flex items-center gap-1">
+                    <span className="font-bold text-xs text-[var(--text-primary)]">{b.name}</span>
+                    <CheckCircle2 className="w-3 h-3 text-[#00AA45]" />
+                    <span className="text-[10px] font-mono text-[var(--text-muted)]">{b.availability.replace('Available for ', '')}</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-[var(--text-secondary)] block">
+                    {b.skills.slice(0, 2).join(' · ')} · {b.weeklyHours}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
