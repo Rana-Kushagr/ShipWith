@@ -282,7 +282,7 @@ export const OnboardingWizard: React.FC = () => {
         
         {/* QUESTION 1: Objective (Single - Auto-advances ⚡) */}
         {currentStep === 1 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
                 Question 1 of 12 • Primary Goal
@@ -336,7 +336,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 2: Core Crafts & Superpowers (Multi-select 🔲) */}
         {currentStep === 2 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
@@ -411,7 +411,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 3: Primary Tech Stacks & Toolkits (Multi-select 🔲) */}
         {currentStep === 3 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
@@ -467,7 +467,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 4: Years of Building Experience (Single - Auto-advances ⚡) */}
         {currentStep === 4 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
                 Question 4 of 12 • Experience Level
@@ -513,7 +513,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 5: Industry / Domain Interests (Multi-select 🔲) */}
         {currentStep === 5 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
@@ -573,7 +573,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 6: Project Maturity Stage (Single - Auto-advances ⚡) */}
         {currentStep === 6 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
                 Question 6 of 12 • Product Maturity
@@ -619,7 +619,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 7: Weekly Commitment (Single - Auto-advances ⚡) */}
         {currentStep === 7 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
                 Question 7 of 12 • Availability
@@ -670,7 +670,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 8: Working & Communication Style (Single - Auto-advances ⚡) */}
         {currentStep === 8 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
                 Question 8 of 12 • Working Style
@@ -719,7 +719,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 9: Teammates Looking For (Multi-select 🔲) */}
         {currentStep === 9 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
@@ -782,7 +782,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 10: Equity & Terms Philosophy (Single - Auto-advances ⚡) */}
         {currentStep === 10 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
                 Question 10 of 12 • Alignment
@@ -831,7 +831,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 11: 4-Day Trial Sprint Protocol (Single - Auto-advances ⚡) */}
         {currentStep === 11 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-warning)]">
                 Question 11 of 12 • The ShipWith Protocol
@@ -880,7 +880,7 @@ export const OnboardingWizard: React.FC = () => {
 
         {/* QUESTION 12: Proof of Work & 1-Sentence Bio */}
         {currentStep === 12 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+          <div className="space-y-6 step-enter">
             <div className="space-y-1.5 text-left">
               <span className="text-xs uppercase font-mono font-semibold tracking-wider text-[var(--color-brand-accent)]">
                 Question 12 of 12 • Proof of Work

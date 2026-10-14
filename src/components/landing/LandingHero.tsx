@@ -99,14 +99,9 @@ export const LandingHero: React.FC = () => {
 
   return (
     <section className="relative pt-12 pb-24 md:pt-16 md:pb-32 overflow-hidden bg-[var(--color-canvas)] transition-colors duration-200">
-      {/* Background Dot Grid with Radial Glow */}
-      <div className="absolute inset-0 bg-dot-grid opacity-60 pointer-events-none" />
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle at 50% 18%, rgba(37, 99, 235, 0.07) 0%, rgba(0, 0, 0, 0) 65%)'
-        }}
-      />
+      {/* Premium background: subtle dot-grid + gradient mesh atmosphere */}
+      <div className="absolute inset-0 bg-dot-grid opacity-40 pointer-events-none" />
+      <div className="absolute inset-0 gradient-mesh pointer-events-none" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         
