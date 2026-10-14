@@ -44,15 +44,15 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={35}
-              glowRadius={36}
-              glowIntensity={1.4}
+              glowRadius={32}
+              glowIntensity={0.85}
               glowColor="215 95 55"
               backgroundColor="#ffffff"
               colors={['#3b82f6', '#93c5fd', '#60a5fa']}
-              className="p-7 border border-blue-200/90 shadow-[0_4px_24px_-4px_rgba(59,130,246,0.12)] hover:border-blue-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.35),0_20px_45px_-10px_rgba(0,0,0,0.15)] hover:-translate-y-2 group transition-all duration-300 cursor-pointer"
+              className="p-7 border border-zinc-200/90 hover:border-blue-400 shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_0_16px_rgba(59,130,246,0.22)] hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
             >
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-blue-600 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-blue-600 shadow-xs group-hover:scale-105 transition-transform duration-300">
                   <Users className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
@@ -68,15 +68,15 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={35}
-              glowRadius={36}
-              glowIntensity={1.4}
+              glowRadius={32}
+              glowIntensity={0.85}
               glowColor="152 85 45"
               backgroundColor="#ffffff"
               colors={['#10b981', '#6ee7b7', '#34d399']}
-              className="p-7 border border-emerald-200/90 shadow-[0_4px_24px_-4px_rgba(16,185,129,0.12)] hover:border-emerald-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.35),0_20px_45px_-10px_rgba(0,0,0,0.15)] hover:-translate-y-2 group transition-all duration-300 cursor-pointer"
+              className="p-7 border border-zinc-200/90 hover:border-emerald-400 shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_0_16px_rgba(16,185,129,0.22)] hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
             >
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 shadow-xs group-hover:scale-105 transition-transform duration-300">
                   <GitCommit className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
@@ -92,15 +92,15 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={35}
-              glowRadius={36}
-              glowIntensity={1.4}
+              glowRadius={32}
+              glowIntensity={0.85}
               glowColor="38 95 50"
               backgroundColor="#ffffff"
               colors={['#f59e0b', '#fcd34d', '#fbbf24']}
-              className="p-7 border border-amber-200/90 shadow-[0_4px_24px_-4px_rgba(245,158,11,0.12)] hover:border-amber-500 hover:shadow-[0_0_30px_rgba(245,158,11,0.35),0_20px_45px_-10px_rgba(0,0,0,0.15)] hover:-translate-y-2 group transition-all duration-300 cursor-pointer"
+              className="p-7 border border-zinc-200/90 hover:border-amber-400 shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_0_16px_rgba(245,158,11,0.22)] hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
             >
               <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
+                <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 shadow-xs group-hover:scale-105 transition-transform duration-300">
                   <Trophy className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
@@ -125,7 +125,7 @@ export const LandingSections: React.FC = () => {
         <div className="max-w-[1360px] mx-auto px-6 sm:px-10">
           
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-sky-500/50 text-xs font-mono font-semibold text-sky-300 shadow-[0_0_20px_rgba(56,189,248,0.3)]">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-sky-500/40 text-xs font-mono font-semibold text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
               <Sparkles className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
               <span>THE SHIPWITH ENGINE</span>
             </div>
@@ -177,12 +177,12 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={35}
-              glowRadius={36}
-              glowIntensity={1.35}
+              glowRadius={32}
+              glowIntensity={0.85}
               glowColor="215 90 55"
               backgroundColor="#ffffff"
               colors={['#3b82f6', '#60a5fa', '#93c5fd']}
-              className="p-7 border border-blue-200/80 shadow-[0_4px_24px_-4px_rgba(59,130,246,0.12)] hover:border-blue-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.35),0_20px_45px_-10px_rgba(0,0,0,0.15)] hover:-translate-y-2 group transition-all duration-300 flex flex-col justify-between cursor-pointer"
+              className="p-7 border border-zinc-200/90 hover:border-blue-400 shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_0_16px_rgba(59,130,246,0.22)] hover:-translate-y-1 group transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
               <div className="space-y-4">
                 <div>
@@ -210,12 +210,12 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={30}
-              glowRadius={40}
-              glowIntensity={1.4}
+              glowRadius={36}
+              glowIntensity={0.9}
               glowColor="0 0 100"
               backgroundColor="#09090b"
               colors={['#ffffff', '#e4e4e7', '#60a5fa', '#a855f7']}
-              className="p-7 border border-white/20 shadow-[0_0_25px_rgba(255,255,255,0.15),0_25px_60px_-15px_rgba(0,0,0,0.8)] hover:border-white hover:shadow-[0_0_40px_rgba(255,255,255,0.4),0_0_80px_rgba(96,165,250,0.25)] relative transform md:-translate-y-2 hover:-translate-y-3.5 group transition-all duration-300 flex flex-col justify-between cursor-pointer"
+              className="p-7 border border-zinc-700/80 hover:border-zinc-300 shadow-xl hover:shadow-[0_0_20px_rgba(255,255,255,0.18)] relative transform md:-translate-y-1 hover:-translate-y-1.5 group transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
@@ -246,12 +246,12 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={35}
-              glowRadius={36}
-              glowIntensity={1.35}
+              glowRadius={32}
+              glowIntensity={0.85}
               glowColor="270 85 60"
               backgroundColor="#ffffff"
               colors={['#8b5cf6', '#a855f7', '#c084fc']}
-              className="p-7 border border-purple-200/80 shadow-[0_4px_24px_-4px_rgba(168,85,247,0.12)] hover:border-purple-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.35),0_20px_45px_-10px_rgba(0,0,0,0.15)] hover:-translate-y-2 group transition-all duration-300 flex flex-col justify-between cursor-pointer"
+              className="p-7 border border-zinc-200/90 hover:border-purple-400 shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_0_16px_rgba(168,85,247,0.22)] hover:-translate-y-1 group transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
               <div className="space-y-4">
                 <div>

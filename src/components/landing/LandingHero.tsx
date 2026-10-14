@@ -212,29 +212,25 @@ export const LandingHero: React.FC = () => {
                   BLURRY GLOW OF VISIBLE WHITE LIGHT BEHIND HERO CARD
                   Appears and expands on hover with smooth atmospheric bloom
                   ======================================================= */}
+              {/* Ambient backdrop glow (subtle, non-blurry) */}
               <div 
-                className="absolute -inset-4 sm:-inset-8 -z-10 rounded-3xl opacity-35 group-hover/herocard:opacity-100 group-hover/herocard:scale-105 transition-all duration-700 pointer-events-none"
+                className="absolute -inset-4 sm:-inset-6 -z-10 rounded-3xl opacity-20 group-hover/herocard:opacity-35 transition-opacity duration-300 pointer-events-none"
                 style={{
-                  background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 45%, transparent 72%)',
-                  filter: 'blur(36px)',
+                  background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.12) 0%, transparent 70%)',
                 }}
               />
 
-              {/* Outer Browser Mockup Window with Floating Hover Animation & React Bits BorderGlow */}
+              {/* Outer Browser Mockup Window with React Bits BorderGlow */}
               <BorderGlow
                 borderRadius={20}
-                edgeSensitivity={30}
-                glowRadius={42}
-                glowIntensity={1.3}
-                coneSpread={28}
+                edgeSensitivity={28}
+                glowRadius={36}
+                glowIntensity={0.85}
+                coneSpread={26}
                 glowColor="0 0 100"
                 backgroundColor="#121215"
                 colors={['#ffffff', '#cbd5e1', '#38bdf8']}
-                className="relative rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] group-hover/herocard:shadow-[0_30px_70px_-12px_rgba(255,255,255,0.12)] group-hover/herocard:-translate-y-2.5 group-hover/herocard:scale-[1.012] group-hover/herocard:border-zinc-700 transition-all duration-500 ease-out"
-                style={{
-                  transform: 'perspective(1400px) rotateY(-2deg) rotateX(1deg)',
-                  transformOrigin: 'center center',
-                }}
+                className="relative rounded-2xl shadow-[0_20px_50px_-15px_rgba(0,0,0,0.8)] border border-zinc-800 hover:border-zinc-500 hover:shadow-[0_0_20px_rgba(255,255,255,0.18)] transition-all duration-300"
               >
                 
                 {/* Window Top Bar: Mac Dots + Motion Video Controls */}
@@ -700,14 +696,14 @@ export const LandingHero: React.FC = () => {
                 <BorderGlow
                   borderRadius={14}
                   edgeSensitivity={35}
-                  glowRadius={28}
-                  glowIntensity={1.2}
+                  glowRadius={24}
+                  glowIntensity={0.85}
                   glowColor={activeStep === 1 ? "150 80 70" : "0 0 100"}
                   backgroundColor="#14151a"
                   colors={activeStep === 1 ? ['#10b981', '#34d399', '#6ee7b7'] : ['#ffffff', '#cbd5e1', '#94a3b8']}
-                  className={`transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                  className={`transition-all duration-200 ${
                     activeStep === 1 
-                      ? 'border-emerald-500 ring-2 ring-emerald-500/40 scale-105 shadow-[0_0_25px_rgba(16,185,129,0.25)]' 
+                      ? 'border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.22)]' 
                       : 'border-zinc-800'
                   }`}
                 >
@@ -731,14 +727,14 @@ export const LandingHero: React.FC = () => {
                 <BorderGlow
                   borderRadius={14}
                   edgeSensitivity={35}
-                  glowRadius={28}
-                  glowIntensity={1.2}
+                  glowRadius={24}
+                  glowIntensity={0.85}
                   glowColor={activeStep === 2 ? "150 80 70" : "0 0 100"}
                   backgroundColor="#14151a"
                   colors={activeStep === 2 ? ['#10b981', '#34d399', '#6ee7b7'] : ['#ffffff', '#cbd5e1', '#94a3b8']}
-                  className={`transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                  className={`transition-all duration-200 ${
                     activeStep === 2
-                      ? 'border-emerald-500 ring-2 ring-emerald-500/40 scale-105 shadow-[0_0_25px_rgba(16,185,129,0.25)]' 
+                      ? 'border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.22)]' 
                       : 'border-zinc-800'
                   }`}
                 >
@@ -779,14 +775,14 @@ export const LandingHero: React.FC = () => {
                 <BorderGlow
                   borderRadius={14}
                   edgeSensitivity={35}
-                  glowRadius={28}
-                  glowIntensity={1.2}
+                  glowRadius={24}
+                  glowIntensity={0.85}
                   glowColor={activeStep === 4 ? "270 80 70" : "0 0 100"}
                   backgroundColor="#14151a"
                   colors={activeStep === 4 ? ['#c084fc', '#f472b6', '#a855f7'] : ['#ffffff', '#cbd5e1', '#94a3b8']}
-                  className={`transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                  className={`transition-all duration-200 ${
                     activeStep === 4
-                      ? 'border-purple-500 ring-2 ring-purple-500/40 scale-105 shadow-[0_0_25px_rgba(168,85,247,0.25)]' 
+                      ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.22)]' 
                       : 'border-zinc-800'
                   }`}
                 >
