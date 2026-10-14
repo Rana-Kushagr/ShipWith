@@ -57,7 +57,7 @@ const MainRouter: React.FC = () => {
     <>
       {/* 1. Public Landing Page */}
       {currentView === 'landing' && (
-        <div className="min-h-screen bg-[#fbfbfa]">
+        <div className="min-h-screen bg-[var(--color-canvas)]">
           <LandingNavbar />
           <LandingHero />
           <LandingSections />

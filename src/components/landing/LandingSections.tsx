@@ -14,17 +14,17 @@ export const LandingSections: React.FC = () => {
         {/* Silver/grey ambient backdrop halo framing the pillars */}
         <div className="absolute inset-0 -z-10 silver-ambient-band opacity-85 rounded-3xl pointer-events-none" />
         
-        {/* Split Header matching the reference screenshot */}
+        {/* Split Header matching the reference screenshot with 100% theme contrast */}
         <div className="max-w-[1360px] mx-auto mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 reveal-on-scroll">
           <div className="space-y-2">
-            <div className="text-xs uppercase font-sans tracking-wider text-neutral-500 font-semibold">
+            <div className="text-xs uppercase font-sans tracking-wider text-[var(--color-text-muted)] font-semibold">
               WHY SHIPWITH
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-neutral-900 font-display tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[var(--color-text-primary)] font-display tracking-tight leading-tight">
               Networking is only the beginning.
             </h2>
           </div>
-          <div className="max-w-md text-neutral-600 text-sm sm:text-base leading-relaxed md:text-left">
+          <div className="max-w-md text-[var(--color-text-secondary)] text-sm sm:text-base leading-relaxed md:text-left">
             Meet the right people, prove you can build together, and turn what you ship into reputation.
           </div>
         </div>
