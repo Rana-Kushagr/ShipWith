@@ -89,20 +89,17 @@ const DEFAULT_ONBOARDING: OnboardingState = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Theme state
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const saved = localStorage.getItem('shipwith_theme');
-    if (saved === 'light' || saved === 'dark') return saved;
-    return 'light'; // Simplify-inspired pure white canvas by default
-  });
+  // Theme state: permanently set to dark as requested
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('shipwith_theme', theme);
-  }, [theme]);
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('shipwith_theme', 'dark');
+  }, []);
 
   const toggleTheme = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+    // Keep dark theme locked
+    setTheme('dark');
   };
 
   // Navigation view state

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { ChevronDown, ArrowRight, Sun, Moon } from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 
 export const ShipWithLogoMark: React.FC<{ className?: string }> = ({ className = "w-6 h-6" }) => (
   <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -15,38 +15,38 @@ export const ShipWithLogoMark: React.FC<{ className?: string }> = ({ className =
 );
 
 export const LandingNavbar: React.FC = () => {
-  const { setCurrentView, theme, toggleTheme } = useApp();
+  const { setCurrentView } = useApp();
   const [productDropdownOpen, setProductDropdownOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[var(--color-canvas)]/90 backdrop-blur-md border-b border-[var(--color-border)] transition-colors duration-200">
+    <header className="sticky top-0 z-40 w-full bg-[#09090b]/85 backdrop-blur-md border-b border-zinc-800/80 transition-colors">
       <div className="max-w-[1360px] mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">
         {/* Logo */}
         <div 
           onClick={() => setCurrentView('landing')} 
-          className="flex items-center gap-2.5 cursor-pointer select-none"
+          className="flex items-center gap-2.5 cursor-pointer select-none group"
         >
-          <div className="text-[var(--color-text-primary)]">
+          <div className="text-white group-hover:text-zinc-200 transition-colors">
             <ShipWithLogoMark className="w-7 h-7" />
           </div>
-          <span className="font-display font-bold text-xl tracking-tight text-[var(--color-text-primary)]">
+          <span className="font-display font-bold text-xl tracking-tight text-white group-hover:text-zinc-200 transition-colors">
             ShipWith
           </span>
         </div>
 
         {/* Center Nav Links */}
-        <nav className="hidden md:flex items-center gap-8 text-[15px] text-[var(--color-text-secondary)] font-medium">
+        <nav className="hidden md:flex items-center gap-8 text-[15px] text-zinc-300 font-medium">
           <div className="relative">
             <button 
               onClick={() => setProductDropdownOpen(!productDropdownOpen)}
-              className="flex items-center gap-1.5 hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer"
             >
               <span>Product</span>
-              <ChevronDown className="w-4 h-4 text-[var(--color-text-muted)]" />
+              <ChevronDown className="w-4 h-4 text-zinc-400" />
             </button>
             {productDropdownOpen && (
               <div 
-                className="absolute top-full left-0 mt-2 w-48 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-lg p-2 z-50 text-xs"
+                className="absolute top-full left-0 mt-2 w-52 bg-[#121215] border border-zinc-800 rounded-xl shadow-xl p-2 z-50 text-xs"
                 onMouseLeave={() => setProductDropdownOpen(false)}
               >
                 <button 
@@ -55,16 +55,16 @@ export const LandingNavbar: React.FC = () => {
                     el?.scrollIntoView({ behavior: 'smooth' });
                     setProductDropdownOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] font-medium"
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800/60 text-zinc-200 font-medium cursor-pointer"
                 >
-                  Motion Graphic Tour
+                  Interactive Walkthrough
                 </button>
                 <button 
                   onClick={() => {
                     setCurrentView('startups');
                     setProductDropdownOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] font-medium"
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800/60 text-zinc-200 font-medium cursor-pointer"
                 >
                   Startups Radar
                 </button>
@@ -73,7 +73,7 @@ export const LandingNavbar: React.FC = () => {
                     setCurrentView('people');
                     setProductDropdownOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] font-medium"
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-800/60 text-zinc-200 font-medium cursor-pointer"
                 >
                   Builder Passport
                 </button>
@@ -86,14 +86,14 @@ export const LandingNavbar: React.FC = () => {
               const el = document.getElementById('motion-showcase-section');
               el?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
+            className="hover:text-white transition-colors cursor-pointer"
           >
             How it works
           </button>
           
           <button 
             onClick={() => setCurrentView('startups')}
-            className="hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
+            className="hover:text-white transition-colors cursor-pointer"
           >
             Explore
           </button>
@@ -103,32 +103,18 @@ export const LandingNavbar: React.FC = () => {
               const el = document.getElementById('plans-section');
               el?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
+            className="hover:text-white transition-colors cursor-pointer"
           >
             Pricing
           </button>
         </nav>
 
-        {/* Right CTA Buttons & Theme Toggle */}
+        {/* Right CTA Buttons (Colour change toggle removed) */}
         <div className="flex items-center gap-3">
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            className="p-2 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-subtle)] border border-[var(--color-border)] transition-colors cursor-pointer"
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-4 h-4 text-amber-400" />
-            ) : (
-              <Moon className="w-4 h-4 text-blue-600" />
-            )}
-          </button>
-
           {/* Log in Button */}
           <button
             onClick={() => setCurrentView('home')}
-            className="text-[14px] font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-surface-subtle)] px-4 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] transition-all cursor-pointer shadow-xs"
+            className="text-[14px] font-medium text-zinc-200 hover:text-white hover:bg-zinc-800/60 px-4 py-2 rounded-lg border border-zinc-800 bg-[#121215]/80 transition-all cursor-pointer shadow-xs"
           >
             Log in
           </button>
@@ -136,7 +122,7 @@ export const LandingNavbar: React.FC = () => {
           {/* Try ShipWith free Button */}
           <button
             onClick={() => setCurrentView('onboarding')}
-            className="text-[14px] font-medium text-[var(--color-brand-on-primary)] bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)] px-4 py-2 rounded-lg transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+            className="text-[14px] font-semibold text-black bg-white hover:bg-zinc-200 px-4 py-2 rounded-lg transition-all flex items-center gap-2 cursor-pointer shadow-sm hover:shadow-md"
           >
             <span>Try ShipWith free</span>
             <ArrowRight className="w-3.5 h-3.5" />
