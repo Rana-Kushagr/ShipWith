@@ -173,7 +173,11 @@ export const ProductWalkthroughPlayer: React.FC = () => {
   };
 
   return (
-    <div id="walkthrough-section" className="w-full max-w-4xl mx-auto my-12 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-overlay)] overflow-hidden reveal-on-scroll">
+    <div className="relative max-w-4xl mx-auto my-14">
+      {/* Luminous Silver / Grey Ambient Halo around Walkthrough Player */}
+      <div className="absolute -inset-5 sm:-inset-8 -z-10 rounded-3xl pointer-events-none hero-silver-glow opacity-80" />
+      
+      <div id="walkthrough-section" className="w-full bg-[var(--color-surface)] silver-sheen-card rounded-[var(--radius-xl)] shadow-2xl overflow-hidden reveal-on-scroll">
       {/* Player Header bar */}
       <div className="px-5 py-3.5 bg-[var(--color-surface-subtle)] border-b border-[var(--color-border)] flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -248,5 +252,6 @@ export const ProductWalkthroughPlayer: React.FC = () => {
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };

@@ -9,7 +9,10 @@ export const LandingSections: React.FC = () => {
   return (
     <div className="space-y-24 py-12">
       {/* 1. Why ShipWith Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        {/* Silver/grey ambient backdrop halo framing the pillars */}
+        <div className="absolute inset-0 -z-10 silver-ambient-band opacity-85 rounded-3xl pointer-events-none" />
+        
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3 reveal-on-scroll">
           <div className="text-xs uppercase font-mono tracking-wider text-[var(--color-brand-accent)] font-semibold">
             WHY SHIPWITH
@@ -26,9 +29,9 @@ export const LandingSections: React.FC = () => {
           </p>
         </div>
 
-        {/* 3 Pillars Grid with Scroll Reveal */}
+        {/* 3 Pillars Grid with Scroll Reveal & Silver Sheen */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 reveal-on-scroll delay-75 hover:border-[var(--color-border-strong)] transition-all">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] silver-sheen-card space-y-3 reveal-on-scroll delay-75 hover:border-[var(--color-border-strong)] transition-all">
             <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-brand-accent)]">
               <Users className="w-5 h-5" />
             </div>
@@ -38,7 +41,7 @@ export const LandingSections: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 reveal-on-scroll delay-150 hover:border-[var(--color-border-strong)] transition-all">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] silver-sheen-card space-y-3 reveal-on-scroll delay-150 hover:border-[var(--color-border-strong)] transition-all">
             <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-success)]">
               <GitCommit className="w-5 h-5" />
             </div>
@@ -48,7 +51,7 @@ export const LandingSections: React.FC = () => {
             </p>
           </div>
 
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3 reveal-on-scroll delay-225 hover:border-[var(--color-border-strong)] transition-all">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] silver-sheen-card space-y-3 reveal-on-scroll delay-225 hover:border-[var(--color-border-strong)] transition-all">
             <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] flex items-center justify-center text-[var(--color-warning)]">
               <Trophy className="w-5 h-5" />
             </div>
@@ -61,7 +64,10 @@ export const LandingSections: React.FC = () => {
       </section>
 
       {/* 2. Transparent Plans Section (PRD §14: Reputation cannot be bought) */}
-      <section id="plans-section" className="max-w-7xl mx-auto px-4 sm:px-6">
+      <section id="plans-section" className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        {/* Silver/grey ambient backdrop halo framing the plans */}
+        <div className="absolute inset-0 -z-10 silver-ambient-band opacity-75 rounded-3xl pointer-events-none" />
+        
         <div className="text-center max-w-xl mx-auto mb-14 space-y-3 reveal-on-scroll">
           <div className="text-xs uppercase font-mono tracking-wider text-[var(--color-text-muted)] font-semibold">
             MEMBERSHIP
@@ -80,7 +86,7 @@ export const LandingSections: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {/* Free Tier */}
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col justify-between space-y-6 reveal-on-scroll delay-75">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] silver-sheen-card flex flex-col justify-between space-y-6 reveal-on-scroll delay-75">
             <div className="space-y-4">
               <div>
                 <div className="text-sm font-bold text-[var(--color-text-primary)]">Builder Free</div>
@@ -102,8 +108,8 @@ export const LandingSections: React.FC = () => {
           </div>
 
           {/* Builder Pro */}
-          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] border-2 border-[var(--color-brand-primary)] shadow-md flex flex-col justify-between space-y-6 relative reveal-on-scroll delay-150">
-            <div className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-[var(--radius-pill)] bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] text-[10px] font-mono font-semibold uppercase">
+          <div className="p-6 rounded-[var(--radius-xl)] bg-[var(--color-surface)] silver-sheen-card ring-2 ring-[var(--color-brand-primary)] shadow-xl flex flex-col justify-between space-y-6 relative reveal-on-scroll delay-150">
+            <div className="absolute -top-3 right-6 px-2.5 py-0.5 rounded-[var(--radius-pill)] silver-badge text-[10px] font-mono font-semibold uppercase shadow-xs">
               Popular
             </div>
             <div className="space-y-4">

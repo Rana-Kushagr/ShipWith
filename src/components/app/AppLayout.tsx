@@ -238,8 +238,9 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
           </div>
         </header>
 
-        {/* Content Body */}
-        <main className="flex-1 pb-16 lg:pb-8">
+        {/* Content Body with Mixed Silver/Grey Ambient Background */}
+        <main className="flex-1 pb-16 lg:pb-8 relative">
+          <div className="absolute inset-0 -z-10 silver-ambient-band opacity-40 pointer-events-none" />
           {children}
         </main>
       </div>

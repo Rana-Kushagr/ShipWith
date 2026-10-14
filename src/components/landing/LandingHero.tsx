@@ -99,9 +99,11 @@ export const LandingHero: React.FC = () => {
 
   return (
     <section className="relative pt-12 pb-24 md:pt-16 md:pb-32 overflow-hidden bg-[var(--color-canvas)] transition-colors duration-200">
-      {/* Premium background: subtle dot-grid + gradient mesh atmosphere */}
-      <div className="absolute inset-0 bg-dot-grid opacity-40 pointer-events-none" />
-      <div className="absolute inset-0 gradient-mesh pointer-events-none" />
+      {/* Mixed background system:
+          In Light Mode: pure white canvas with luminous silver-grey ambient wash in the center
+          In Dark Mode: deep dark canvas with metallic silver-slate aura in the center */}
+      <div className="absolute inset-0 bg-dot-grid opacity-35 pointer-events-none" />
+      <div className="absolute inset-0 silver-ambient-band pointer-events-none" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         
@@ -111,8 +113,8 @@ export const LandingHero: React.FC = () => {
             ========================================================================= */}
         <div className="max-w-4xl mx-auto text-center space-y-6">
           
-          {/* Top Status Pill */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-xs text-[var(--color-text-secondary)] font-medium shadow-xs">
+          {/* Top Status Pill with Silver Tone */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full silver-badge text-xs font-medium shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-ping" />
             <span className="font-semibold text-[var(--color-text-primary)]">ShipWith 1.0</span>
             <span className="text-[var(--color-text-muted)]">•</span>
@@ -160,17 +162,17 @@ export const LandingHero: React.FC = () => {
             </Button>
           </div>
 
-          {/* Architecture Trust Highlights */}
+          {/* Architecture Trust Highlights with Silver-Tone Frame */}
           <div className="pt-4 max-w-lg mx-auto grid grid-cols-3 gap-4 border-t border-[var(--color-border-subtle)] text-center">
-            <div>
+            <div className="p-2.5 rounded-xl bg-[var(--color-surface-subtle)]/80 border border-[var(--color-border)]/70 shadow-2xs">
               <div className="text-lg font-bold font-mono text-[var(--color-text-primary)]">4 Days</div>
               <div className="text-[11px] text-[var(--color-text-muted)]">Trial Sprint Scope</div>
             </div>
-            <div>
+            <div className="p-2.5 rounded-xl bg-[var(--color-surface-subtle)]/80 border border-[var(--color-border)]/70 shadow-2xs">
               <div className="text-lg font-bold font-mono text-[var(--color-success)]">100%</div>
               <div className="text-[11px] text-[var(--color-text-muted)]">Verified Code Output</div>
             </div>
-            <div>
+            <div className="p-2.5 rounded-xl bg-[var(--color-surface-subtle)]/80 border border-[var(--color-border)]/70 shadow-2xs">
               <div className="text-lg font-bold font-mono text-[var(--color-brand-accent)]">0%</div>
               <div className="text-[11px] text-[var(--color-text-muted)]">Resume / CV Fluff</div>
             </div>
@@ -180,9 +182,12 @@ export const LandingHero: React.FC = () => {
         {/* =========================================================================
             3D SCROLL-DRIVEN PREVIEW STAGE
             Laying still in perspective at top; tilts upright to the screen on scroll.
-            Resets automatically when scrolling back to top.
+            Surrounded by radiant silver/grey ambient aura
             ========================================================================= */}
         <div className="mt-14 sm:mt-20 max-w-5xl mx-auto relative hero-3d-stage">
+          
+          {/* Luminous Silver / Grey Ambient Halo framing the main showcase */}
+          <div className="absolute -inset-6 sm:-inset-10 md:-inset-16 -z-10 rounded-3xl pointer-events-none hero-silver-glow" />
           
           {/* Floating Satellite Card 1: Active 4-Day Trial (Top-Left) */}
           <div className="hidden md:flex absolute -top-6 -left-6 z-20 items-center gap-3 p-3 bg-[var(--color-surface)]/95 backdrop-blur-md border border-[var(--color-border)] rounded-2xl shadow-lg animate-float">
@@ -218,14 +223,14 @@ export const LandingHero: React.FC = () => {
 
           {/* The Main 3D Canvas that tilts and rises based on scroll */}
           <div 
-            className="hero-preview-canvas relative rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] shadow-2xl overflow-hidden text-left"
+            className="hero-preview-canvas silver-sheen-card relative rounded-2xl bg-[var(--color-surface)] shadow-2xl overflow-hidden text-left"
             style={{
               transform: `perspective(1100px) rotateX(${currentRotateX}deg) scale(${currentScale}) translateY(${currentTranslateY}px)`,
               transformOrigin: 'top center',
               opacity: currentOpacity,
               boxShadow: scrollProgress > 0.4
-                ? '0 30px 70px -15px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(226, 232, 240, 0.9)'
-                : '0 20px 40px -12px rgba(15, 23, 42, 0.10), 0 0 0 1px rgba(226, 232, 240, 0.6)'
+                ? '0 30px 70px -15px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(203, 213, 225, 0.8)'
+                : '0 20px 40px -12px rgba(15, 23, 42, 0.10), 0 0 0 1px rgba(203, 213, 225, 0.5)'
             }}
           >
             
