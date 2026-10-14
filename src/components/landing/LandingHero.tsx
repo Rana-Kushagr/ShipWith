@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { ShipWithLogoMark } from './LandingNavbar';
+import { BorderGlow } from '../common/BorderGlow';
 import heroDeskImg from '../../assets/hero-desk.jpg';
 import startupWorkspaceImg from '../../assets/startup-workspace.jpg';
 import { 
@@ -219,9 +220,17 @@ export const LandingHero: React.FC = () => {
                 }}
               />
 
-              {/* Outer Browser Mockup Window with Floating Hover Animation */}
-              <div 
-                className="relative rounded-2xl bg-[#121215] border border-zinc-800/90 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] group-hover/herocard:shadow-[0_30px_70px_-12px_rgba(255,255,255,0.08)] group-hover/herocard:-translate-y-2.5 group-hover/herocard:scale-[1.012] group-hover/herocard:border-zinc-700 overflow-hidden transition-all duration-500 ease-out"
+              {/* Outer Browser Mockup Window with Floating Hover Animation & React Bits BorderGlow */}
+              <BorderGlow
+                borderRadius={20}
+                edgeSensitivity={30}
+                glowRadius={42}
+                glowIntensity={1.3}
+                coneSpread={28}
+                glowColor="0 0 100"
+                backgroundColor="#121215"
+                colors={['#ffffff', '#cbd5e1', '#38bdf8']}
+                className="relative rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] group-hover/herocard:shadow-[0_30px_70px_-12px_rgba(255,255,255,0.12)] group-hover/herocard:-translate-y-2.5 group-hover/herocard:scale-[1.012] group-hover/herocard:border-zinc-700 transition-all duration-500 ease-out"
                 style={{
                   transform: 'perspective(1400px) rotateY(-2deg) rotateX(1deg)',
                   transformOrigin: 'center center',
@@ -679,7 +688,7 @@ export const LandingHero: React.FC = () => {
 
                 </div>
 
-              </div>
+              </BorderGlow>
 
               {/* =======================================================
                   3 FLOATING SATELLITE CARDS (FAR RIGHT OVERLAY)
@@ -688,92 +697,125 @@ export const LandingHero: React.FC = () => {
               <div className="hidden xl:flex flex-col gap-3.5 absolute -right-24 top-2 z-20 w-52 pointer-events-auto">
                 
                 {/* Floating Card 1: Invite Sent (Highlights in Connect Step) */}
-                <div className={`p-3 rounded-xl border shadow-xl space-y-1 text-left transition-all duration-300 ${
-                  activeStep === 1 
-                    ? 'bg-[#18191f] border-emerald-500 ring-2 ring-emerald-500/40 scale-105 shadow-[0_0_25px_rgba(16,185,129,0.2)]' 
-                    : 'bg-[#14151a]/95 backdrop-blur-md border-zinc-800'
-                }`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-4 h-4 rounded-full bg-emerald-500 text-black flex items-center justify-center">
-                        <Check className="w-2.5 h-2.5 stroke-[3]" />
+                <BorderGlow
+                  borderRadius={14}
+                  edgeSensitivity={35}
+                  glowRadius={28}
+                  glowIntensity={1.2}
+                  glowColor={activeStep === 1 ? "150 80 70" : "0 0 100"}
+                  backgroundColor="#14151a"
+                  colors={activeStep === 1 ? ['#10b981', '#34d399', '#6ee7b7'] : ['#ffffff', '#cbd5e1', '#94a3b8']}
+                  className={`transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                    activeStep === 1 
+                      ? 'border-emerald-500 ring-2 ring-emerald-500/40 scale-105 shadow-[0_0_25px_rgba(16,185,129,0.25)]' 
+                      : 'border-zinc-800'
+                  }`}
+                >
+                  <div className="p-3 space-y-1 text-left">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-4 h-4 rounded-full bg-emerald-500 text-black flex items-center justify-center">
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        </div>
+                        <span className="text-xs font-bold text-white">Invite sent</span>
                       </div>
-                      <span className="text-xs font-bold text-white">Invite sent</span>
+                      <X className="w-3 h-3 text-zinc-500 hover:text-white cursor-pointer" />
                     </div>
-                    <X className="w-3 h-3 text-zinc-500 hover:text-white cursor-pointer" />
+                    <p className="text-[10px] text-zinc-300 leading-tight pl-5.5 font-sans">
+                      Arjun has been invited to Campus AI Tutor
+                    </p>
                   </div>
-                  <p className="text-[10px] text-zinc-300 leading-tight pl-5.5 font-sans">
-                    Arjun has been invited to Campus AI Tutor
-                  </p>
-                </div>
+                </BorderGlow>
 
                 {/* Floating Card 2: Build Together Tasks (Highlights in Build Step) */}
-                <div className={`p-3.5 rounded-xl border shadow-xl space-y-2 text-left transition-all duration-300 ${
-                  activeStep === 2
-                    ? 'bg-[#18191f] border-emerald-500 ring-2 ring-emerald-500/40 scale-105 shadow-[0_0_25px_rgba(16,185,129,0.2)]' 
-                    : 'bg-[#14151a]/95 backdrop-blur-md border-zinc-800'
-                }`}>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-white">Build together</span>
-                    <span className="text-[9px] text-zinc-400 font-mono">4/4 tasks</span>
-                  </div>
+                <BorderGlow
+                  borderRadius={14}
+                  edgeSensitivity={35}
+                  glowRadius={28}
+                  glowIntensity={1.2}
+                  glowColor={activeStep === 2 ? "150 80 70" : "0 0 100"}
+                  backgroundColor="#14151a"
+                  colors={activeStep === 2 ? ['#10b981', '#34d399', '#6ee7b7'] : ['#ffffff', '#cbd5e1', '#94a3b8']}
+                  className={`transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                    activeStep === 2
+                      ? 'border-emerald-500 ring-2 ring-emerald-500/40 scale-105 shadow-[0_0_25px_rgba(16,185,129,0.25)]' 
+                      : 'border-zinc-800'
+                  }`}
+                >
+                  <div className="p-3.5 space-y-2 text-left">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white">Build together</span>
+                      <span className="text-[9px] text-zinc-400 font-mono">4/4 tasks</span>
+                    </div>
 
-                  <div className="space-y-1.5 text-[10px] text-zinc-300 font-sans">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-3.5 h-3.5 rounded bg-emerald-500 text-black flex items-center justify-center shrink-0">
-                        <Check className="w-2.5 h-2.5 stroke-[3]" />
+                    <div className="space-y-1.5 text-[10px] text-zinc-300 font-sans">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-3.5 h-3.5 rounded bg-emerald-500 text-black flex items-center justify-center shrink-0">
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        </div>
+                        <span className="text-zinc-100">Set up repo</span>
                       </div>
-                      <span className="text-zinc-100">Set up repo</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-3.5 h-3.5 rounded bg-emerald-500 text-black flex items-center justify-center shrink-0">
-                        <Check className="w-2.5 h-2.5 stroke-[3]" />
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-3.5 h-3.5 rounded bg-emerald-500 text-black flex items-center justify-center shrink-0">
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        </div>
+                        <span className="text-zinc-100">Design landing page</span>
                       </div>
-                      <span className="text-zinc-100">Design landing page</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-3.5 h-3.5 rounded bg-emerald-500 text-black flex items-center justify-center shrink-0">
-                        <Check className="w-2.5 h-2.5 stroke-[3]" />
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-3.5 h-3.5 rounded bg-emerald-500 text-black flex items-center justify-center shrink-0">
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        </div>
+                        <span className="text-zinc-100">Build MVP</span>
                       </div>
-                      <span className="text-zinc-100">Build MVP</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-3.5 h-3.5 rounded border border-zinc-700 bg-zinc-900 shrink-0" />
-                      <span className="text-zinc-400">Launch and get users</span>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-3.5 h-3.5 rounded border border-zinc-700 bg-zinc-900 shrink-0" />
+                        <span className="text-zinc-400">Launch and get users</span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </BorderGlow>
 
                 {/* Floating Card 3: Reputation Proof (Highlights in Reputation Step) */}
-                <div className={`p-3.5 rounded-xl border shadow-xl space-y-2 text-left transition-all duration-300 ${
-                  activeStep === 4
-                    ? 'bg-[#18191f] border-purple-500 ring-2 ring-purple-500/40 scale-105 shadow-[0_0_25px_rgba(168,85,247,0.2)]' 
-                    : 'bg-[#14151a]/95 backdrop-blur-md border-zinc-800'
-                }`}>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-white">Reputation</span>
-                    <Info className="w-3 h-3 text-zinc-500" />
-                  </div>
-                  <div className="text-[9px] text-zinc-400 -mt-1 font-mono">Proof from shipped work</div>
+                <BorderGlow
+                  borderRadius={14}
+                  edgeSensitivity={35}
+                  glowRadius={28}
+                  glowIntensity={1.2}
+                  glowColor={activeStep === 4 ? "270 80 70" : "0 0 100"}
+                  backgroundColor="#14151a"
+                  colors={activeStep === 4 ? ['#c084fc', '#f472b6', '#a855f7'] : ['#ffffff', '#cbd5e1', '#94a3b8']}
+                  className={`transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                    activeStep === 4
+                      ? 'border-purple-500 ring-2 ring-purple-500/40 scale-105 shadow-[0_0_25px_rgba(168,85,247,0.25)]' 
+                      : 'border-zinc-800'
+                  }`}
+                >
+                  <div className="p-3.5 space-y-2 text-left">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white">Reputation</span>
+                      <Info className="w-3 h-3 text-zinc-500" />
+                    </div>
+                    <div className="text-[9px] text-zinc-400 -mt-1 font-mono">Proof from shipped work</div>
 
-                  <div className="space-y-2 pt-1 text-[10px] font-sans">
-                    <div className="flex items-center gap-2">
-                      <Box className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                      <span className="font-bold text-white font-mono">3</span>
-                      <span className="text-zinc-400 text-[9px]">shipped projects</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                      <span className="font-bold text-white font-mono">2</span>
-                      <span className="text-zinc-400 text-[9px]">verified collaborations</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <BarChart3 className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                      <span className="font-bold text-white font-mono">Top 10%</span>
-                      <span className="text-zinc-400 text-[9px]">builder rank</span>
+                    <div className="space-y-2 pt-1 text-[10px] font-sans">
+                      <div className="flex items-center gap-2">
+                        <Box className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                        <span className="font-bold text-white font-mono">3</span>
+                        <span className="text-zinc-400 text-[9px]">shipped projects</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Users className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                        <span className="font-bold text-white font-mono">2</span>
+                        <span className="text-zinc-400 text-[9px]">verified collaborations</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <BarChart3 className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                        <span className="font-bold text-white font-mono">Top 10%</span>
+                        <span className="text-zinc-400 text-[9px]">builder rank</span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </BorderGlow>
 
               </div>
 
