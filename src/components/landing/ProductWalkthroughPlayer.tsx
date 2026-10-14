@@ -175,19 +175,25 @@ export const ProductWalkthroughPlayer: React.FC = () => {
 
   return (
     <div className="relative max-w-4xl mx-auto my-14">
-      {/* Luminous Silver / Grey Ambient Halo around Walkthrough Player */}
-      <div className="absolute -inset-5 sm:-inset-8 -z-10 rounded-3xl pointer-events-none hero-silver-glow opacity-80" />
+      {/* Luminous Ambient Halo around Walkthrough Player */}
+      <div 
+        className="absolute -inset-6 sm:-inset-10 -z-10 rounded-3xl pointer-events-none opacity-90 transition-opacity duration-500"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(56, 189, 248, 0.22) 0%, rgba(59, 130, 246, 0.1) 45%, transparent 75%)',
+          filter: 'blur(36px)',
+        }}
+      />
       
       <BorderGlow
         borderRadius={20}
         edgeSensitivity={28}
         glowRadius={44}
-        glowIntensity={1.3}
+        glowIntensity={1.4}
         coneSpread={28}
-        glowColor="0 0 100"
+        glowColor="205 95 65"
         backgroundColor="#121215"
-        colors={['#ffffff', '#cbd5e1', '#38bdf8']}
-        className="w-full shadow-2xl transition-all duration-300 hover:-translate-y-1.5 group"
+        colors={['#38bdf8', '#818cf8', '#ffffff']}
+        className="w-full border border-sky-500/40 shadow-[0_0_25px_rgba(56,189,248,0.25),0_25px_60px_-15px_rgba(0,0,0,0.8)] hover:border-sky-400 hover:shadow-[0_0_45px_rgba(56,189,248,0.45),0_0_90px_rgba(56,189,248,0.2)] transition-all duration-300 hover:-translate-y-1.5 group cursor-pointer"
       >
         <div id="walkthrough-section" className="w-full bg-[var(--color-surface)] overflow-hidden">
           {/* Player Header bar */}
