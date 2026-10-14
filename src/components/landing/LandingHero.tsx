@@ -115,18 +115,18 @@ export const LandingHero: React.FC = () => {
   return (
     <section id="motion-showcase-section" className="relative pt-6 pb-20 overflow-hidden bg-[var(--color-canvas)] text-[var(--color-text-primary)] transition-colors duration-200">
       
-      {/* Background Ambience: Desk Corner Vignette in Bottom-Left */}
+      {/* Background Ambience: Desk Corner Vignette in Bottom-Left (Enlarged and clearly visible) */}
       <div 
-        className="hidden lg:block absolute bottom-0 left-0 w-[460px] h-[340px] pointer-events-none select-none z-0 opacity-80 transition-opacity"
+        className="hidden md:block absolute bottom-0 left-0 w-[540px] lg:w-[640px] xl:w-[720px] h-[390px] lg:h-[470px] pointer-events-none select-none z-0 opacity-95 dark:opacity-70 transition-all duration-300"
         style={{
-          maskImage: 'radial-gradient(ellipse 95% 95% at 0% 100%, black 50%, transparent 100%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 95% 95% at 0% 100%, black 50%, transparent 100%)',
+          maskImage: 'radial-gradient(ellipse 100% 100% at 0% 100%, black 72%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 100% 100% at 0% 100%, black 72%, transparent 100%)',
         }}
       >
         <img 
           src={heroDeskImg} 
           alt="Designer workspace desk corner" 
-          className="w-full h-full object-cover object-bottom"
+          className="w-full h-full object-cover object-bottom filter contrast-[1.03]"
         />
       </div>
 
