@@ -216,9 +216,9 @@ export const LandingHero: React.FC = () => {
               <BorderGlow
                 borderRadius={20}
                 edgeSensitivity={28}
-                glowRadius={20}
-                glowIntensity={0.6}
-                coneSpread={24}
+                glowRadius={24}
+                glowIntensity={1.0}
+                coneSpread={26}
                 glowColor="0 0 100"
                 backgroundColor="#121215"
                 colors={['#ffffff', '#cbd5e1', '#38bdf8']}

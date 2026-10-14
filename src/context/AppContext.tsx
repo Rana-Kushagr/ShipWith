@@ -44,6 +44,7 @@ interface AppContextType {
   onboardingState: OnboardingState;
   updateOnboarding: (data: Partial<OnboardingState>) => void;
   completeOnboarding: () => void;
+  resetOnboarding: () => void;
   
   isPostBuildOpen: boolean;
   setIsPostBuildOpen: (open: boolean) => void;
@@ -68,21 +69,21 @@ interface AppContextType {
 }
 
 const DEFAULT_ONBOARDING: OnboardingState = {
-  objective: 'Recruit for startup',
-  strengths: ['Full-Stack Engineer'],
-  techStacks: ['React 19 / Next.js / TypeScript'],
-  experienceYears: '3–5 years',
-  industries: ['AI & LLM Tools', 'B2B SaaS'],
-  stage: 'Building MVP',
-  weeklyHours: '10–20 hrs/week',
-  workingStyle: 'Mostly Async',
-  desiredCollaborators: ['Product Designer', 'Growth Lead'],
-  compensationPhilosophy: 'Equal / Fair Equity Split',
-  trialAgreement: true,
+  objective: '',
+  strengths: [],
+  techStacks: [],
+  experienceYears: '',
+  industries: [],
+  stage: '',
+  weeklyHours: '',
+  workingStyle: '',
+  desiredCollaborators: [],
+  compensationPhilosophy: '',
+  trialAgreement: false,
   githubUsername: '',
-  headline: 'Building next-gen AI tools for developers',
-  country: 'India',
-  timezone: 'GMT+5:30 (Asia/Kolkata)',
+  headline: '',
+  country: '',
+  timezone: '',
   completed: false,
 };
 
@@ -153,14 +154,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        return {
-          ...DEFAULT_ONBOARDING,
-          ...parsed,
-          strengths: Array.isArray(parsed?.strengths) && parsed.strengths.length > 0 ? parsed.strengths : DEFAULT_ONBOARDING.strengths,
-          techStacks: Array.isArray(parsed?.techStacks) && parsed.techStacks.length > 0 ? parsed.techStacks : DEFAULT_ONBOARDING.techStacks,
-          industries: Array.isArray(parsed?.industries) && parsed.industries.length > 0 ? parsed.industries : DEFAULT_ONBOARDING.industries,
-          desiredCollaborators: Array.isArray(parsed?.desiredCollaborators) && parsed.desiredCollaborators.length > 0 ? parsed.desiredCollaborators : DEFAULT_ONBOARDING.desiredCollaborators,
-        };
+        // If it was the legacy default with 'Recruit for startup' and not completed, start fresh
+        if (parsed?.objective === 'Recruit for startup' && !parsed?.completed) {
+          localStorage.removeItem('shipwith_onboarding');
+          return DEFAULT_ONBOARDING;
+        }
+        if (parsed && typeof parsed === 'object') {
+          return {
+            ...DEFAULT_ONBOARDING,
+            ...parsed,
+            strengths: Array.isArray(parsed?.strengths) ? parsed.strengths : [],
+            techStacks: Array.isArray(parsed?.techStacks) ? parsed.techStacks : [],
+            industries: Array.isArray(parsed?.industries) ? parsed.industries : [],
+            desiredCollaborators: Array.isArray(parsed?.desiredCollaborators) ? parsed.desiredCollaborators : [],
+          };
+        }
       } catch (e) {
         // ignore
       }
@@ -182,12 +190,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setCurrentUser(prev => ({
       ...prev,
       lookingFor: onboardingState.desiredCollaborators,
-      weeklyHours: onboardingState.weeklyHours,
-      country: onboardingState.country,
-      timezone: onboardingState.timezone
+      weeklyHours: (onboardingState.weeklyHours || prev.weeklyHours) as any,
+      country: onboardingState.country || prev.country,
+      timezone: onboardingState.timezone || prev.timezone
     }));
     addToast('Preferences saved! Welcome to ShipWith.', 'success');
     setCurrentView('home');
+  };
+
+  const resetOnboarding = () => {
+    setOnboardingState(DEFAULT_ONBOARDING);
+    localStorage.removeItem('shipwith_onboarding');
   };
 
   const createBuild = (newBuildData: Omit<BuildRecord, 'id' | 'createdAt' | 'stats'>) => {
@@ -259,6 +272,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         onboardingState,
         updateOnboarding,
         completeOnboarding,
+        resetOnboarding,
         isPostBuildOpen,
         setIsPostBuildOpen,
         createBuild,

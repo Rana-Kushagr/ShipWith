@@ -28,7 +28,7 @@ function parseHSL(hslStr: string): { h: number; s: number; l: number } {
 function buildGlowVars(glowColor: string, intensity: number): Record<string, string> {
   const { h, s, l } = parseHSL(glowColor);
   const base = `${h}deg ${s}% ${l}%`;
-  const opacities = [100, 60, 50, 40, 30, 20, 10];
+  const opacities = [100, 90, 80, 70, 55, 40, 25];
   const keys = ['', '-60', '-50', '-40', '-30', '-20', '-10'];
   const vars: Record<string, string> = {};
   for (let i = 0; i < opacities.length; i++) {
@@ -115,11 +115,11 @@ export const BorderGlow: React.FC<BorderGlowProps> = ({
   backgroundColor = '#120F17',
   borderRadius = 20,
   glowRadius = 24,
-  glowIntensity = 0.75,
+  glowIntensity = 1.0,
   coneSpread = 25,
   animated = false,
   colors = ['#c084fc', '#f472b6', '#38bdf8'],
-  fillOpacity = 0.25,
+  fillOpacity = 0.2,
   style,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);

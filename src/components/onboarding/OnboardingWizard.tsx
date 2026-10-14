@@ -31,6 +31,7 @@ export const OnboardingWizard: React.FC = () => {
     onboardingState, 
     updateOnboarding, 
     completeOnboarding, 
+    resetOnboarding,
     setCurrentView 
   } = useApp();
 
@@ -255,13 +256,28 @@ export const OnboardingWizard: React.FC = () => {
           </span>
         </div>
 
-        {/* Step Counter Indicator */}
-        <div className="text-xs font-mono text-[var(--color-text-muted)]">
-          {currentStep <= totalSteps ? (
-            <span>Question {currentStep} of {totalSteps}</span>
-          ) : (
-            <span className="text-[var(--color-success)] font-semibold">Passport Ready</span>
+        {/* Step Counter Indicator & Reset */}
+        <div className="flex items-center gap-3">
+          {currentStep <= totalSteps && (
+            <button
+              onClick={() => {
+                resetOnboarding();
+                setSelectedInStep(null);
+                setCurrentStep(1);
+              }}
+              title="Clear all answers and start fresh"
+              className="text-[11px] font-mono text-[var(--color-text-muted)] hover:text-red-400 transition-colors cursor-pointer px-1.5 py-0.5 rounded border border-transparent hover:border-red-500/30 hover:bg-red-500/10"
+            >
+              Reset
+            </button>
           )}
+          <div className="text-xs font-mono text-[var(--color-text-muted)]">
+            {currentStep <= totalSteps ? (
+              <span>Question {currentStep} of {totalSteps}</span>
+            ) : (
+              <span className="text-[var(--color-success)] font-semibold">Passport Ready</span>
+            )}
+          </div>
         </div>
       </header>
 
@@ -846,11 +862,11 @@ export const OnboardingWizard: React.FC = () => {
 
             <div className="space-y-3">
               {sprintProtocols.map((item) => {
-                const isSelected = selectedInStep === item.id;
+                const isSelected = selectedInStep === item.id || (onboardingState.trialAgreement && item.id === 'i_agree_4day_protocol');
                 return (
                   <button
                     key={item.id}
-                    onClick={() => handleAutoSelect(() => updateOnboarding({ trialAgreement: true }), item.id)}
+                    onClick={() => handleAutoSelect(() => updateOnboarding({ trialAgreement: item.id === 'i_agree_4day_protocol' }), item.id)}
                     className={`w-full p-4 rounded-[var(--radius-xl)] border text-left flex items-start gap-3.5 transition-all cursor-pointer ${
                       isSelected
                         ? 'border-[var(--color-success)] bg-[var(--color-success-subtle)] ring-2 ring-[var(--color-success)]/20 shadow-sm'

@@ -44,8 +44,8 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={28}
-              glowRadius={16}
-              glowIntensity={0.5}
+              glowRadius={22}
+              glowIntensity={1.0}
               glowColor="215 95 55"
               backgroundColor="#ffffff"
               colors={['#3b82f6', '#93c5fd', '#60a5fa']}
@@ -68,8 +68,8 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={28}
-              glowRadius={16}
-              glowIntensity={0.5}
+              glowRadius={22}
+              glowIntensity={1.0}
               glowColor="152 85 45"
               backgroundColor="#ffffff"
               colors={['#10b981', '#6ee7b7', '#34d399']}
@@ -92,8 +92,8 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={28}
-              glowRadius={16}
-              glowIntensity={0.5}
+              glowRadius={22}
+              glowIntensity={1.0}
               glowColor="38 95 50"
               backgroundColor="#ffffff"
               colors={['#f59e0b', '#fcd34d', '#fbbf24']}
@@ -142,7 +142,19 @@ export const LandingSections: React.FC = () => {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <ProductWalkthroughPlayer />
+            <BorderGlow
+              borderRadius={24}
+              edgeSensitivity={28}
+              glowRadius={28}
+              glowIntensity={1.0}
+              coneSpread={26}
+              glowColor="195 90 70"
+              backgroundColor="#09090b"
+              colors={['#38bdf8', '#818cf8', '#c084fc']}
+              className="border border-zinc-800 shadow-2xl p-1.5 sm:p-2 rounded-3xl"
+            >
+              <ProductWalkthroughPlayer />
+            </BorderGlow>
           </div>
 
         </div>
@@ -177,8 +189,8 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={28}
-              glowRadius={16}
-              glowIntensity={0.5}
+              glowRadius={22}
+              glowIntensity={1.0}
               glowColor="215 90 55"
               backgroundColor="#ffffff"
               colors={['#3b82f6', '#60a5fa', '#93c5fd']}
@@ -212,8 +224,8 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={28}
-              glowRadius={18}
-              glowIntensity={0.6}
+              glowRadius={24}
+              glowIntensity={1.0}
               glowColor="0 0 100"
               backgroundColor="#09090b"
               colors={['#ffffff', '#e4e4e7', '#60a5fa', '#a855f7']}
@@ -250,8 +262,8 @@ export const LandingSections: React.FC = () => {
             <BorderGlow
               borderRadius={18}
               edgeSensitivity={28}
-              glowRadius={16}
-              glowIntensity={0.5}
+              glowRadius={22}
+              glowIntensity={1.0}
               glowColor="270 85 60"
               backgroundColor="#ffffff"
               colors={['#8b5cf6', '#a855f7', '#c084fc']}

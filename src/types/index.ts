@@ -43,7 +43,7 @@ export interface OnboardingState {
   experienceYears: string;           // Question 4: Years of experience
   industries: string[];              // Question 5: Domains / industries (multi-select)
   stage: string;                     // Question 6: Project stage
-  weeklyHours: CommitmentOption;     // Question 7: Weekly availability
+  weeklyHours: CommitmentOption | '';     // Question 7: Weekly availability
   workingStyle: string;              // Question 8: Async / Hybrid / Live
   desiredCollaborators: string[];    // Question 9: Missing roles (multi-select)
   compensationPhilosophy: string;   // Question 10: Equity & terms
