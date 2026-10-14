@@ -3,8 +3,8 @@ import { AppProvider, useApp } from './context/AppContext';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { LandingNavbar } from './components/landing/LandingNavbar';
 import { LandingHero } from './components/landing/LandingHero';
-import { ProductWalkthroughPlayer } from './components/landing/ProductWalkthroughPlayer';
 import { LandingSections } from './components/landing/LandingSections';
+import { CookieBanner } from './components/landing/CookieBanner';
 import { OnboardingWizard } from './components/onboarding/OnboardingWizard';
 import { AppLayout } from './components/app/AppLayout';
 import { HomeFeed } from './components/app/HomeFeed';
@@ -57,13 +57,11 @@ const MainRouter: React.FC = () => {
     <>
       {/* 1. Public Landing Page */}
       {currentView === 'landing' && (
-        <div className="min-h-screen bg-[var(--color-canvas)]">
+        <div className="min-h-screen bg-[#fbfbfa]">
           <LandingNavbar />
           <LandingHero />
-          <div className="px-4">
-            <ProductWalkthroughPlayer />
-          </div>
           <LandingSections />
+          <CookieBanner />
         </div>
       )}
 

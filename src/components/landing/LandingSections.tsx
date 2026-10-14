@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../common/Button';
 import { Check, GitCommit, Users, Trophy } from 'lucide-react';
+import { ProductWalkthroughPlayer } from './ProductWalkthroughPlayer';
 
 export const LandingSections: React.FC = () => {
   const { setCurrentView } = useApp();
@@ -13,20 +14,19 @@ export const LandingSections: React.FC = () => {
         {/* Silver/grey ambient backdrop halo framing the pillars */}
         <div className="absolute inset-0 -z-10 silver-ambient-band opacity-85 rounded-3xl pointer-events-none" />
         
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3 reveal-on-scroll">
-          <div className="text-xs uppercase font-mono tracking-wider text-[var(--color-brand-accent)] font-semibold">
-            WHY SHIPWITH
+        {/* Split Header matching the reference screenshot */}
+        <div className="max-w-[1360px] mx-auto mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 reveal-on-scroll">
+          <div className="space-y-2">
+            <div className="text-xs uppercase font-sans tracking-wider text-neutral-500 font-semibold">
+              WHY SHIPWITH
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-neutral-900 font-display tracking-tight leading-tight">
+              Networking is only the beginning.
+            </h2>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[var(--color-text-primary)] font-display tracking-tight">
-            Networking is{' '}
-            <span className="font-serif-italic font-normal text-[var(--color-brand-accent)] text-[1.12em] tracking-normal inline-block pr-1">
-              only
-            </span>{' '}
-            the beginning.
-          </h2>
-          <p className="text-sm sm:text-base text-[var(--color-text-secondary)]">
-            Meet the right people, prove you can build together in a 4-day trial, and turn what you ship into verifiable reputation.
-          </p>
+          <div className="max-w-md text-neutral-600 text-sm sm:text-base leading-relaxed md:text-left">
+            Meet the right people, prove you can build together, and turn what you ship into reputation.
+          </div>
         </div>
 
         {/* 3 Pillars Grid with Scroll Reveal & Silver Sheen */}
@@ -62,6 +62,11 @@ export const LandingSections: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Interactive Walkthrough Tour */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <ProductWalkthroughPlayer />
+      </div>
 
       {/* 2. Transparent Plans Section (PRD §14: Reputation cannot be bought) */}
       <section id="plans-section" className="relative max-w-7xl mx-auto px-4 sm:px-6 py-6">
