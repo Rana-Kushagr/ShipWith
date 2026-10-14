@@ -49,9 +49,9 @@ export const LandingSections: React.FC = () => {
               glowColor="215 95 55"
               backgroundColor="#ffffff"
               colors={['#3b82f6', '#93c5fd', '#60a5fa']}
-              className="p-7 border border-zinc-200/90 hover:border-blue-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
+              className="border border-zinc-200/90 hover:border-blue-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
             >
-              <div className="space-y-4">
+              <div className="p-7 space-y-4">
                 <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-blue-600 shadow-xs group-hover:scale-105 transition-transform duration-300">
                   <Users className="w-6 h-6" />
                 </div>
@@ -73,9 +73,9 @@ export const LandingSections: React.FC = () => {
               glowColor="152 85 45"
               backgroundColor="#ffffff"
               colors={['#10b981', '#6ee7b7', '#34d399']}
-              className="p-7 border border-zinc-200/90 hover:border-emerald-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
+              className="border border-zinc-200/90 hover:border-emerald-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
             >
-              <div className="space-y-4">
+              <div className="p-7 space-y-4">
                 <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 shadow-xs group-hover:scale-105 transition-transform duration-300">
                   <GitCommit className="w-6 h-6" />
                 </div>
@@ -97,9 +97,9 @@ export const LandingSections: React.FC = () => {
               glowColor="38 95 50"
               backgroundColor="#ffffff"
               colors={['#f59e0b', '#fcd34d', '#fbbf24']}
-              className="p-7 border border-zinc-200/90 hover:border-amber-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
+              className="border border-zinc-200/90 hover:border-amber-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
             >
-              <div className="space-y-4">
+              <div className="p-7 space-y-4">
                 <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 shadow-xs group-hover:scale-105 transition-transform duration-300">
                   <Trophy className="w-6 h-6" />
                 </div>
@@ -182,27 +182,29 @@ export const LandingSections: React.FC = () => {
               glowColor="215 90 55"
               backgroundColor="#ffffff"
               colors={['#3b82f6', '#60a5fa', '#93c5fd']}
-              className="p-7 border border-zinc-200/90 hover:border-blue-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 flex flex-col justify-between cursor-pointer"
+              className="border border-zinc-200/90 hover:border-blue-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
             >
-              <div className="space-y-4">
-                <div>
-                  <div className="text-base font-extrabold text-zinc-950 font-display">Builder Free</div>
-                  <div className="text-xs text-zinc-600 mt-1 font-sans font-medium">Full core loop for independent makers.</div>
+              <div className="p-7 flex flex-col justify-between h-full">
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-base font-extrabold text-zinc-950 font-display">Builder Free</div>
+                    <div className="text-xs text-zinc-600 mt-1 font-sans font-medium">Full core loop for independent makers.</div>
+                  </div>
+                  <div className="text-3xl font-extrabold font-mono text-zinc-950">
+                    $0 <span className="text-xs font-semibold text-zinc-600 font-sans">/ forever</span>
+                  </div>
+                  <ul className="space-y-2.5 text-xs text-zinc-800 font-medium pt-3 border-t border-zinc-200 font-sans">
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Browse startups & builders</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Post up to 2 active Builds</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Unlimited Trial Builds</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Mint verified Build Passport</li>
+                  </ul>
                 </div>
-                <div className="text-3xl font-extrabold font-mono text-zinc-950">
-                  $0 <span className="text-xs font-semibold text-zinc-600 font-sans">/ forever</span>
+                <div className="pt-6">
+                  <Button variant="outline" className="w-full font-bold border-2 border-zinc-900 text-zinc-950 hover:text-white hover:bg-zinc-950 cursor-pointer shadow-xs transition-colors" onClick={() => setCurrentView('onboarding')}>
+                    Get started free
+                  </Button>
                 </div>
-                <ul className="space-y-2.5 text-xs text-zinc-800 font-medium pt-3 border-t border-zinc-200 font-sans">
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Browse startups & builders</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Post up to 2 active Builds</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Unlimited Trial Builds</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Mint verified Build Passport</li>
-                </ul>
-              </div>
-              <div className="pt-6">
-                <Button variant="outline" className="w-full font-bold border-2 border-zinc-900 text-zinc-950 hover:text-white hover:bg-zinc-950 cursor-pointer shadow-xs transition-colors" onClick={() => setCurrentView('onboarding')}>
-                  Get started free
-                </Button>
               </div>
             </BorderGlow>
 
@@ -215,30 +217,32 @@ export const LandingSections: React.FC = () => {
               glowColor="0 0 100"
               backgroundColor="#09090b"
               colors={['#ffffff', '#e4e4e7', '#60a5fa', '#a855f7']}
-              className="p-7 border border-zinc-700/80 hover:border-zinc-300 shadow-xl relative transform md:-translate-y-1 hover:-translate-y-1.5 group transition-all duration-300 flex flex-col justify-between cursor-pointer"
+              className="border border-zinc-700/80 hover:border-zinc-300 shadow-xl relative transform md:-translate-y-1 hover:-translate-y-1.5 group transition-all duration-300 cursor-pointer"
             >
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="text-base font-bold text-white font-display">Builder Pro</div>
-                  <span className="px-3 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-mono font-bold uppercase shadow-sm">
-                    Popular
-                  </span>
+              <div className="p-7 flex flex-col justify-between h-full">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="text-base font-bold text-white font-display">Builder Pro</div>
+                    <span className="px-3 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-mono font-bold uppercase shadow-sm">
+                      Popular
+                    </span>
+                  </div>
+                  <div className="text-xs text-zinc-400 font-sans">For active hackers seeking high momentum.</div>
+                  <div className="text-3xl font-extrabold font-mono text-white">
+                    $12 <span className="text-xs font-normal text-zinc-400 font-sans">/ month</span>
+                  </div>
+                  <ul className="space-y-2.5 text-xs text-zinc-300 pt-3 border-t border-zinc-800 font-sans">
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Everything in Free</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Advanced tech-stack filters</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Unlimited active Builds</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Priority match recommendations</li>
+                  </ul>
                 </div>
-                <div className="text-xs text-zinc-400 font-sans">For active hackers seeking high momentum.</div>
-                <div className="text-3xl font-extrabold font-mono text-white">
-                  $12 <span className="text-xs font-normal text-zinc-400 font-sans">/ month</span>
+                <div className="pt-6">
+                  <Button variant="primary" className="w-full font-semibold bg-white text-zinc-950 hover:bg-zinc-200 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer" onClick={() => setCurrentView('onboarding')}>
+                    Start Builder Pro
+                  </Button>
                 </div>
-                <ul className="space-y-2.5 text-xs text-zinc-300 pt-3 border-t border-zinc-800 font-sans">
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Everything in Free</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Advanced tech-stack filters</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Unlimited active Builds</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Priority match recommendations</li>
-                </ul>
-              </div>
-              <div className="pt-6">
-                <Button variant="primary" className="w-full font-semibold bg-white text-zinc-950 hover:bg-zinc-200 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer" onClick={() => setCurrentView('onboarding')}>
-                  Start Builder Pro
-                </Button>
               </div>
             </BorderGlow>
 
@@ -251,27 +255,29 @@ export const LandingSections: React.FC = () => {
               glowColor="270 85 60"
               backgroundColor="#ffffff"
               colors={['#8b5cf6', '#a855f7', '#c084fc']}
-              className="p-7 border border-zinc-200/90 hover:border-purple-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 flex flex-col justify-between cursor-pointer"
+              className="border border-zinc-200/90 hover:border-purple-400 shadow-sm hover:-translate-y-1 group transition-all duration-300 cursor-pointer"
             >
-              <div className="space-y-4">
-                <div>
-                  <div className="text-base font-extrabold text-zinc-950 font-display">Startup Pro</div>
-                  <div className="text-xs text-zinc-600 mt-1 font-sans font-medium">For funded teams recruiting core talent.</div>
+              <div className="p-7 flex flex-col justify-between h-full">
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-base font-extrabold text-zinc-950 font-display">Startup Pro</div>
+                    <div className="text-xs text-zinc-600 mt-1 font-sans font-medium">For funded teams recruiting core talent.</div>
+                  </div>
+                  <div className="text-3xl font-extrabold font-mono text-zinc-950">
+                    $39 <span className="text-xs font-semibold text-zinc-600 font-sans">/ month</span>
+                  </div>
+                  <ul className="space-y-2.5 text-xs text-zinc-800 font-medium pt-3 border-t border-zinc-200 font-sans">
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Everything in Builder Pro</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Unlimited open roles & applicants</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Candidate pipeline organization</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Multi-workspace team seats</li>
+                  </ul>
                 </div>
-                <div className="text-3xl font-extrabold font-mono text-zinc-950">
-                  $39 <span className="text-xs font-semibold text-zinc-600 font-sans">/ month</span>
+                <div className="pt-6">
+                  <Button variant="outline" className="w-full font-bold border-2 border-zinc-900 text-zinc-950 hover:text-white hover:bg-zinc-950 cursor-pointer shadow-xs transition-colors" onClick={() => setCurrentView('onboarding')}>
+                    Contact sales
+                  </Button>
                 </div>
-                <ul className="space-y-2.5 text-xs text-zinc-800 font-medium pt-3 border-t border-zinc-200 font-sans">
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Everything in Builder Pro</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Unlimited open roles & applicants</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Candidate pipeline organization</li>
-                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" /> Multi-workspace team seats</li>
-                </ul>
-              </div>
-              <div className="pt-6">
-                <Button variant="outline" className="w-full font-bold border-2 border-zinc-900 text-zinc-950 hover:text-white hover:bg-zinc-950 cursor-pointer shadow-xs transition-colors" onClick={() => setCurrentView('onboarding')}>
-                  Contact sales
-                </Button>
               </div>
             </BorderGlow>
 

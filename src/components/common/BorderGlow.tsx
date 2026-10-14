@@ -1,7 +1,9 @@
+'use client';
+
 import React, { useRef, useCallback, useEffect } from 'react';
 import './BorderGlow.css';
 
-interface BorderGlowProps {
+export interface BorderGlowProps {
   children?: React.ReactNode;
   className?: string;
   edgeSensitivity?: number;
@@ -112,12 +114,12 @@ export const BorderGlow: React.FC<BorderGlowProps> = ({
   glowColor = '40 80 80',
   backgroundColor = '#120F17',
   borderRadius = 20,
-  glowRadius = 20,
-  glowIntensity = 0.55,
-  coneSpread = 24,
+  glowRadius = 24,
+  glowIntensity = 0.75,
+  coneSpread = 25,
   animated = false,
   colors = ['#c084fc', '#f472b6', '#38bdf8'],
-  fillOpacity = 0.5,
+  fillOpacity = 0.25,
   style,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -240,3 +242,4 @@ export const BorderGlow: React.FC<BorderGlowProps> = ({
 };
 
 export default BorderGlow;
+

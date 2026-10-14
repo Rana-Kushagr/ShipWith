@@ -375,46 +375,57 @@ export const LandingHero: React.FC = () => {
                         </div>
 
                         {/* Startup Card 1 */}
-                        <div className="border border-zinc-800 rounded-xl overflow-hidden shadow-2xs bg-[#151519]">
-                          <div className="relative h-20 bg-zinc-900 overflow-hidden">
-                            <img 
-                              src={startupWorkspaceImg} 
-                              alt="Campus AI Tutor Workspace" 
-                              className="w-full h-full object-cover filter brightness-95"
-                            />
-                            <div className="absolute top-1.5 right-1.5 p-1 rounded-md bg-black/60 backdrop-blur-xs text-zinc-200 shadow-2xs">
-                              <Bookmark className="w-2.5 h-2.5" />
+                        <BorderGlow
+                          borderRadius={12}
+                          edgeSensitivity={28}
+                          glowRadius={16}
+                          glowIntensity={0.65}
+                          glowColor="160 84 50"
+                          backgroundColor="#151519"
+                          colors={['#10b981', '#34d399', '#6ee7b7']}
+                          className="border border-zinc-800 shadow-2xs"
+                        >
+                          <div className="overflow-hidden">
+                            <div className="relative h-20 bg-zinc-900 overflow-hidden">
+                              <img 
+                                src={startupWorkspaceImg} 
+                                alt="Campus AI Tutor Workspace" 
+                                className="w-full h-full object-cover filter brightness-95"
+                              />
+                              <div className="absolute top-1.5 right-1.5 p-1 rounded-md bg-black/60 backdrop-blur-xs text-zinc-200 shadow-2xs">
+                                <Bookmark className="w-2.5 h-2.5" />
+                              </div>
+                            </div>
+
+                            <div className="p-2.5 space-y-1.5">
+                              <div>
+                                <div className="font-bold text-xs text-white">Campus AI Tutor</div>
+                                <p className="text-[10px] text-zinc-400 line-clamp-2 leading-snug mt-0.5">
+                                  AI study companion looking for a frontend developer and growth collaborator.
+                                </p>
+                              </div>
+
+                              <div className="flex flex-wrap gap-1">
+                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-mono">AI</span>
+                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-mono">EdTech</span>
+                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-mono">Early stage</span>
+                              </div>
+
+                              <div className="flex items-center justify-between text-[9px] text-zinc-400 pt-1 border-t border-zinc-800">
+                                <span className="text-emerald-400 font-semibold font-mono">👤 3 open roles</span>
+                                <span className="font-mono">♡ 12 interested</span>
+                              </div>
+
+                              <button 
+                                onClick={() => setCurrentView('startups')}
+                                className="w-full py-1.5 bg-white text-black text-[10px] font-semibold rounded-lg flex items-center justify-center gap-1 hover:bg-zinc-200 transition-colors cursor-pointer"
+                              >
+                                <span>View build</span>
+                                <ArrowRight className="w-2.5 h-2.5" />
+                              </button>
                             </div>
                           </div>
-
-                          <div className="p-2.5 space-y-1.5">
-                            <div>
-                              <div className="font-bold text-xs text-white">Campus AI Tutor</div>
-                              <p className="text-[10px] text-zinc-400 line-clamp-2 leading-snug mt-0.5">
-                                AI study companion looking for a frontend developer and growth collaborator.
-                              </p>
-                            </div>
-
-                            <div className="flex flex-wrap gap-1">
-                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-mono">AI</span>
-                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-mono">EdTech</span>
-                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/60 font-mono">Early stage</span>
-                            </div>
-
-                            <div className="flex items-center justify-between text-[9px] text-zinc-400 pt-1 border-t border-zinc-800">
-                              <span className="text-emerald-400 font-semibold font-mono">👤 3 open roles</span>
-                              <span className="font-mono">♡ 12 interested</span>
-                            </div>
-
-                            <button 
-                              onClick={() => setCurrentView('startups')}
-                              className="w-full py-1.5 bg-white text-black text-[10px] font-semibold rounded-lg flex items-center justify-center gap-1 hover:bg-zinc-200 transition-colors cursor-pointer"
-                            >
-                              <span>View build</span>
-                              <ArrowRight className="w-2.5 h-2.5" />
-                            </button>
-                          </div>
-                        </div>
+                        </BorderGlow>
                       </div>
                     )}
 
@@ -427,30 +438,41 @@ export const LandingHero: React.FC = () => {
                         </div>
 
                         {/* Match Focus Card */}
-                        <div className="p-3 border-2 border-emerald-500/70 rounded-xl space-y-2 bg-[#16171d] shadow-lg">
-                          <div className="flex items-center gap-2">
-                            <img 
-                              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" 
-                              alt="Arjun Verma" 
-                              className="w-9 h-9 rounded-full object-cover border border-emerald-500"
-                            />
-                            <div>
-                              <div className="font-bold text-xs text-white">Arjun Verma</div>
-                              <div className="text-[10px] text-zinc-300 font-sans">Full-stack React & Next.js</div>
-                              <div className="text-[9px] text-emerald-400 font-medium font-mono">● Available 10 hrs/week</div>
+                        <BorderGlow
+                          borderRadius={12}
+                          edgeSensitivity={28}
+                          glowRadius={18}
+                          glowIntensity={0.7}
+                          glowColor="150 80 60"
+                          backgroundColor="#16171d"
+                          colors={['#10b981', '#34d399', '#6ee7b7']}
+                          className="border border-emerald-500/70 shadow-lg"
+                        >
+                          <div className="p-3 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <img 
+                                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" 
+                                alt="Arjun Verma" 
+                                className="w-9 h-9 rounded-full object-cover border border-emerald-500"
+                              />
+                              <div>
+                                <div className="font-bold text-xs text-white">Arjun Verma</div>
+                                <div className="text-[10px] text-zinc-300 font-sans">Full-stack React & Next.js</div>
+                                <div className="text-[9px] text-emerald-400 font-medium font-mono">● Available 10 hrs/week</div>
+                              </div>
+                            </div>
+
+                            <div className="p-2 bg-[#0e0e11] rounded-md border border-zinc-800 text-[9px] text-zinc-300 space-y-1 font-sans">
+                              <div>• Complementary skill: Frontend + UI Polish</div>
+                              <div>• Timezone: Aligned GMT+5:30</div>
+                            </div>
+
+                            <div className="w-full py-1.5 bg-emerald-600 text-white text-[10px] font-semibold rounded-lg text-center shadow-xs flex items-center justify-center gap-1.5 font-sans">
+                              <Check className="w-3 h-3 stroke-[3]" />
+                              <span>Trial Invitation Dispatched</span>
                             </div>
                           </div>
-
-                          <div className="p-2 bg-[#0e0e11] rounded-md border border-zinc-800 text-[9px] text-zinc-300 space-y-1 font-sans">
-                            <div>• Complementary skill: Frontend + UI Polish</div>
-                            <div>• Timezone: Aligned GMT+5:30</div>
-                          </div>
-
-                          <div className="w-full py-1.5 bg-emerald-600 text-white text-[10px] font-semibold rounded-lg text-center shadow-xs flex items-center justify-center gap-1.5 font-sans">
-                            <Check className="w-3 h-3 stroke-[3]" />
-                            <span>Trial Invitation Dispatched</span>
-                          </div>
-                        </div>
+                        </BorderGlow>
                       </div>
                     )}
 
@@ -504,39 +526,50 @@ export const LandingHero: React.FC = () => {
                         </div>
 
                         {/* Startup Card 2: Live Project */}
-                        <div className="p-3 border-2 border-blue-500/60 rounded-xl space-y-2.5 bg-[#14151b] shadow-xs">
-                          <div className="flex items-start gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-xs">
-                              SW
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-1.5">
-                                <span className="font-bold text-xs text-white truncate">Campus AI Tutor</span>
-                                <span className="inline-flex items-center gap-1 text-[8px] font-medium px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-700">
-                                  <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
-                                  Live
-                                </span>
+                        <BorderGlow
+                          borderRadius={12}
+                          edgeSensitivity={28}
+                          glowRadius={18}
+                          glowIntensity={0.7}
+                          glowColor="215 90 60"
+                          backgroundColor="#14151b"
+                          colors={['#3b82f6', '#60a5fa', '#93c5fd']}
+                          className="border border-blue-500/60 shadow-xs"
+                        >
+                          <div className="p-3 space-y-2.5">
+                            <div className="flex items-start gap-2">
+                              <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-xs">
+                                SW
                               </div>
-                              <p className="text-[10px] text-zinc-300 line-clamp-2 mt-0.5">
-                                An AI study companion for students. Learn smarter, together.
-                              </p>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-bold text-xs text-white truncate">Campus AI Tutor</span>
+                                  <span className="inline-flex items-center gap-1 text-[8px] font-medium px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-700">
+                                    <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
+                                    Live
+                                  </span>
+                                </div>
+                                <p className="text-[10px] text-zinc-300 line-clamp-2 mt-0.5">
+                                  An AI study companion for students. Learn smarter, together.
+                                </p>
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-1.5 border-t border-zinc-800 font-mono">
-                            <div className="flex items-center gap-3">
-                              <span>👥 12.4k users</span>
-                              <span>💬 86 feedbacks</span>
+                            <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-1.5 border-t border-zinc-800 font-mono">
+                              <div className="flex items-center gap-3">
+                                <span>👥 12.4k users</span>
+                                <span>💬 86 feedbacks</span>
+                              </div>
+                              <button 
+                                onClick={() => setCurrentView('startups')}
+                                className="text-white font-semibold hover:underline flex items-center gap-0.5 cursor-pointer"
+                              >
+                                <span>View project</span>
+                                <ExternalLink className="w-2.5 h-2.5" />
+                              </button>
                             </div>
-                            <button 
-                              onClick={() => setCurrentView('startups')}
-                              className="text-white font-semibold hover:underline flex items-center gap-0.5 cursor-pointer"
-                            >
-                              <span>View project</span>
-                              <ExternalLink className="w-2.5 h-2.5" />
-                            </button>
                           </div>
-                        </div>
+                        </BorderGlow>
                       </div>
                     )}
 
@@ -550,21 +583,32 @@ export const LandingHero: React.FC = () => {
                           <span className="text-purple-400">100% Verified</span>
                         </div>
 
-                        <div className="p-3 border border-zinc-800 rounded-xl space-y-2 bg-[#15151a] shadow-xs text-[10px]">
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-white">Collaboration Review</span>
-                            <span className="px-2 py-0.5 bg-emerald-900/60 text-emerald-300 rounded font-mono font-bold text-[9px] border border-emerald-700/60">
-                              APPROVED
-                            </span>
+                        <BorderGlow
+                          borderRadius={12}
+                          edgeSensitivity={28}
+                          glowRadius={18}
+                          glowIntensity={0.7}
+                          glowColor="270 80 60"
+                          backgroundColor="#15151a"
+                          colors={['#c084fc', '#f472b6', '#38bdf8']}
+                          className="border border-purple-500/50 shadow-xs text-[10px]"
+                        >
+                          <div className="p-3 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-white">Collaboration Review</span>
+                              <span className="px-2 py-0.5 bg-emerald-900/60 text-emerald-300 rounded font-mono font-bold text-[9px] border border-emerald-700/60">
+                                APPROVED
+                              </span>
+                            </div>
+                            <p className="text-zinc-300 text-[10px] italic">
+                              "Arjun delivered clean React 19 components ahead of schedule during our 4-day trial sprint."
+                            </p>
+                            <div className="text-[9px] text-zinc-400 flex items-center justify-between pt-1 border-t border-zinc-800 font-mono">
+                              <span>Reviewed by: Riya Mehta</span>
+                              <span className="text-emerald-400 font-semibold">★ Would Build Again</span>
+                            </div>
                           </div>
-                          <p className="text-zinc-300 text-[10px] italic">
-                            "Arjun delivered clean React 19 components ahead of schedule during our 4-day trial sprint."
-                          </p>
-                          <div className="text-[9px] text-zinc-400 flex items-center justify-between pt-1 border-t border-zinc-800 font-mono">
-                            <span>Reviewed by: Riya Mehta</span>
-                            <span className="text-emerald-400 font-semibold">★ Would Build Again</span>
-                          </div>
-                        </div>
+                        </BorderGlow>
                       </div>
                     )}
 

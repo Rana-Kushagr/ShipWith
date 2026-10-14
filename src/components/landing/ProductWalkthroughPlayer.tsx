@@ -19,7 +19,16 @@ export const ProductWalkthroughPlayer: React.FC = () => {
             <span>DISCOVERY RADAR</span>
             <span className="text-[var(--color-success)] font-semibold">● 3 OPEN ROLES FOUND</span>
           </div>
-          <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
+          <BorderGlow
+            borderRadius={16}
+            edgeSensitivity={30}
+            glowRadius={24}
+            glowIntensity={0.75}
+            glowColor="205 95 65"
+            backgroundColor="var(--color-surface)"
+            colors={['#38bdf8', '#818cf8', '#60a5fa']}
+            className="p-4 shadow-sm space-y-3 border border-[var(--color-border)]"
+          >
             <div className="flex items-start justify-between">
               <div>
                 <div className="text-sm font-bold text-[var(--color-text-primary)]">Developer Automation Platform</div>
@@ -36,7 +45,7 @@ export const ProductWalkthroughPlayer: React.FC = () => {
               <span className="text-[var(--color-text-muted)]">Seeking: <strong className="text-[var(--color-text-primary)]">Frontend Lead</strong> (10h/wk)</span>
               <span className="text-[var(--color-brand-accent)] font-mono font-semibold">Match Alignment</span>
             </div>
-          </div>
+          </BorderGlow>
         </div>
       )
     },
@@ -50,7 +59,16 @@ export const ProductWalkthroughPlayer: React.FC = () => {
             <span>PITCH DRAWER</span>
             <span className="text-[var(--color-brand-accent)] font-semibold">DIRECT APPLICATION</span>
           </div>
-          <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-2.5">
+          <BorderGlow
+            borderRadius={16}
+            edgeSensitivity={30}
+            glowRadius={24}
+            glowIntensity={0.75}
+            glowColor="215 90 60"
+            backgroundColor="var(--color-surface)"
+            colors={['#3b82f6', '#60a5fa', '#93c5fd']}
+            className="p-4 shadow-sm space-y-2.5 border border-[var(--color-border)]"
+          >
             <div className="text-xs text-[var(--color-text-muted)]">Applying for: <strong className="text-[var(--color-text-primary)]">Frontend Engineer</strong></div>
             <div className="p-3 rounded-[var(--radius-md)] bg-[var(--color-surface-subtle)] border border-[var(--color-border)] text-xs text-[var(--color-text-primary)]">
               Application note: "Reviewing your sprint roadmap. Linking repository demonstrating Next.js architecture and API pipeline implementation."
@@ -65,7 +83,7 @@ export const ProductWalkthroughPlayer: React.FC = () => {
             <button className="w-full py-2 bg-[var(--color-brand-primary)] text-[var(--color-brand-on-primary)] rounded-[var(--radius-md)] text-xs font-semibold cursor-pointer">
               Send Pitch with Proof →
             </button>
-          </div>
+          </BorderGlow>
         </div>
       )
     },
@@ -79,7 +97,16 @@ export const ProductWalkthroughPlayer: React.FC = () => {
             <span>TRIAL CONTAINER</span>
             <span className="text-[var(--color-warning)] font-semibold">DAY 4 OF 5</span>
           </div>
-          <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
+          <BorderGlow
+            borderRadius={16}
+            edgeSensitivity={30}
+            glowRadius={24}
+            glowIntensity={0.75}
+            glowColor="152 85 45"
+            backgroundColor="var(--color-surface)"
+            colors={['#10b981', '#34d399', '#6ee7b7']}
+            className="p-4 shadow-sm space-y-3 border border-[var(--color-border)]"
+          >
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-[var(--color-text-primary)]">Trial Objective: Scoped Micro-MVP</span>
               <span className="text-[11px] font-mono text-[var(--color-text-muted)]">Active Sprint</span>
@@ -106,7 +133,7 @@ export const ProductWalkthroughPlayer: React.FC = () => {
                 End Trial
               </button>
             </div>
-          </div>
+          </BorderGlow>
         </div>
       )
     },
@@ -120,7 +147,16 @@ export const ProductWalkthroughPlayer: React.FC = () => {
             <span>PERMANENT REPUTATION</span>
             <span className="text-[var(--color-success)] font-semibold">VERIFIED RECORD</span>
           </div>
-          <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm space-y-3">
+          <BorderGlow
+            borderRadius={16}
+            edgeSensitivity={30}
+            glowRadius={24}
+            glowIntensity={0.75}
+            glowColor="38 95 50"
+            backgroundColor="var(--color-surface)"
+            colors={['#f59e0b', '#fbbf24', '#fcd34d']}
+            className="p-4 shadow-sm space-y-3 border border-[var(--color-border)]"
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4 text-[var(--color-warning)]" />
@@ -145,7 +181,7 @@ export const ProductWalkthroughPlayer: React.FC = () => {
             <div className="text-[11px] text-[var(--color-text-secondary)] bg-[var(--color-surface-subtle)] p-2 rounded">
               Verified Contributor: <strong className="text-[var(--color-text-primary)]">Frontend Lead</strong> on <em>Open-Source Collaboration Sprint</em>.
             </div>
-          </div>
+          </BorderGlow>
         </div>
       )
     }
