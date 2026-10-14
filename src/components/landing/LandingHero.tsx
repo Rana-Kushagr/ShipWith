@@ -876,11 +876,23 @@ export const LandingHero: React.FC = () => {
                 })}
               </div>
 
-              {/* Live Feature Instruction Bar */}
-              <div className="mt-3.5 px-4 py-2 rounded-lg bg-[#121215] border border-zinc-800 text-xs text-zinc-300 text-center max-w-md shadow-xs">
-                <span className="font-semibold text-white">{FEATURE_STEPS[activeStep].tagline}: </span>
-                <span className="text-zinc-400">{FEATURE_STEPS[activeStep].instruction}</span>
-              </div>
+              {/* Live Feature Instruction Bar with BorderGlow */}
+              <BorderGlow
+                borderRadius={12}
+                edgeSensitivity={35}
+                glowRadius={24}
+                glowIntensity={1.2}
+                coneSpread={28}
+                glowColor="0 0 100"
+                backgroundColor="#121215"
+                colors={['#ffffff', '#cbd5e1', '#34d399']}
+                className="mt-3.5 max-w-md w-full shadow-xs transition-all duration-300 hover:scale-[1.01]"
+              >
+                <div className="px-4 py-2 text-xs text-zinc-300 text-center">
+                  <span className="font-semibold text-white">{FEATURE_STEPS[activeStep].tagline}: </span>
+                  <span className="text-zinc-400">{FEATURE_STEPS[activeStep].instruction}</span>
+                </div>
+              </BorderGlow>
 
             </div>
 

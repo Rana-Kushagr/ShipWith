@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, CheckCircle2, GitFork, Trophy } from 'lucide-react';
 import { Badge } from '../common/Badge';
+import { BorderGlow } from '../common/BorderGlow';
 
 export const ProductWalkthroughPlayer: React.FC = () => {
   const [activeChapter, setActiveChapter] = useState(0);
@@ -177,81 +178,93 @@ export const ProductWalkthroughPlayer: React.FC = () => {
       {/* Luminous Silver / Grey Ambient Halo around Walkthrough Player */}
       <div className="absolute -inset-5 sm:-inset-8 -z-10 rounded-3xl pointer-events-none hero-silver-glow opacity-80" />
       
-      <div id="walkthrough-section" className="w-full bg-[var(--color-surface)] silver-sheen-card rounded-[var(--radius-xl)] shadow-2xl overflow-hidden reveal-on-scroll">
-      {/* Player Header bar */}
-      <div className="px-5 py-3.5 bg-[var(--color-surface-subtle)] border-b border-[var(--color-border)] flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
-            <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
-          </div>
-          <span className="text-xs font-mono font-medium text-[var(--color-text-secondary)]">
-            ShipWith Interactive Product Tour
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            aria-label={isPlaying ? 'Pause walkthrough' : 'Play walkthrough'}
-            className="p-1.5 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
-          >
-            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-          </button>
-          <button
-            onClick={() => {
-              setActiveChapter(0);
-              setProgress(0);
-            }}
-            aria-label="Restart walkthrough"
-            className="p-1.5 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Interactive Simulation Frame */}
-      <div className="p-6 md:p-8 bg-[var(--color-canvas)] min-h-[300px] flex items-center justify-center">
-        <div className="w-full max-w-xl transition-all duration-300">
-          {chapters[activeChapter].renderPreview()}
-        </div>
-      </div>
-
-      {/* Chapter Pills Scrubber */}
-      <div className="p-4 bg-[var(--color-surface)] border-t border-[var(--color-border)]">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          {chapters.map((chap, idx) => {
-            const isCurrent = activeChapter === idx;
-            return (
+      <BorderGlow
+        borderRadius={20}
+        edgeSensitivity={28}
+        glowRadius={44}
+        glowIntensity={1.3}
+        coneSpread={28}
+        glowColor="0 0 100"
+        backgroundColor="#121215"
+        colors={['#ffffff', '#cbd5e1', '#38bdf8']}
+        className="w-full shadow-2xl transition-all duration-300 hover:-translate-y-1.5 group"
+      >
+        <div id="walkthrough-section" className="w-full bg-[var(--color-surface)] overflow-hidden">
+          {/* Player Header bar */}
+          <div className="px-5 py-3.5 bg-[var(--color-surface-subtle)] border-b border-[var(--color-border)] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+              </div>
+              <span className="text-xs font-mono font-medium text-[var(--color-text-secondary)]">
+                ShipWith Interactive Product Tour
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
               <button
-                key={idx}
-                onClick={() => selectChapter(idx)}
-                className={`relative text-left p-2.5 rounded-[var(--radius-md)] border transition-all cursor-pointer overflow-hidden ${
-                  isCurrent 
-                    ? 'border-[var(--color-brand-primary)] bg-[var(--color-surface-subtle)]' 
-                    : 'border-[var(--color-border)] hover:bg-[var(--color-surface-hover)]'
-                }`}
+                onClick={() => setIsPlaying(!isPlaying)}
+                aria-label={isPlaying ? 'Pause walkthrough' : 'Play walkthrough'}
+                className="p-1.5 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
               >
-                {/* Progress bar inside active pill */}
-                {isCurrent && isPlaying && (
-                  <div 
-                    className="absolute bottom-0 left-0 h-0.5 bg-[var(--color-brand-accent)] transition-all duration-100"
-                    style={{ width: `${progress}%` }}
-                  />
-                )}
-                <div className={`text-xs font-semibold ${isCurrent ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>
-                  {chap.title}
-                </div>
-                <div className="text-[11px] text-[var(--color-text-muted)] truncate mt-0.5">
-                  {chap.subtitle}
-                </div>
+                {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
               </button>
-            );
-          })}
+              <button
+                onClick={() => {
+                  setActiveChapter(0);
+                  setProgress(0);
+                }}
+                aria-label="Restart walkthrough"
+                className="p-1.5 rounded-[var(--radius-md)] bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Interactive Simulation Frame */}
+          <div className="p-6 md:p-8 bg-[var(--color-canvas)] min-h-[300px] flex items-center justify-center">
+            <div className="w-full max-w-xl transition-all duration-300">
+              {chapters[activeChapter].renderPreview()}
+            </div>
+          </div>
+
+          {/* Chapter Pills Scrubber */}
+          <div className="p-4 bg-[var(--color-surface)] border-t border-[var(--color-border)]">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {chapters.map((chap, idx) => {
+                const isCurrent = activeChapter === idx;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => selectChapter(idx)}
+                    className={`relative text-left p-2.5 rounded-[var(--radius-md)] border transition-all cursor-pointer overflow-hidden ${
+                      isCurrent 
+                        ? 'border-[var(--color-brand-primary)] bg-[var(--color-surface-subtle)]' 
+                        : 'border-[var(--color-border)] hover:bg-[var(--color-surface-hover)]'
+                    }`}
+                  >
+                    {/* Progress bar inside active pill */}
+                    {isCurrent && isPlaying && (
+                      <div 
+                        className="absolute bottom-0 left-0 h-0.5 bg-[var(--color-brand-accent)] transition-all duration-100"
+                        style={{ width: `${progress}%` }}
+                      />
+                    )}
+                    <div className={`text-xs font-semibold ${isCurrent ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>
+                      {chap.title}
+                    </div>
+                    <div className="text-[11px] text-[var(--color-text-muted)] truncate mt-0.5">
+                      {chap.subtitle}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </BorderGlow>
   </div>
 );
 };

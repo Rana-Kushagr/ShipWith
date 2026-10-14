@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { Button } from '../common/Button';
 import { Check, GitCommit, Users, Trophy, Sparkles } from 'lucide-react';
 import { ProductWalkthroughPlayer } from './ProductWalkthroughPlayer';
+import { BorderGlow } from '../common/BorderGlow';
 
 export const LandingSections: React.FC = () => {
   const { setCurrentView } = useApp();
@@ -36,47 +37,80 @@ export const LandingSections: React.FC = () => {
             </div>
           </div>
 
-          {/* 3 High-Contrast White Cards with Interactive Hover Animations */}
+          {/* 3 High-Contrast Cards with Interactive BorderGlow & Hover Animations */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
             
             {/* Pillar 1 */}
-            <div className="p-7 rounded-2xl bg-white border border-zinc-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-2 hover:border-zinc-400 group transition-all duration-300 space-y-4 cursor-pointer">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-blue-600 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
-                <Users className="w-6 h-6" />
+            <BorderGlow
+              borderRadius={18}
+              edgeSensitivity={35}
+              glowRadius={32}
+              glowIntensity={1.25}
+              glowColor="215 90 55"
+              backgroundColor="#ffffff"
+              colors={['#3b82f6', '#93c5fd', '#60a5fa']}
+              className="p-7 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_-12px_rgba(59,130,246,0.2)] hover:-translate-y-2 group transition-all duration-300 cursor-pointer"
+            >
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-blue-600 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
+                  <Users className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
+                  Proof Over Resumes
+                </h3>
+                <p className="text-sm text-zinc-700 leading-relaxed font-sans font-medium">
+                  No generic self-written bios or follower counts. Filter potential teammates by verified GitHub repos, live demos, and real contributions.
+                </p>
               </div>
-              <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
-                Proof Over Resumes
-              </h3>
-              <p className="text-sm text-zinc-700 leading-relaxed font-sans font-medium">
-                No generic self-written bios or follower counts. Filter potential teammates by verified GitHub repos, live demos, and real contributions.
-              </p>
-            </div>
+            </BorderGlow>
 
             {/* Pillar 2 */}
-            <div className="p-7 rounded-2xl bg-white border border-zinc-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-2 hover:border-zinc-400 group transition-all duration-300 space-y-4 cursor-pointer">
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
-                <GitCommit className="w-6 h-6" />
+            <BorderGlow
+              borderRadius={18}
+              edgeSensitivity={35}
+              glowRadius={32}
+              glowIntensity={1.25}
+              glowColor="150 80 45"
+              backgroundColor="#ffffff"
+              colors={['#10b981', '#6ee7b7', '#34d399']}
+              className="p-7 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_-12px_rgba(16,185,129,0.2)] hover:-translate-y-2 group transition-all duration-300 cursor-pointer"
+            >
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
+                  <GitCommit className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
+                  The 4-Day Trial Build
+                </h3>
+                <p className="text-sm text-zinc-700 leading-relaxed font-sans font-medium">
+                  Test working compatibility before committing to equity or months of work. Complete a scoped micro-objective and mutually decide if you want to continue.
+                </p>
               </div>
-              <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
-                The 4-Day Trial Build
-              </h3>
-              <p className="text-sm text-zinc-700 leading-relaxed font-sans font-medium">
-                Test working compatibility before committing to equity or months of work. Complete a scoped micro-objective and mutually decide if you want to continue.
-              </p>
-            </div>
+            </BorderGlow>
 
             {/* Pillar 3 */}
-            <div className="p-7 rounded-2xl bg-white border border-zinc-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-2 hover:border-zinc-400 group transition-all duration-300 space-y-4 cursor-pointer">
-              <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
-                <Trophy className="w-6 h-6" />
+            <BorderGlow
+              borderRadius={18}
+              edgeSensitivity={35}
+              glowRadius={32}
+              glowIntensity={1.25}
+              glowColor="38 95 50"
+              backgroundColor="#ffffff"
+              colors={['#f59e0b', '#fcd34d', '#fbbf24']}
+              className="p-7 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_40px_-12px_rgba(245,158,11,0.2)] hover:-translate-y-2 group transition-all duration-300 cursor-pointer"
+            >
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 shadow-xs group-hover:scale-110 group-hover:rotate-2 transition-transform duration-300">
+                  <Trophy className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
+                  The Build Passport
+                </h3>
+                <p className="text-sm text-zinc-700 leading-relaxed font-sans font-medium">
+                  Every shipped product and verified teammate collaboration stays on your permanent passport. Peer-reviewed credibility you carry anywhere.
+                </p>
               </div>
-              <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight font-display">
-                The Build Passport
-              </h3>
-              <p className="text-sm text-zinc-700 leading-relaxed font-sans font-medium">
-                Every shipped product and verified teammate collaboration stays on your permanent passport. Peer-reviewed credibility you carry anywhere.
-              </p>
-            </div>
+            </BorderGlow>
 
           </div>
 
@@ -161,16 +195,25 @@ export const LandingSections: React.FC = () => {
               </Button>
             </div>
 
-            {/* Builder Pro (Hero Pitch Black Card on Crisp White Background) */}
-            <div className="p-7 rounded-2xl bg-zinc-950 text-white border-2 border-zinc-900 shadow-2xl flex flex-col justify-between space-y-6 relative transform md:-translate-y-2 hover:-translate-y-3.5 hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] group transition-all duration-300">
-              <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-mono font-bold uppercase shadow-sm">
-                Popular
-              </div>
-              <div className="space-y-4">
-                <div>
+            {/* Builder Pro (Hero Pitch Black Card with Glowing White Border) */}
+            <BorderGlow
+              borderRadius={18}
+              edgeSensitivity={30}
+              glowRadius={36}
+              glowIntensity={1.3}
+              glowColor="0 0 100"
+              backgroundColor="#09090b"
+              colors={['#ffffff', '#e4e4e7', '#60a5fa']}
+              className="p-7 shadow-2xl relative transform md:-translate-y-2 hover:-translate-y-3.5 hover:shadow-[0_25px_60px_-15px_rgba(255,255,255,0.2)] group transition-all duration-300 flex flex-col justify-between"
+            >
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
                   <div className="text-base font-bold text-white font-display">Builder Pro</div>
-                  <div className="text-xs text-zinc-400 mt-1 font-sans">For active hackers seeking high momentum.</div>
+                  <span className="px-3 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-mono font-bold uppercase shadow-sm">
+                    Popular
+                  </span>
                 </div>
+                <div className="text-xs text-zinc-400 font-sans">For active hackers seeking high momentum.</div>
                 <div className="text-3xl font-extrabold font-mono text-white">
                   $12 <span className="text-xs font-normal text-zinc-400 font-sans">/ month</span>
                 </div>
@@ -181,10 +224,12 @@ export const LandingSections: React.FC = () => {
                   <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400 shrink-0" /> Priority match recommendations</li>
                 </ul>
               </div>
-              <Button variant="primary" className="w-full font-semibold bg-white text-zinc-950 hover:bg-zinc-200 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer" onClick={() => setCurrentView('onboarding')}>
-                Start Builder Pro
-              </Button>
-            </div>
+              <div className="pt-6">
+                <Button variant="primary" className="w-full font-semibold bg-white text-zinc-950 hover:bg-zinc-200 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer" onClick={() => setCurrentView('onboarding')}>
+                  Start Builder Pro
+                </Button>
+              </div>
+            </BorderGlow>
 
             {/* Startup Pro */}
             <div className="p-7 rounded-2xl bg-white border border-zinc-200/90 shadow-md flex flex-col justify-between space-y-6 hover:border-zinc-400 hover:shadow-2xl hover:-translate-y-2 group transition-all duration-300">
