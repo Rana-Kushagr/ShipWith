@@ -175,24 +175,16 @@ export const ProductWalkthroughPlayer: React.FC = () => {
 
   return (
     <div className="relative max-w-4xl mx-auto my-14">
-      {/* Subtle ambient backdrop aura (clean, non-blurry) */}
-      <div 
-        className="absolute -inset-4 sm:-inset-6 -z-10 rounded-3xl pointer-events-none opacity-30 transition-opacity duration-300"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(56, 189, 248, 0.15) 0%, transparent 70%)',
-        }}
-      />
-      
       <BorderGlow
         borderRadius={20}
         edgeSensitivity={28}
-        glowRadius={36}
-        glowIntensity={0.85}
-        coneSpread={26}
+        glowRadius={20}
+        glowIntensity={0.6}
+        coneSpread={24}
         glowColor="205 95 65"
         backgroundColor="#121215"
         colors={['#38bdf8', '#818cf8', '#ffffff']}
-        className="w-full border border-sky-500/30 shadow-[0_0_15px_rgba(56,189,248,0.15),0_15px_40px_-15px_rgba(0,0,0,0.8)] hover:border-sky-400/80 hover:shadow-[0_0_22px_rgba(56,189,248,0.3)] transition-all duration-300 group cursor-pointer"
+        className="w-full border border-sky-500/30 shadow-xl hover:border-sky-400/80 transition-all duration-300 group cursor-pointer"
       >
         <div id="walkthrough-section" className="w-full bg-[var(--color-surface)] overflow-hidden">
           {/* Player Header bar */}

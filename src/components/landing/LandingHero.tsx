@@ -212,25 +212,17 @@ export const LandingHero: React.FC = () => {
                   BLURRY GLOW OF VISIBLE WHITE LIGHT BEHIND HERO CARD
                   Appears and expands on hover with smooth atmospheric bloom
                   ======================================================= */}
-              {/* Ambient backdrop glow (subtle, non-blurry) */}
-              <div 
-                className="absolute -inset-4 sm:-inset-6 -z-10 rounded-3xl opacity-20 group-hover/herocard:opacity-35 transition-opacity duration-300 pointer-events-none"
-                style={{
-                  background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.12) 0%, transparent 70%)',
-                }}
-              />
-
               {/* Outer Browser Mockup Window with React Bits BorderGlow */}
               <BorderGlow
                 borderRadius={20}
                 edgeSensitivity={28}
-                glowRadius={36}
-                glowIntensity={0.85}
-                coneSpread={26}
+                glowRadius={20}
+                glowIntensity={0.6}
+                coneSpread={24}
                 glowColor="0 0 100"
                 backgroundColor="#121215"
                 colors={['#ffffff', '#cbd5e1', '#38bdf8']}
-                className="relative rounded-2xl shadow-[0_20px_50px_-15px_rgba(0,0,0,0.8)] border border-zinc-800 hover:border-zinc-500 hover:shadow-[0_0_20px_rgba(255,255,255,0.18)] transition-all duration-300"
+                className="relative rounded-2xl shadow-xl border border-zinc-800 hover:border-zinc-400/80 transition-all duration-300"
               >
                 
                 {/* Window Top Bar: Mac Dots + Motion Video Controls */}
