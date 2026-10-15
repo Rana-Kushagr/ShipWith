@@ -25,6 +25,7 @@ import { BookmarksView } from './components/app/BookmarksView';
 import { CommunitiesView } from './components/app/CommunitiesView';
 import { AdvertiseView } from './components/app/AdvertiseView';
 import { PremiumView } from './components/app/PremiumView';
+import { NotificationsView } from './components/app/NotificationsView';
 
 const MainRouter: React.FC = () => {
   const { currentView } = useApp();
@@ -93,6 +94,7 @@ const MainRouter: React.FC = () => {
           {currentView === 'communities' && <CommunitiesView />}
           {currentView === 'advertise' && <AdvertiseView />}
           {currentView === 'premium' && <PremiumView />}
+          {currentView === 'notifications' && <NotificationsView />}
         </AppLayout>
       )}
 

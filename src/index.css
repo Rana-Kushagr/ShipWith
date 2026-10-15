@@ -8,47 +8,43 @@
 }
 
 /* ============================================================
-   WARM SIMPLIFY + PEERLIST DAYLIGHT SYSTEM
-   Strict adherence to <step_1_typography_and_color_system>
+   PERMANENT HIGH-CONTRAST BLACK & WHITE DARK THEME
+   Pure Obsidian Black (#050506) + Stark Crisp White (#FFFFFF)
    ============================================================ */
 
 :root {
-  /* 60% Warm Simplify Cream Canvas */
-  --bg-canvas: #FBF9F5;
-  --bg-onboarding: #F9F7F1;
+  /* Permanent Obsidian Black & White Canvas */
+  --bg-canvas: #050506;          /* Pure Deep Obsidian Black main background */
+  --bg-surface: #0C0C0E;         /* Elevated Carbon Card Surface */
+  --bg-subtle: #141418;          /* Recessed Monochrome Well for inputs, code tags & workspace columns */
+  --bg-hover: #1A1A22;
+  --bg-selected: rgba(20, 53, 54, 0.45);
+  --bg-contrast-white: #FFFFFF;  /* Stark White surface for primary CTAs, active pills & high-contrast highlight badges */
+  --bg-glass: rgba(8, 8, 10, 0.85); /* Sticky navbar & headers with backdrop-filter: blur(16px) */
+  --bg-onboarding: #070709;
+  --bg-dark-bento: #0A0A0D;
 
-  /* 30% Crisp Elevated Cards & Glass Bars */
-  --bg-surface: #FFFFFF;
-  --bg-glass: rgba(251, 249, 245, 0.88);
-
-  /* 8% Recessed Warm Sand Wells (Workspace columns, inputs, stack tags) */
-  --bg-subtle: #F2EFE9;
-  --bg-hover: #ECE8DF;
-  --bg-selected: #EAF6F4;
-
-  /* Dark Bento Contrast Surface (Simplify Bento Section) */
-  --bg-dark-bento: #102223;
-
-  /* Peerlist Crisp 1px Hairline Borders & Subtle Elevation */
-  --border-crisp: #E4E2DC;
-  --border-hover: #C8C4B8;
-  --border-grid: rgba(18, 19, 18, 0.04);
-  --shadow-card: 0 1px 2px rgba(18, 19, 18, 0.04);
-  --shadow-float: 0 16px 36px -8px rgba(26, 80, 82, 0.09), 0 4px 10px -2px rgba(18, 19, 18, 0.04);
+  /* 1px Crisp White-Tinted Hairline Borders & Dark Elevation */
+  --border-crisp: rgba(255, 255, 255, 0.10); /* 1px crisp white-tinted hairline border */
+  --border-hover: rgba(255, 255, 255, 0.28); /* Brightened white border on hover */
+  --border-grid: rgba(255, 255, 255, 0.04);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-float: 0 20px 40px -12px rgba(0, 0, 0, 0.85), 0 4px 12px -2px rgba(0, 0, 0, 0.6);
 
   /* Ink Hierarchy */
-  --text-primary: #121312;
-  --text-secondary: #4E514E;
-  --text-muted: #828580;
+  --text-primary: #FFFFFF;       /* Pure Crisp White for all headings & primary text */
+  --text-secondary: #A1A1AA;     /* Refined Silver-Gray for descriptions & body copy */
+  --text-muted: #71717A;         /* Muted Zinc for timestamps & metadata */
+  --text-on-white: #050506;      /* Deep Black ink whenever placed inside --bg-contrast-white buttons or cards */
 
-  /* 2% High-Signal Accents */
-  --simplify-teal: #1A5052;       /* Simplify deep teal for primary badges & match rings */
-  --simplify-teal-soft: #E6F4F1;
-  --simplify-cyan: #0D9488;       /* Active Match % ring stroke & live progress bars */
-  --peerlist-green: #00AA45;      /* Verified proof checkmarks (✔) & active upvote/tried states */
-  --peerlist-green-soft: #E8F8EE;
-  --ship-orange: #D94E1F;         /* "+ Post a Build" & "Ship Product" primary action accent */
-  --ship-orange-soft: #FFF1EB;
+  /* High-Signal Accents tuned for Obsidian Dark Theme */
+  --simplify-teal: #143536;       /* Deep obsidian teal */
+  --simplify-teal-soft: rgba(20, 53, 54, 0.6);
+  --simplify-cyan: #2DD4BF;       /* Vibrant cyan/teal stroke for match rings & live progress */
+  --peerlist-green: #00D659;      /* Crisp verified green ✔ */
+  --peerlist-green-soft: rgba(0, 214, 89, 0.12);
+  --ship-orange: #F97316;         /* "+ Post a Build" primary action accent */
+  --ship-orange-soft: rgba(249, 115, 22, 0.14);
 
   /* Semantic Compatibility Bridges */
   --color-canvas: var(--bg-canvas);
@@ -59,27 +55,27 @@
 
   --color-border: var(--border-crisp);
   --color-border-strong: var(--border-hover);
-  --color-border-subtle: rgba(18, 19, 18, 0.06);
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
 
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
 
-  --color-brand-primary: var(--simplify-teal);
-  --color-brand-primary-hover: #133E3F;
-  --color-brand-on-primary: #FFFFFF;
+  --color-brand-primary: var(--bg-contrast-white);
+  --color-brand-primary-hover: #E4E4E7;
+  --color-brand-on-primary: var(--text-on-white);
   --color-brand-subtle: var(--simplify-teal-soft);
 
   --color-brand-accent: var(--simplify-cyan);
-  --color-brand-accent-hover: #0F766E;
+  --color-brand-accent-hover: #14B8A6;
   --color-brand-accent-subtle: var(--simplify-teal-soft);
 
   --color-success: var(--peerlist-green);
   --color-success-subtle: var(--peerlist-green-soft);
-  --color-warning: #D97706;
-  --color-warning-subtle: #FEF3C7;
-  --color-danger: #DC2626;
-  --color-danger-subtle: #FEE2E2;
+  --color-warning: #F59E0B;
+  --color-warning-subtle: rgba(245, 158, 11, 0.15);
+  --color-danger: #EF4444;
+  --color-danger-subtle: rgba(239, 68, 68, 0.15);
 
   /* Typography Variables */
   --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -99,14 +95,14 @@
 .bg-landing-atmosphere {
   background-color: var(--bg-canvas);
   background-image:
-    radial-gradient(110% 60% at 50% -5%, #FFFFFF 0%, rgba(230, 244, 241, 0.55) 42%, rgba(251, 249, 245, 0) 100%),
+    radial-gradient(110% 70% at 50% -10%, rgba(255, 255, 255, 0.07) 0%, rgba(45, 212, 191, 0.08) 35%, rgba(5, 5, 6, 0.95) 75%, #050506 100%),
     linear-gradient(to right, var(--border-grid) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border-grid) 1px, transparent 1px);
-  background-size: 100% 100%, 96px 96px, 96px 96px;
+  background-size: 100% 100%, 80px 80px, 80px 80px;
 }
 
 .bg-onboarding-focus {
-  background: radial-gradient(90% 80% at 50% 30%, #FFFFFF 0%, #F9F7F1 65%, #F2EFE9 100%);
+  background: radial-gradient(90% 80% at 50% 30%, #0F0F14 0%, #070709 65%, #050506 100%);
 }
 
 /* Global Reset & Base */
@@ -219,6 +215,124 @@ code, kbd, samp, pre, .font-mono {
 
 .animate-marquee-right:hover {
   animation-play-state: paused;
+}
+
+/* ============================================================
+   DIM GLOW BORDER PERIMETER (25%-35% OPACITY WHITE / SILVER SHIMMER)
+   ============================================================ */
+
+@property --glow-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes glow-rotate {
+  0% {
+    --glow-angle: 0deg;
+  }
+  100% {
+    --glow-angle: 360deg;
+  }
+}
+
+.glow-card-perimeter {
+  position: relative;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-crisp);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.glow-card-perimeter::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1.2px;
+  background: conic-gradient(
+    from var(--glow-angle, 0deg),
+    transparent 0deg,
+    rgba(255, 255, 255, 0.25) 25deg,
+    #FFFFFF 60deg,
+    rgba(255, 255, 255, 0.4) 85deg,
+    transparent 120deg,
+    transparent 180deg,
+    rgba(255, 255, 255, 0.25) 205deg,
+    #FFFFFF 240deg,
+    rgba(255, 255, 255, 0.4) 265deg,
+    transparent 300deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: glow-rotate 6s linear infinite;
+  z-index: 10;
+}
+
+.glow-card-perimeter-subtle {
+  position: relative;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-crisp);
+  border-radius: 0.875rem;
+  overflow: hidden;
+}
+
+.glow-card-perimeter-subtle::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--glow-angle, 0deg),
+    transparent 0deg,
+    rgba(255, 255, 255, 0.35) 45deg,
+    #FFFFFF 80deg,
+    rgba(255, 255, 255, 0.5) 105deg,
+    transparent 160deg,
+    transparent 220deg,
+    rgba(255, 255, 255, 0.35) 260deg,
+    #FFFFFF 295deg,
+    rgba(255, 255, 255, 0.5) 320deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: glow-rotate 9s linear infinite;
+  z-index: 10;
+}
+
+/* ============================================================
+   SMOOTH SCROLL ENTRY ANIMATIONS
+   opacity: 0, translateY(22px) scale(0.985) -> opacity: 1, translateY(0) scale(1)
+   over 480ms cubic-bezier(0.22, 1, 0.36, 1)
+   ============================================================ */
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(22px) scale(0.985);
+  transition: opacity 480ms cubic-bezier(0.22, 1, 0.36, 1), transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Floating micro-motion */
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-float-subtle {
+  animation: float-subtle 4s ease-in-out infinite;
 }
 
 /* ============================================================

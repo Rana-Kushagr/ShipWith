@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Search, Rocket, Moon, Sun, PlusCircle, ArrowRight, X } from 'lucide-react';
+import { Search, Rocket, PlusCircle, ArrowRight, X } from 'lucide-react';
 
 export const CommandPalette: React.FC = () => {
   const { 
@@ -9,8 +9,6 @@ export const CommandPalette: React.FC = () => {
     builds, 
     builders, 
     setCurrentView,
-    theme,
-    toggleTheme,
     setIsPostBuildOpen
   } = useApp();
 
@@ -92,20 +90,10 @@ export const CommandPalette: React.FC = () => {
                 className="w-full flex items-center justify-between px-3 py-2 text-xs rounded-[var(--radius-md)] hover:bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] cursor-pointer transition-colors"
               >
                 <div className="flex items-center gap-2.5">
-                  <PlusCircle className="w-4 h-4 text-[var(--color-brand-accent)]" />
+                  <PlusCircle className="w-4 h-4 text-white" />
                   <span>Post a Build</span>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5 text-[var(--color-text-muted)]" />
-              </button>
-              <button
-                onClick={() => handleSelect(toggleTheme)}
-                className="w-full flex items-center justify-between px-3 py-2 text-xs rounded-[var(--radius-md)] hover:bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] cursor-pointer transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  {theme === 'dark' ? <Sun className="w-4 h-4 text-[var(--color-warning)]" /> : <Moon className="w-4 h-4 text-[var(--color-brand-accent)]" />}
-                  <span>Switch to {theme === 'dark' ? 'Light' : 'Dark'} theme</span>
-                </div>
-                <span className="text-[10px] text-[var(--color-text-muted)] font-mono">Theme</span>
               </button>
             </div>
           </div>

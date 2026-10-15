@@ -45,12 +45,12 @@ export const CommunitiesView: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-[#1A5052]" />
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#1A5052]">
+            <Users className="w-4 h-4 text-white" />
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-muted)]">
               PEER HUBS & CIRCLES
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold font-['Plus_Jakarta_Sans'] text-white mt-1">
             Builder Communities
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-0.5">
@@ -61,20 +61,20 @@ export const CommunitiesView: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {communities.map((c) => (
-          <div key={c.id} className="bg-white rounded-2xl border border-[var(--border-crisp)] p-6 shadow-[var(--shadow-card)] space-y-4 flex flex-col justify-between">
+          <div key={c.id} className="bg-[#0C0C0E] rounded-2xl border border-[var(--border-crisp)] p-6 shadow-sm hover:border-white/20 transition-all space-y-4 flex flex-col justify-between">
             <div>
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-bold text-lg font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+                  <h3 className="font-bold text-lg font-['Plus_Jakarta_Sans'] text-white">
                     {c.name}
                   </h3>
                   <div className="flex items-center gap-2 mt-1 text-xs font-mono text-[var(--text-muted)]">
-                    <span className="text-[#1A5052] font-semibold">{c.members}</span>
+                    <span className="text-white font-semibold">{c.members}</span>
                     <span>•</span>
-                    <span className="text-[#00AA45] font-semibold">{c.sprints}</span>
+                    <span className="text-[#00D659] font-semibold">{c.sprints}</span>
                   </div>
                 </div>
-                <span className="w-2.5 h-2.5 rounded-full bg-[#00AA45]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#00D659]" />
               </div>
 
               <p className="text-xs text-[var(--text-secondary)] mt-3 leading-relaxed">
@@ -83,7 +83,7 @@ export const CommunitiesView: React.FC = () => {
 
               <div className="flex flex-wrap gap-1.5 mt-3.5">
                 {c.tags.map((t, idx) => (
-                  <span key={idx} className="text-[10px] font-mono bg-[var(--bg-subtle)] text-[var(--text-secondary)] px-2 py-0.5 rounded border border-[var(--border-crisp)]">
+                  <span key={idx} className="text-[10px] font-mono bg-[#141418] text-[var(--text-secondary)] px-2 py-0.5 rounded border border-[var(--border-crisp)]">
                     {t}
                   </span>
                 ))}
@@ -99,9 +99,9 @@ export const CommunitiesView: React.FC = () => {
                   addToast(`Joined ${c.name}!`, 'success');
                   setCurrentView('feed');
                 }}
-                className="bg-[#1A5052] hover:bg-[#12393B] text-white px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+                className="bg-white hover:bg-zinc-200 text-[#050506] px-4 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs"
               >
-                <span>Join Circle</span>
+                <span>Join Hub</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>

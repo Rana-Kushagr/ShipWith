@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -31,6 +31,14 @@ export const OnboardingWizard: React.FC = () => {
   // Search filter for countries
   const [countrySearch, setCountrySearch] = useState<string>('');
 
+  // Ensure fresh onboarding with no preselected options
+  useEffect(() => {
+    // If country was defaulted from older cached state without user explicitly picking
+    if (onboardingState.step5Location?.country === 'United States' && !onboardingState.step5Location?.timezone) {
+      updateOnboarding({ step5Location: { country: '', timezone: '' } });
+    }
+  }, []);
+
   const countries = [
     { country: 'United States', timezone: 'GMT-7:00 (San Francisco)' },
     { country: 'India', timezone: 'GMT+5:30 (New Delhi / Bengaluru)' },
@@ -62,7 +70,7 @@ export const OnboardingWizard: React.FC = () => {
 
   // Helper for multi-select questions
   const handleMultiSelect = (key: string, value: string, maxItems?: number) => {
-    const current = (onboardingState as any)[key] || [];
+    const current = ((onboardingState as any)[key] as string[]) || [];
     let updated: string[];
 
     if (current.includes(value)) {
@@ -82,18 +90,18 @@ export const OnboardingWizard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-onboarding-focus text-[var(--text-primary)] flex flex-col justify-between selection:bg-[#1A5052] selection:text-white relative">
+    <div className="min-h-screen bg-[#050506] text-[var(--text-primary)] flex flex-col justify-between selection:bg-white selection:text-black relative">
       {/* 1. TOP SIMPLIFY HEADER */}
-      <header className="w-full max-w-4xl mx-auto px-6 py-6 flex items-center justify-between gap-4">
+      <header className="w-full max-w-4xl mx-auto px-6 py-6 flex items-center justify-between gap-4 border-b border-[var(--border-crisp)]">
         {/* Logo */}
         <div 
           onClick={() => setCurrentView('landing')} 
           className="flex items-center gap-2 cursor-pointer select-none"
         >
-          <div className="w-8 h-8 rounded-lg bg-[#1A5052] text-white flex items-center justify-center shadow-xs">
+          <div className="w-8 h-8 rounded-lg bg-white text-[#050506] flex items-center justify-center shadow-xs">
             <ShipWithLogoMark className="w-4 h-4" />
           </div>
-          <span className="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-[var(--text-primary)]">
+          <span className="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-white">
             ShipWith
           </span>
         </div>
@@ -105,9 +113,9 @@ export const OnboardingWizard: React.FC = () => {
               <span>Question {step} of {totalSteps}</span>
               <span>{Math.round((step / totalSteps) * 100)}%</span>
             </div>
-            <div className="w-full h-1.5 bg-[#E4E2DC] rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-[#141418] border border-[var(--border-crisp)] rounded-full overflow-hidden">
               <div 
-                className="h-full bg-[#0D9488] rounded-full transition-all duration-300 ease-out"
+                className="h-full bg-white rounded-full transition-all duration-300 ease-out"
                 style={{ width: `${(step / totalSteps) * 100}%` }}
               />
             </div>
@@ -120,7 +128,7 @@ export const OnboardingWizard: React.FC = () => {
             completeOnboarding();
             setCurrentView('home');
           }}
-          className="text-xs font-mono font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-white px-3 py-1.5 rounded-lg border border-[var(--border-crisp)] transition-colors shadow-2xs cursor-pointer"
+          className="text-xs font-mono font-semibold text-[var(--text-secondary)] hover:text-white bg-[#0C0C0E] hover:bg-[#141418] px-3.5 py-1.5 rounded-lg border border-[var(--border-crisp)] transition-colors shadow-2xs cursor-pointer"
         >
           Save & exit
         </button>
@@ -132,10 +140,10 @@ export const OnboardingWizard: React.FC = () => {
         {step === 1 && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block mb-1">
                 Step 01 / 07
               </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
                 How do you want to start?
               </h1>
               <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
@@ -170,20 +178,20 @@ export const OnboardingWizard: React.FC = () => {
                   <button
                     key={opt.id}
                     onClick={() => handleSingleSelect('step1Goal', opt.id)}
-                    className={`w-full p-4 rounded-xl border text-left transition-all duration-150 flex items-center justify-between gap-4 cursor-pointer shadow-2xs ${
+                    className={`w-full p-4 rounded-xl border text-left transition-all duration-150 flex items-center justify-between gap-4 cursor-pointer shadow-sm ${
                       isSelected
-                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 shadow-sm'
-                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)]'
+                        ? 'bg-[#141418] border-white ring-1 ring-white/50 text-white'
+                        : 'bg-[#0C0C0E] hover:bg-[#141418] border-[var(--border-crisp)] hover:border-white/30 text-white'
                     }`}
                   >
                     <div className="flex items-center gap-3.5">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                        isSelected ? 'bg-[#1A5052] text-white' : 'bg-[var(--bg-subtle)] text-[var(--text-secondary)]'
+                        isSelected ? 'bg-white text-[#050506]' : 'bg-[#141418] text-[var(--text-secondary)] border border-[var(--border-crisp)]'
                       }`}>
                         <Icon className="w-5 h-5" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-[var(--text-primary)] font-['Plus_Jakarta_Sans']">
+                        <h4 className="font-bold text-sm text-white font-['Plus_Jakarta_Sans']">
                           {opt.title}
                         </h4>
                         <p className="text-xs text-[var(--text-secondary)] mt-0.5">
@@ -193,7 +201,7 @@ export const OnboardingWizard: React.FC = () => {
                     </div>
 
                     <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
+                      isSelected ? 'border-white bg-white text-[#050506]' : 'border-[var(--border-crisp)] bg-[#141418]'
                     }`}>
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
@@ -208,10 +216,10 @@ export const OnboardingWizard: React.FC = () => {
         {step === 2 && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block mb-1">
                 Step 02 / 07
               </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
                 What are you most into?
               </h1>
               <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
@@ -230,20 +238,20 @@ export const OnboardingWizard: React.FC = () => {
                 'Content & Media',
                 'Still exploring'
               ].map((interest) => {
-                const isSelected = onboardingState.step2Interests.includes(interest);
+                const isSelected = (onboardingState.step2Interests || []).includes(interest);
                 return (
                   <button
                     key={interest}
                     onClick={() => handleMultiSelect('step2Interests', interest)}
-                    className={`p-3.5 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer shadow-2xs ${
+                    className={`p-3.5 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
-                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
+                        ? 'bg-[#141418] border-white ring-1 ring-white/40 font-bold text-white shadow-xs'
+                        : 'bg-[#0C0C0E] hover:bg-[#141418] border-[var(--border-crisp)] hover:border-white/30 text-[var(--text-secondary)] hover:text-white'
                     }`}
                   >
                     <span>{interest}</span>
                     <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
+                      isSelected ? 'border-white bg-white text-[#050506]' : 'border-[var(--border-crisp)] bg-[#141418]'
                     }`}>
                       {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                     </div>
@@ -255,15 +263,15 @@ export const OnboardingWizard: React.FC = () => {
             <div className="flex justify-between items-center pt-4">
               <button
                 onClick={() => setStep(prev => prev - 1)}
-                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-white flex items-center gap-1 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back
               </button>
 
               <button
                 onClick={() => setStep(prev => prev + 1)}
-                disabled={onboardingState.step2Interests.length === 0}
-                className="bg-[#1A5052] hover:bg-[#12393B] disabled:opacity-40 text-white px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                disabled={!onboardingState.step2Interests || onboardingState.step2Interests.length === 0}
+                className="bg-white hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed text-[#050506] px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
               >
                 <span>Continue</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -277,14 +285,14 @@ export const OnboardingWizard: React.FC = () => {
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider">
+                <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
                   Step 03 / 07
                 </span>
                 <span className="text-xs font-mono text-[var(--text-muted)]">
-                  Selected: {onboardingState.step3Skills.length}/3 max
+                  Selected: {(onboardingState.step3Skills || []).length}/3 max
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)] mt-1">
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-white mt-1">
                 What can you help with?
               </h1>
               <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
@@ -303,20 +311,20 @@ export const OnboardingWizard: React.FC = () => {
                 'Product Strategy',
                 'Operations'
               ].map((skill) => {
-                const isSelected = onboardingState.step3Skills.includes(skill);
+                const isSelected = (onboardingState.step3Skills || []).includes(skill);
                 return (
                   <button
                     key={skill}
                     onClick={() => handleMultiSelect('step3Skills', skill, 3)}
-                    className={`p-3.5 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer shadow-2xs ${
+                    className={`p-3.5 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
-                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
+                        ? 'bg-[#141418] border-white ring-1 ring-white/40 font-bold text-white shadow-xs'
+                        : 'bg-[#0C0C0E] hover:bg-[#141418] border-[var(--border-crisp)] hover:border-white/30 text-[var(--text-secondary)] hover:text-white'
                     }`}
                   >
                     <span>{skill}</span>
                     <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
+                      isSelected ? 'border-white bg-white text-[#050506]' : 'border-[var(--border-crisp)] bg-[#141418]'
                     }`}>
                       {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                     </div>
@@ -328,15 +336,15 @@ export const OnboardingWizard: React.FC = () => {
             <div className="flex justify-between items-center pt-4">
               <button
                 onClick={() => setStep(prev => prev - 1)}
-                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-white flex items-center gap-1 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back
               </button>
 
               <button
                 onClick={() => setStep(prev => prev + 1)}
-                disabled={onboardingState.step3Skills.length === 0}
-                className="bg-[#1A5052] hover:bg-[#12393B] disabled:opacity-40 text-white px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                disabled={!onboardingState.step3Skills || onboardingState.step3Skills.length === 0}
+                className="bg-white hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed text-[#050506] px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
               >
                 <span>Continue</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -349,10 +357,10 @@ export const OnboardingWizard: React.FC = () => {
         {step === 4 && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block mb-1">
                 Step 04 / 07
               </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
                 Where are you right now?
               </h1>
               <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
@@ -373,15 +381,15 @@ export const OnboardingWizard: React.FC = () => {
                   <button
                     key={stage.id}
                     onClick={() => handleSingleSelect('step4Stage', stage.id)}
-                    className={`w-full p-4 rounded-xl border text-left transition-all duration-150 flex items-center justify-between cursor-pointer shadow-2xs ${
+                    className={`w-full p-4 rounded-xl border text-left transition-all duration-150 flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
-                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
+                        ? 'bg-[#141418] border-white ring-1 ring-white/40 font-bold text-white shadow-xs'
+                        : 'bg-[#0C0C0E] hover:bg-[#141418] border-[var(--border-crisp)] hover:border-white/30 text-[var(--text-secondary)] hover:text-white'
                     }`}
                   >
                     <span className="text-xs sm:text-sm font-sans">{stage.label}</span>
                     <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
+                      isSelected ? 'border-white bg-white text-[#050506]' : 'border-[var(--border-crisp)] bg-[#141418]'
                     }`}>
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
@@ -393,7 +401,7 @@ export const OnboardingWizard: React.FC = () => {
             <div className="pt-2">
               <button
                 onClick={() => setStep(prev => prev - 1)}
-                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-white flex items-center gap-1 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back
               </button>
@@ -405,10 +413,10 @@ export const OnboardingWizard: React.FC = () => {
         {step === 5 && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block mb-1">
                 Step 05 / 07
               </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
                 Where are you based?
               </h1>
               <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
@@ -424,13 +432,13 @@ export const OnboardingWizard: React.FC = () => {
                 value={countrySearch}
                 onChange={(e) => setCountrySearch(e.target.value)}
                 placeholder="Search country or region..."
-                className="w-full bg-white border border-[var(--border-crisp)] rounded-xl pl-10 pr-4 py-2.5 text-xs font-mono text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-[#1A5052]"
+                className="w-full bg-[#141418] border border-[var(--border-crisp)] rounded-xl pl-10 pr-4 py-2.5 text-xs font-mono text-white placeholder-[var(--text-muted)] focus:outline-hidden focus:border-white"
               />
             </div>
 
             <div className="max-h-60 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
               {filteredCountries.map((c) => {
-                const isSelected = onboardingState.step5Location?.country === c.country;
+                const isSelected = !!onboardingState.step5Location?.country && onboardingState.step5Location.country === c.country;
                 return (
                   <button
                     key={c.country}
@@ -439,15 +447,15 @@ export const OnboardingWizard: React.FC = () => {
                     }}
                     className={`w-full p-3 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
-                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
+                        ? 'bg-[#141418] border-white ring-1 ring-white/40 font-bold text-white shadow-xs'
+                        : 'bg-[#0C0C0E] hover:bg-[#141418] border-[var(--border-crisp)] hover:border-white/30 text-[var(--text-secondary)] hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-[var(--text-muted)]" />
                       <span>{c.country}</span>
                     </div>
-                    <span className="text-[11px] text-[var(--text-muted)] bg-[var(--bg-subtle)] px-2 py-0.5 rounded">
+                    <span className="text-[11px] text-[var(--text-muted)] bg-[#141418] px-2 py-0.5 rounded border border-[var(--border-crisp)]">
                       {c.timezone}
                     </span>
                   </button>
@@ -458,14 +466,15 @@ export const OnboardingWizard: React.FC = () => {
             <div className="flex justify-between items-center pt-4">
               <button
                 onClick={() => setStep(prev => prev - 1)}
-                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-white flex items-center gap-1 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back
               </button>
 
               <button
                 onClick={() => setStep(prev => prev + 1)}
-                className="bg-[#1A5052] hover:bg-[#12393B] text-white px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                disabled={!onboardingState.step5Location?.country}
+                className="bg-white hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed text-[#050506] px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
               >
                 <span>Continue</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -478,10 +487,10 @@ export const OnboardingWizard: React.FC = () => {
         {step === 6 && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block mb-1">
                 Step 06 / 07
               </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
                 Who do you want to meet?
               </h1>
               <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
@@ -500,20 +509,20 @@ export const OnboardingWizard: React.FC = () => {
                 'Business partners',
                 'Just exploring'
               ].map((role) => {
-                const isSelected = onboardingState.step6Meet.includes(role);
+                const isSelected = (onboardingState.step6Meet || []).includes(role);
                 return (
                   <button
                     key={role}
                     onClick={() => handleMultiSelect('step6Meet', role)}
-                    className={`p-3.5 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer shadow-2xs ${
+                    className={`p-3.5 rounded-xl border text-left font-mono text-xs transition-all flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
-                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
+                        ? 'bg-[#141418] border-white ring-1 ring-white/40 font-bold text-white shadow-xs'
+                        : 'bg-[#0C0C0E] hover:bg-[#141418] border-[var(--border-crisp)] hover:border-white/30 text-[var(--text-secondary)] hover:text-white'
                     }`}
                   >
                     <span>{role}</span>
                     <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
+                      isSelected ? 'border-white bg-white text-[#050506]' : 'border-[var(--border-crisp)] bg-[#141418]'
                     }`}>
                       {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                     </div>
@@ -525,15 +534,15 @@ export const OnboardingWizard: React.FC = () => {
             <div className="flex justify-between items-center pt-4">
               <button
                 onClick={() => setStep(prev => prev - 1)}
-                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-white flex items-center gap-1 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back
               </button>
 
               <button
                 onClick={() => setStep(prev => prev + 1)}
-                disabled={onboardingState.step6Meet.length === 0}
-                className="bg-[#1A5052] hover:bg-[#12393B] disabled:opacity-40 text-white px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                disabled={!onboardingState.step6Meet || onboardingState.step6Meet.length === 0}
+                className="bg-white hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed text-[#050506] px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
               >
                 <span>Continue</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -546,10 +555,10 @@ export const OnboardingWizard: React.FC = () => {
         {step === 7 && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <div>
-              <span className="text-xs font-mono font-bold text-[#1A5052] uppercase tracking-wider block mb-1">
+              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider block mb-1">
                 Step 07 / 07
               </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+              <h1 className="text-2xl sm:text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
                 How much time can you give?
               </h1>
               <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
@@ -570,15 +579,15 @@ export const OnboardingWizard: React.FC = () => {
                   <button
                     key={time.id}
                     onClick={() => handleSingleSelect('step7Hours', time.id)}
-                    className={`w-full p-4 rounded-xl border text-left font-mono text-xs sm:text-sm transition-all duration-150 flex items-center justify-between cursor-pointer shadow-2xs ${
+                    className={`w-full p-4 rounded-xl border text-left font-mono text-xs sm:text-sm transition-all duration-150 flex items-center justify-between cursor-pointer ${
                       isSelected
-                        ? 'bg-white border-[#1A5052] ring-2 ring-[#1A5052]/20 font-bold text-[#1A5052]'
-                        : 'bg-white hover:bg-[var(--bg-subtle)] border-[var(--border-crisp)] text-[var(--text-primary)]'
+                        ? 'bg-[#141418] border-white ring-1 ring-white/40 font-bold text-white shadow-xs'
+                        : 'bg-[#0C0C0E] hover:bg-[#141418] border-[var(--border-crisp)] hover:border-white/30 text-[var(--text-secondary)] hover:text-white'
                     }`}
                   >
                     <span>{time.label}</span>
                     <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
-                      isSelected ? 'border-[#1A5052] bg-[#1A5052] text-white' : 'border-[var(--border-crisp)]'
+                      isSelected ? 'border-white bg-white text-[#050506]' : 'border-[var(--border-crisp)] bg-[#141418]'
                     }`}>
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                     </div>
@@ -590,7 +599,7 @@ export const OnboardingWizard: React.FC = () => {
             <div className="pt-2">
               <button
                 onClick={() => setStep(prev => prev - 1)}
-                className="text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-1"
+                className="text-xs font-mono text-[var(--text-secondary)] hover:text-white flex items-center gap-1 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back
               </button>
@@ -603,10 +612,10 @@ export const OnboardingWizard: React.FC = () => {
           <div className="space-y-8 animate-in fade-in duration-300 py-4 max-w-3xl -mx-6 sm:mx-auto">
             {/* Completion Banner */}
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 rounded-full bg-[#E8F8EE] text-[#00AA45] flex items-center justify-center mx-auto border border-[#C6F0D6] shadow-xs">
+              <div className="w-12 h-12 rounded-full bg-[#141418] border border-white text-white flex items-center justify-center mx-auto shadow-sm">
                 <CheckCircle2 className="w-6 h-6 stroke-[2.5]" />
               </div>
-              <h1 className="text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+              <h1 className="text-3xl font-extrabold font-['Plus_Jakarta_Sans'] text-white">
                 You're in. We personalized ShipWith for you.
               </h1>
               <p className="text-sm text-[var(--text-secondary)] max-w-lg mx-auto">
@@ -617,20 +626,20 @@ export const OnboardingWizard: React.FC = () => {
             {/* 3 Live Personalized Preview Columns */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
               {/* Column 1: Startups for you */}
-              <div className="bg-white rounded-xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+              <div className="glow-card-perimeter-subtle p-4 shadow-[var(--shadow-card)] space-y-3">
                 <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
-                  <span className="font-mono font-bold text-[#1A5052] uppercase tracking-wider text-[11px]">
+                  <span className="font-mono font-bold text-white uppercase tracking-wider text-[11px]">
                     Startups for You
                   </span>
-                  <span className="text-[10px] font-mono text-[#00AA45] font-bold">96% fit</span>
+                  <span className="text-[10px] font-mono text-[#00D659] font-bold">96% fit</span>
                 </div>
 
                 <div className="space-y-2.5">
                   {seedStartups.slice(0, 2).map((s) => (
-                    <div key={s.id} className="p-2.5 rounded-lg bg-[var(--bg-subtle)] space-y-1">
+                    <div key={s.id} className="p-2.5 rounded-lg bg-[#141418] border border-[var(--border-crisp)] space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-[var(--text-primary)]">{s.name}</span>
-                        <span className="text-[10px] font-mono font-bold text-[#0D9488] bg-white px-1.5 py-0.2 rounded border border-[#BCE5DC]">
+                        <span className="font-bold text-white">{s.name}</span>
+                        <span className="text-[10px] font-mono font-bold text-white bg-[#050506] px-1.5 py-0.5 rounded border border-[var(--border-crisp)]">
                           {s.matchScore}%
                         </span>
                       </div>
@@ -641,9 +650,9 @@ export const OnboardingWizard: React.FC = () => {
               </div>
 
               {/* Column 2: People to meet */}
-              <div className="bg-white rounded-xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+              <div className="glow-card-perimeter-subtle p-4 shadow-[var(--shadow-card)] space-y-3">
                 <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
-                  <span className="font-mono font-bold text-[#0D9488] uppercase tracking-wider text-[11px]">
+                  <span className="font-mono font-bold text-white uppercase tracking-wider text-[11px]">
                     People to Meet
                   </span>
                   <span className="text-[10px] font-mono text-[var(--text-muted)]">Verified</span>
@@ -651,12 +660,12 @@ export const OnboardingWizard: React.FC = () => {
 
                 <div className="space-y-2.5">
                   {seedBuilders.slice(0, 2).map((b) => (
-                    <div key={b.id} className="p-2.5 rounded-lg bg-[var(--bg-subtle)] flex items-center gap-2">
+                    <div key={b.id} className="p-2.5 rounded-lg bg-[#141418] border border-[var(--border-crisp)] flex items-center gap-2">
                       <img src={b.avatar} alt={b.name} className="w-7 h-7 rounded-full object-cover" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1">
-                          <span className="font-bold text-[var(--text-primary)] truncate">{b.name}</span>
-                          <CheckCircle2 className="w-3 h-3 text-[#00AA45] shrink-0" />
+                          <span className="font-bold text-white truncate">{b.name}</span>
+                          <CheckCircle2 className="w-3 h-3 text-[#00D659] shrink-0" />
                         </div>
                         <span className="text-[10px] font-mono text-[var(--text-secondary)] truncate block">{b.role.split('&')[0]}</span>
                       </div>
@@ -666,26 +675,26 @@ export const OnboardingWizard: React.FC = () => {
               </div>
 
               {/* Column 3: Builds to explore */}
-              <div className="bg-white rounded-xl border border-[var(--border-crisp)] p-4 shadow-[var(--shadow-card)] space-y-3">
+              <div className="glow-card-perimeter-subtle p-4 shadow-[var(--shadow-card)] space-y-3">
                 <div className="flex items-center justify-between pb-2 border-b border-[var(--border-crisp)]">
-                  <span className="font-mono font-bold text-[#D94E1F] uppercase tracking-wider text-[11px]">
+                  <span className="font-mono font-bold text-white uppercase tracking-wider text-[11px]">
                     Weekly ShipPad
                   </span>
-                  <span className="text-[10px] font-mono text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded font-bold">Week 42</span>
+                  <span className="text-[10px] font-mono text-white bg-[#141418] px-1.5 py-0.5 rounded font-bold border border-[var(--border-crisp)]">Week 42</span>
                 </div>
 
                 <div className="space-y-2.5">
-                  <div className="p-2.5 rounded-lg bg-[var(--bg-subtle)] space-y-1">
+                  <div className="p-2.5 rounded-lg bg-[#141418] border border-[var(--border-crisp)] space-y-1">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[var(--text-primary)]">PulseAI Engine</span>
-                      <span className="text-[10px] font-mono text-[#00AA45] font-bold">▲ 84</span>
+                      <span className="font-bold text-white">PulseAI Engine</span>
+                      <span className="text-[10px] font-mono text-[#00D659] font-bold">▲ 84</span>
                     </div>
                     <span className="text-[10px] font-mono text-[var(--text-muted)] block">Autonomous dev worker loop</span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-[var(--bg-subtle)] space-y-1">
+                  <div className="p-2.5 rounded-lg bg-[#141418] border border-[var(--border-crisp)] space-y-1">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[var(--text-primary)]">LayerMint Design</span>
-                      <span className="text-[10px] font-mono text-[#00AA45] font-bold">▲ 72</span>
+                      <span className="font-bold text-white">LayerMint Design</span>
+                      <span className="text-[10px] font-mono text-[#00D659] font-bold">▲ 72</span>
                     </div>
                     <span className="text-[10px] font-mono text-[var(--text-muted)] block">Figma to React tokens</span>
                   </div>
@@ -697,7 +706,7 @@ export const OnboardingWizard: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <button
                 onClick={() => handleFinishOnboarding('home')}
-                className="w-full sm:w-auto bg-[#1A5052] hover:bg-[#12393B] text-white px-8 py-3.5 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer"
+                className="w-full sm:w-auto bg-white hover:bg-zinc-200 text-[#050506] px-8 py-3.5 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer"
               >
                 <span>Explore ShipWith</span>
                 <ArrowRight className="w-4 h-4" />
@@ -705,7 +714,7 @@ export const OnboardingWizard: React.FC = () => {
 
               <button
                 onClick={() => handleFinishOnboarding('profile')}
-                className="w-full sm:w-auto bg-white hover:bg-[var(--bg-subtle)] text-[var(--text-primary)] border border-[var(--border-crisp)] px-6 py-3.5 rounded-xl text-xs font-mono font-semibold transition-all shadow-2xs cursor-pointer"
+                className="w-full sm:w-auto bg-[#0C0C0E] hover:bg-[#141418] text-white border border-[var(--border-crisp)] px-6 py-3.5 rounded-xl text-xs font-mono font-semibold transition-all shadow-2xs cursor-pointer"
               >
                 Complete profile & passport
               </button>
@@ -718,9 +727,9 @@ export const OnboardingWizard: React.FC = () => {
       <footer className="w-full max-w-4xl mx-auto px-6 py-4 flex items-center justify-end">
         <button
           onClick={() => setIsFeedbackOpen(true)}
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-white px-3 py-1.5 rounded-lg border border-[var(--border-crisp)] shadow-2xs transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-secondary)] hover:text-white bg-[#0C0C0E] hover:bg-[#141418] px-3 py-1.5 rounded-lg border border-[var(--border-crisp)] shadow-2xs transition-colors cursor-pointer"
         >
-          <HelpCircle className="w-3.5 h-3.5 text-[#1A5052]" />
+          <HelpCircle className="w-3.5 h-3.5 text-white" />
           <span>Feedback</span>
         </button>
       </footer>

@@ -9,12 +9,12 @@ export const AdvertiseView: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <Megaphone className="w-4 h-4 text-[#1A5052]" />
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#1A5052]">
+          <Megaphone className="w-4 h-4 text-white" />
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--text-muted)]">
             TRANSPARENT PROMOTION
           </span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+        <h1 className="text-2xl sm:text-3xl font-bold font-['Plus_Jakarta_Sans'] text-white">
           Promote Your Build on ShipWith
         </h1>
         <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
@@ -23,9 +23,9 @@ export const AdvertiseView: React.FC = () => {
       </div>
 
       {/* Critical Rule Banner */}
-      <div className="p-4 bg-[var(--bg-selected)] rounded-2xl border border-[#BCE5DC] text-xs font-mono space-y-1.5">
-        <div className="flex items-center gap-2 font-bold text-[#1A5052]">
-          <ShieldCheck className="w-4 h-4 text-[#00AA45]" />
+      <div className="p-4 bg-[#141418] rounded-2xl border border-[var(--border-crisp)] text-xs font-mono space-y-1.5">
+        <div className="flex items-center gap-2 font-bold text-white">
+          <ShieldCheck className="w-4 h-4 text-[#00D659]" />
           <span>Core Principle: Reputation & Match % Cannot Be Bought</span>
         </div>
         <p className="text-[var(--text-secondary)] leading-relaxed">
@@ -35,13 +35,13 @@ export const AdvertiseView: React.FC = () => {
 
       {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-6 shadow-[var(--shadow-card)] space-y-4 flex flex-col justify-between">
+        <div className="bg-[#0C0C0E] rounded-2xl border border-[var(--border-crisp)] p-6 shadow-sm hover:border-white/20 transition-all space-y-4 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-lg font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+              <h3 className="font-bold text-lg font-['Plus_Jakarta_Sans'] text-white">
                 Featured Build Sprint
               </h3>
-              <span className="text-xs font-mono font-bold text-[#1A5052] bg-[var(--simplify-teal-soft)] px-2.5 py-1 rounded-full border border-[#BCE5DC]">
+              <span className="text-xs font-mono font-bold text-white bg-[#141418] px-2.5 py-1 rounded-full border border-[var(--border-crisp)]">
                 $49 / week
               </span>
             </div>
@@ -49,28 +49,28 @@ export const AdvertiseView: React.FC = () => {
               Pinned to the top of the Startups Radar with a high-contrast 'Promoted' badge.
             </p>
             <ul className="mt-4 space-y-2 text-xs font-mono text-[var(--text-secondary)]">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" /> Top 3 placement on Startups page</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" /> Highlighted open trial sprint roles</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" /> Analytics on impressions and applications</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00D659]" /> Top 3 placement on Startups page</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00D659]" /> Highlighted open trial sprint roles</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00D659]" /> Analytics on impressions and applications</li>
             </ul>
           </div>
 
           <button
             onClick={() => addToast('Sponsorship checkout demo initialized!', 'info')}
-            className="w-full bg-[#1A5052] hover:bg-[#12393B] text-white py-2.5 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+            className="w-full bg-white hover:bg-zinc-200 text-[#050506] py-2.5 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer"
           >
             <span>Promote Build ($49)</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[var(--border-crisp)] p-6 shadow-[var(--shadow-card)] space-y-4 flex flex-col justify-between">
+        <div className="bg-[#0C0C0E] rounded-2xl border border-[var(--border-crisp)] p-6 shadow-sm hover:border-white/20 transition-all space-y-4 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-lg font-['Plus_Jakarta_Sans'] text-[var(--text-primary)]">
+              <h3 className="font-bold text-lg font-['Plus_Jakarta_Sans'] text-white">
                 ShipPad Launch Spotlight
               </h3>
-              <span className="text-xs font-mono font-bold text-[#D94E1F] bg-[#FFF1EB] px-2.5 py-1 rounded-full border border-[#FED7AA]">
+              <span className="text-xs font-mono font-bold text-white bg-[#141418] px-2.5 py-1 rounded-full border border-[var(--border-crisp)]">
                 $99 / launch
               </span>
             </div>
@@ -78,15 +78,15 @@ export const AdvertiseView: React.FC = () => {
               Spotlight placement on the Weekly ShipPad launch leaderboard during launch week.
             </p>
             <ul className="mt-4 space-y-2 text-xs font-mono text-[var(--text-secondary)]">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" /> Weekly email digest feature (4,500+ builders)</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" /> Direct feedback collection banner</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00AA45]" /> Social broadcast on X and LinkedIn</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00D659]" /> Weekly email digest feature (4,500+ builders)</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00D659]" /> Direct feedback collection banner</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-[#00D659]" /> Social broadcast on X and LinkedIn</li>
             </ul>
           </div>
 
           <button
             onClick={() => addToast('Launch spotlight demo initialized!', 'info')}
-            className="w-full bg-[#D94E1F] hover:bg-[#C2410C] text-white py-2.5 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+            className="w-full bg-white hover:bg-zinc-200 text-[#050506] py-2.5 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer"
           >
             <span>Spotlight Launch ($99)</span>
             <ArrowRight className="w-3.5 h-3.5" />

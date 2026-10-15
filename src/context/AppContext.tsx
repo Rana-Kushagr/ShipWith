@@ -8,21 +8,9 @@ import type {
   OnboardingState,
   NotificationItem
 } from '../types';
-import { 
-  INITIAL_USER, 
-  MOCK_BUILDERS, 
-  MOCK_BUILDS, 
-  MOCK_FEED_POSTS, 
-  MOCK_WORKSPACE_TASKS, 
-  MOCK_TRIAL_BUILD 
-} from '../data/mockData';
 import {
-  SEED_STARTUPS,
   SEED_BUILDERS,
-  SEED_SHIPPAD_ITEMS,
-  SEED_WORKSPACES,
   SEED_MESSAGES,
-  SEED_NOTIFICATIONS,
   type SeedStartup,
   type SeedBuilder,
   type SeedShipPadItem,
@@ -42,7 +30,8 @@ export type AppView =
   | 'premium'
   | 'bookmarks'
   | 'communities'
-  | 'advertise';
+  | 'advertise'
+  | 'notifications';
 
 export interface AppContextType {
   theme: 'light' | 'dark';
@@ -137,7 +126,7 @@ const DEFAULT_ONBOARDING: OnboardingState = {
   step2Interests: [],
   step3Skills: [],
   step4Stage: '',
-  step5Location: { country: 'United States', timezone: 'GMT-7:00 (San Francisco)' },
+  step5Location: { country: '', timezone: '' },
   step6Meet: [],
   step7Hours: '',
   claimedHandle: '',
@@ -157,33 +146,53 @@ const DEFAULT_ONBOARDING: OnboardingState = {
   trialAgreement: false,
   githubUsername: '',
   headline: '',
-  country: 'United States',
-  timezone: 'GMT-7:00'
+  country: '',
+  timezone: ''
 };
 
-const LOCAL_STORAGE_KEY = 'shipwith_v5_state';
+const LOCAL_STORAGE_KEY = 'shipwith_dark_prod_v1';
+
+const CLEAN_INITIAL_USER: UserProfile = {
+  id: 'usr_me',
+  name: 'New Builder',
+  username: 'builder',
+  handle: '@builder',
+  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  headline: 'Builder & Collaborator',
+  bio: '',
+  role: 'Fullstack',
+  country: 'United States',
+  timezone: 'GMT-7:00 (San Francisco)',
+  availability: 'Available',
+  weeklyHours: '10–20 hrs/week',
+  lookingFor: [],
+  skills: [],
+  proofLinks: {},
+  stats: {
+    shipsCount: 0,
+    trialBuildsCount: 0,
+    collaborationsCount: 0,
+    repeatTeammatesCount: 0,
+    positiveFeedbackPercent: 100
+  }
+};
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Theme state: Daylight Warm Simplify by default (Remove dark mode default as mandated)
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  // Permanent Black & White Dark Theme (No Theme Toggle)
+  const [theme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
-    document.documentElement.removeAttribute('data-theme');
-    localStorage.setItem('shipwith_theme', 'light');
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('shipwith_theme', 'dark');
   }, []);
 
   const toggleTheme = () => {
-    setTheme(prev => {
-      const next = prev === 'light' ? 'dark' : 'light';
-      if (next === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-      }
-      return next;
-    });
+    // Locked into permanent dark theme
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.classList.add('dark');
   };
 
   const [currentView, setCurrentView] = useState<AppView>('landing');
@@ -194,7 +203,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [activeShipPadTab, setActiveShipPadTab] = useState<'feed' | 'shippad'>('shippad');
 
-  // Load state from localStorage ("shipwith_v5_state")
+  // Load state from localStorage ("shipwith_dark_prod_v1")
   const loadStored = () => {
     try {
       const item = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -206,22 +215,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const stored = loadStored();
 
-  // Core collections initialized with rich seed data
-  const [currentUser, setCurrentUser] = useState<UserProfile>(stored?.currentUser || INITIAL_USER);
-  const [builders] = useState<UserProfile[]>(stored?.builders || MOCK_BUILDERS);
-  const [seedBuilders] = useState<SeedBuilder[]>(SEED_BUILDERS);
-  const [builds, setBuilds] = useState<BuildRecord[]>(stored?.builds || MOCK_BUILDS);
-  const [seedStartups, setSeedStartups] = useState<SeedStartup[]>(stored?.seedStartups || SEED_STARTUPS);
-  const [feedPosts, setFeedPosts] = useState<FeedPost[]>(stored?.feedPosts || MOCK_FEED_POSTS);
-  const [workspaceTasks] = useState<WorkspaceTask[]>(stored?.workspaceTasks || MOCK_WORKSPACE_TASKS);
-  const [trialBuild] = useState<TrialBuild | null>(stored?.trialBuild || MOCK_TRIAL_BUILD);
-  const [shipPadItems, setShipPadItems] = useState<SeedShipPadItem[]>(stored?.shipPadItems || SEED_SHIPPAD_ITEMS);
-  const [workspaces, setWorkspaces] = useState<SeedWorkspace[]>(stored?.workspaces || SEED_WORKSPACES);
-  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string>(stored?.activeWorkspaceId || 'workspace-pulseai');
-  const [messagesThreads, setMessagesThreads] = useState<typeof SEED_MESSAGES>(stored?.messagesThreads || SEED_MESSAGES);
-  const [activeThreadId, setActiveThreadId] = useState<string>(stored?.messagesThreads?.[0]?.id || 'thread-1');
-  const [notifications, setNotifications] = useState<NotificationItem[]>(stored?.notifications || SEED_NOTIFICATIONS);
-  const [bookmarks, setBookmarks] = useState<string[]>(stored?.bookmarks || ['startup-pulseai', 'builder-maya']);
+  // CLEAN MAIN APP STATE: Zero fake data in the main app (seed data kept for landing demo only)
+  const [currentUser, setCurrentUser] = useState<UserProfile>(stored?.currentUser || CLEAN_INITIAL_USER);
+  const [builders] = useState<UserProfile[]>(stored?.builders || []);
+  const [seedBuilders] = useState<SeedBuilder[]>(SEED_BUILDERS); // For Landing Page demo views only
+  const [builds, setBuilds] = useState<BuildRecord[]>(stored?.builds || []);
+  const [seedStartups, setSeedStartups] = useState<SeedStartup[]>(stored?.seedStartups || []);
+  const [feedPosts, setFeedPosts] = useState<FeedPost[]>(stored?.feedPosts || []);
+  const [workspaceTasks] = useState<WorkspaceTask[]>(stored?.workspaceTasks || []);
+  const [trialBuild] = useState<TrialBuild | null>(stored?.trialBuild || null);
+  const [shipPadItems, setShipPadItems] = useState<SeedShipPadItem[]>(stored?.shipPadItems || []);
+  const [workspaces, setWorkspaces] = useState<SeedWorkspace[]>(stored?.workspaces || []);
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string>(stored?.activeWorkspaceId || '');
+  const [messagesThreads, setMessagesThreads] = useState<typeof SEED_MESSAGES>(stored?.messagesThreads || []);
+  const [activeThreadId, setActiveThreadId] = useState<string>(stored?.activeThreadId || '');
+  const [notifications, setNotifications] = useState<NotificationItem[]>(stored?.notifications || []);
+  const [bookmarks, setBookmarks] = useState<string[]>(stored?.bookmarks || []);
   const [onboardingState, setOnboardingState] = useState<OnboardingState>(stored?.onboardingState || DEFAULT_ONBOARDING);
 
   // Modals & UI helpers
@@ -701,6 +710,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     setWorkspaces(prev => [newWs, ...prev]);
     setActiveWorkspaceId(newWs.id);
+
+    // Update currentUser stats and notification
+    setCurrentUser(prev => ({
+      ...prev,
+      stats: {
+        ...prev.stats,
+        shipsCount: prev.stats.shipsCount + 1
+      }
+    }));
+
+    const newNotif: NotificationItem = {
+      id: `notif-${Date.now()}`,
+      title: 'Build Created',
+      message: `Your build "${newBuild.title}" is live across Startups, Feed, and Workspace!`,
+      type: 'feedback',
+      timestamp: 'Just now',
+      read: false
+    };
+    setNotifications(prev => [newNotif, ...prev]);
 
     addToast(`"${newBuild.title}" created across Startups, Feed, and Workspace!`, 'success');
     setIsPostBuildOpen(false);
